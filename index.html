@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 복지 점수 확인하기 (웰페어 스코어) | 숨은 정부지원금 찾기</title>
+    <meta name="description" content="나만 몰랐던 정부 지원금과 복지 혜택, 웰페어 스코어로 1분 만에 확인하세요. 2026년 최신 기준 중위소득 반영!">
+    <meta name="keywords" content="복지점수, 정부지원금, 기초연금, 아동수당, 신혼부부대출, 복지혜택찾기">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://your-welfare-app.vercel.app/">
+    <meta property="og:title" content="내 복지 점수는 몇 점? 👑 웰페어 스코어">
+    <meta property="og:description" content="숨은 정부 지원금 진단부터 신청 방법까지 한 번에! 지금 바로 점수를 확인해보세요.">
+    <meta property="og:image" content="https://your-welfare-app.vercel.app/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="내 복지 점수 확인하기 | 웰페어 스코어">
+    <meta property="twitter:description" content="나에게 딱 맞는 정부 혜택, 웰페어 스코어로 꼼꼼하게 찾아드립니다.">
+    <meta property="twitter:image" content="https://your-welfare-app.vercel.app/og-image.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="top-actions">
+                <button id="btn-senior-mode" class="btn-toggle">👓 큰 글씨 모드</button>
+            </div>
+            <h1>내 복지 점수 확인하기</h1>
+            <p class="subtitle">나만 몰랐던 정부 지원금, 점수로 확인하세요</p>
+        </header>
+
+        <main id="app-content">
+            <!-- Phase 1: Selection Phase (New) -->
+            <section id="selection-phase" class="animate-fade">
+                <div class="card-grid">
+                    <div class="select-card" data-category="pregnancy">
+                        <div class="card-icon">🤰</div>
+                        <h3>임신·출산</h3>
+                        <p>신혼부부 및 출산 지원</p>
+                    </div>
+                    <div class="select-card" data-category="infant">
+                        <div class="card-icon">👶</div>
+                        <h3>영유아·아동</h3>
+                        <p>부모급여 및 아동수당</p>
+                    </div>
+                    <div class="select-card" data-category="youth">
+                        <div class="card-icon">🧑‍🎓</div>
+                        <h3>청소년·청년</h3>
+                        <p>장학금 및 자립 지원</p>
+                    </div>
+                    <div class="select-card" data-category="middle">
+                        <div class="card-icon">👔</div>
+                        <h3>중장년</h3>
+                        <p>취업 및 재취업 지원</p>
+                    </div>
+                    <div class="select-card" data-category="senior">
+                        <div class="card-icon">👵</div>
+                        <h3>노년·어르신</h3>
+                        <p>기초연금 및 실버 혜택</p>
+                    </div>
+                    <div class="select-card" data-category="disabled">
+                        <div class="card-icon">♿</div>
+                        <h3>장애인</h3>
+                        <p>연금 및 일자리 지원</p>
+                    </div>
+                    <div class="select-card" data-category="lowincome">
+                        <div class="card-icon">🏠</div>
+                        <h3>저소득·한부모</h3>
+                        <p>정부 지원 생활 보장</p>
+                    </div>
+                    <div class="select-card" data-category="others">
+                        <div class="card-icon">🎖️</div>
+                        <h3>보훈·다문화</h3>
+                        <p>기타 특수 상황 지원</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Input Phase (Single Page Form) -->
+            <section id="input-phase" class="hidden animate-fade">
+                <div class="character-guide">
+                    <div class="character-img">🤖</div>
+                    <div class="speech-bubble">
+                        <p id="logger-message">반가워요! 정보를 입력하시면 바로 혜택을 찾아드릴게요.</p>
+                    </div>
+                </div>
+
+                <div id="dynamic-inputs">
+                    <!-- All inputs for the category will be injected here -->
+                </div>
+
+                <div class="input-actions">
+                    <button id="btn-calculate" class="btn-primary">점수 확인하기 🚀</button>
+                    <button id="btn-back-to-select" class="btn-text-only">카테고리 다시 선택 ⬅️</button>
+                </div>
+            </section>
+
+            <!-- Result Phase -->
+            <section id="result-phase" class="hidden animate-fade">
+                <div class="ad-slot"
+                    style="margin-bottom: 20px; text-align: center; border: 1px dashed var(--glass-border); padding: 10px; font-size: 0.7rem; color: var(--text-muted);">
+                    AD: 금융/복지 맞춤형 광고 구역
+                </div>
+
+                <div class="card text-center" id="score-card">
+                    <div class="rank-badge" id="rank-badge">🌱 복지 새싹</div>
+                    <div class="score-circle">
+                        <span id="score-text" class="score-value">0</span>
+                    </div>
+                    <h2 id="score-message" style="margin-bottom: 8px;">분석 중...</h2>
+                    <p id="rank-per-text"
+                        style="color: var(--neon-blue); font-weight: 700; font-size: 1.1rem; margin-bottom: 20px;"
+                        class="hidden">대표님은 전국 상위 1% 복지 스마트!</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">
+                        대표님의 숨은 혜택이 <span id="benefit-count"
+                            style="color: var(--neon-blue); font-weight: bold;">0</span>건 발견되었습니다!
+                    </p>
+                    <button id="btn-share" class="btn-outline"
+                        style="width: auto; padding: 10px 20px; font-size: 0.9rem;">결과 공유하여 자랑하기 🔗</button>
+                </div>
+
+                <div id="benefit-list">
+                    <!-- Benefit cards injected here -->
+                </div>
+
+                <div class="card" style="text-align: center; border-color: var(--primary-color);">
+                    <h3 style="margin-bottom: 12px;">📈 수익 극대화 Tip</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 20px;">혜택별 상세 신청 방법은 아래 버튼을 눌러 로거의 블로그에서 확인하세요!</p>
+                    <a href="https://yourblog.tistory.com" id="blog-link" class="btn-primary"
+                        style="display: block; text-decoration: none;">로거 블로그에서 신청법 보기 💰</a>
+                </div>
+
+                <button id="btn-restart" class="btn-text-only" style="margin-bottom: 40px;">다시 계산하기 🔄</button>
+            </section>
+        </main>
+
+        <footer
+            style="margin-top: auto; text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.8rem;">
+            &copy; 2026 Welfare Score Master. Designed by Logger for Representative.
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
