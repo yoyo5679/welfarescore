@@ -25,12 +25,34 @@ def generate_js():
         '10대이하': 15, '20대': 25, '30대': 35, '40대': 45, '50대': 55, '60대이상': 70
     }
 
+    # Keyword Mapping for Auto-Categorization (Housing, Job, Medical, etc.)
+    KEYWORD_MAP = {
+        '주거': ['월세', '전세', '주택', '임대', '보증금', '대출', '기숙사', '관리비', '주거', '부동산', '이사'],
+        '취업': ['취업', '창업', '일자리', '구직', '근로', '인턴', '채용', '직무', '훈련', '소상공인', '면접', '자격증'],
+        '의료': ['병원', '검진', '치료', '수술', '보건', '의료', '산모', '치매', '건강', '심리', '정신', '난임', '장애'],
+        '육아': ['육아', '보육', '돌봄', '어린이', '유치원', '급식', '청소년', '출산'],
+        '교육': ['교육', '장학금', '학교', '학생', '학비', '등록금', '강의'],
+        '생활비': ['생계', '지원금', '바우처', '교통비', '문화', '예술', '통신비', '에너지', '가스', '전기', '난방']
+    }
+
     js_code = "const welfareData = [\n"
     
     for item in data:
         name = item['name']
-        desc = json.dumps(item['description'], ensure_ascii=False)[1:-1].replace("'", "\\'") # escape single quotes for JS wrapping
+        desc_raw = item['description']
+        desc = json.dumps(desc_raw, ensure_ascii=False)[1:-1].replace("'", "\\'")
         agency = item['agency']
+        
+        # Auto-Categorization Logic
+        category = '생활비' # Default to General Living if no match
+        full_text = (name + " " + desc_raw + " " + agency).lower()
+        
+        # Check for matches
+        for cat, keywords in KEYWORD_MAP.items():
+            if any(k in full_text for k in keywords):
+                category = cat
+                break # Stop at first match (Priority: Housing > Job > Medical > Childcare > Living)
+
         amount = item.get('amount_max', 0)
         # Handle various URL keys from different sources
         url = item.get('source_url') or item.get('applyUrl') or item.get('url') or '#'
@@ -102,6 +124,7 @@ def generate_js():
         js_code += f"        apply_period: '{item.get('apply_period', '')}',\n"
         js_code += f"        howTo: ['상세 공고 확인', '온라인/방문 신청'],\n"
         js_code += f"        condition: (d) => {condition_str},\n"
+        js_code += f"        category: '{category}',\n"
         js_code += f"        relevance: 95, monthlyAmount: {amount // 6 if '6개월' in item.get('amount_text', '') else amount}\n"
         js_code += "    },\n"
 

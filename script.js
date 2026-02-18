@@ -34,6 +34,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '육아',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -44,6 +45,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '취업',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -54,6 +56,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '주거',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -64,6 +67,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -74,6 +78,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -84,6 +89,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -94,6 +100,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -104,6 +111,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '주거',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -114,6 +122,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -124,6 +133,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -134,6 +144,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -144,6 +155,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '주거',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -154,6 +166,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -164,6 +177,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -174,6 +188,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '주거',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -184,6 +199,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -194,6 +210,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '육아',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -204,6 +221,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '교육',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -214,6 +232,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '취업',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -224,6 +243,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '취업',
         relevance: 95, monthlyAmount: 0
     },
 ];
@@ -347,56 +367,122 @@ function startLoading() {
     });
 }
 
-// 결과 데이터 계산
+// 결과 데이터 계산 (V12 점수 로직 업그레이드)
 function calcResult() {
-    let score = 55;
     let matched = [];
     let totalAmount = 0;
 
-    // 소득 점수화
+    // 1. 기본 점수 (30~50점 랜덤) - 변별력 확보
+    let baseScore = Math.floor(Math.random() * 21) + 30;
+    
+    // 2. 소득/가구별 필요도 점수 (복지 시급성)
+    let needScore = 0;
+    // 소득 점수: 낮을수록 높음
+    if (answers.income === '100만원미만') needScore += 30;
+    else if (answers.income === '100-250만원') needScore += 15;
+    else if (answers.income === '250-450만원') needScore += 5;
+    
+    // 가구 점수: 다자녀/한부모 우대
+    if (['다자녀', '한부모', '자녀있음'].includes(answers.household)) needScore += 10;
+    if (answers.household === '1인가구' || answers.household === '신혼부부') needScore += 5;
+
+    // 데이터 준비
     const incomeMap = { '100만원미만': 50, '100-250만원': 200, '250-450만원': 350, '450만원이상': 700 };
     const incomeNum = incomeMap[answers.income] || 300;
     const householdMap = { '1인가구': 1, '신혼부부': 2, '자녀있음': 3, '다자녀': 4, '한부모': 2, '기타': 2 };
     const familyCount = householdMap[answers.household] || 1;
-
     const data = { ...answers, incomeNum, familyCount };
 
+    // 3. 혜택 매칭 및 가산점
+    let potentialScore = 0;
     welfareData.forEach(item => {
-        if (item.condition(data)) {
-            score += item.relevance;
+        // 카테고리 필터링 (V11 Smart Filter)
+        let isCategoryMatch = true;
+        if (answers.category && answers.category !== '전체') {
+             if (item.category !== answers.category) isCategoryMatch = false;
+        }
+
+        if (item.condition(data) && isCategoryMatch) {
             matched.push(item);
             totalAmount += (item.monthlyAmount || 0);
+            
+            // 매칭 아이템당 가산점 (최대 40점 제한)
+            if (potentialScore < 40) {
+                potentialScore += 3; 
+            }
         }
     });
 
-    // 지역별 맞춤 정렬 (V7 가변형)
+    // 4. 최종 점수 계산 및 테마 적용
+    let finalScore = baseScore + needScore + potentialScore;
+    
+    // 감점 요인 (고소득 + 생활비 지원 요청 시)
+    if (answers.income === '450만원이상' && answers.category === '생활비') finalScore -= 10;
+
+    // 만점 방지 및 보정
+    finalScore = Math.min(Math.max(finalScore, 45), 99); // 최소 45, 최대 99
+
+    // 지역별 정렬 로직 (기존 유지)
     matched.sort((a, b) => {
         let scoreA = a.relevance;
         let scoreB = b.relevance;
-
         const regionBtn = document.querySelector(`.opt-btn.selected[onclick*="region"]`);
         if (regionBtn) {
-            // 이모지 제외 순수 지역명 추출 (예: '🌊부산' -> '부산')
             const regionName = regionBtn.innerText.replace(/[^\uAC00-\uD7A3]/g, '').trim();
-
-            // 전북/전주 특화 (대표님 요청 가중치 우선 유지)
             if (answers.region === 'jeonbuk' && (a.tag.includes('전북') || a.tag.includes('전주'))) scoreA += 1000;
             if (answers.region === 'jeonbuk' && (b.tag.includes('전북') || b.tag.includes('전주'))) scoreB += 1000;
-
-            // 전국 모든 지역 지자체 가중치 적용
             if (a.tag.includes(regionName)) scoreA += 800;
             if (b.tag.includes(regionName)) scoreB += 800;
         }
-
         return scoreB - scoreA;
     });
 
-    score = Math.min(score, 99);
     if (matched.length === 0) {
         matched = [{ name: '상세 분석 필요', description: '대표님의 상황에 맞는 숨은 혜택을 로거 블로그에서 확인해보세요!', icon: '🔍', tag: '맞춤안내', applyUrl: 'https://10000nanzip.tistory.com/' }];
     }
 
-    return { score, benefits: matched, totalAmount };
+    // 결과 페이지 테마 적용
+    applyScoreTheme(finalScore);
+
+    return { score: finalScore, benefits: matched, totalAmount };
+}
+
+// 점수별 테마 적용 함수
+function applyScoreTheme(score) {
+    const resContainer = document.querySelector('.result-container');
+    
+    // 기존 테마 클래스 제거
+    if (resContainer) {
+        resContainer.classList.remove('score-tier-basic', 'score-tier-bronze', 'score-tier-silver', 'score-tier-gold');
+        
+        if (score >= 90) {
+            resContainer.classList.add('score-tier-gold');
+            shootConfetti();
+        } else if (score >= 71) {
+            resContainer.classList.add('score-tier-silver');
+        } else if (score >= 51) {
+            resContainer.classList.add('score-tier-bronze');
+        } else {
+            resContainer.classList.add('score-tier-basic');
+        }
+    }
+}
+
+// 꽃가루 효과 함수
+function shootConfetti() {
+    const colors = ['#f59e0b', '#ef4444', '#3b82f6', '#10b981', '#fcd34d'];
+    for(let i=0; i<50; i++) {
+        const conf = document.createElement('div');
+        conf.className = 'confetti';
+        conf.style.left = Math.random() * 100 + 'vw';
+        conf.style.top = '-10px'; // Start from top
+        conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        conf.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        document.body.appendChild(conf);
+        
+        // Remove after animation
+        setTimeout(() => conf.remove(), 5000);
+    }
 }
 
 // 전역 변수로 검색 결과 저장

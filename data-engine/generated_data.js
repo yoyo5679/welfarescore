@@ -7,6 +7,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '육아',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -17,6 +18,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '취업',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -27,6 +29,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '주거',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -37,6 +40,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -47,6 +51,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -57,6 +62,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -67,6 +73,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -77,6 +84,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '주거',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -87,6 +95,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -97,6 +106,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -107,6 +117,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -117,6 +128,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '주거',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -127,6 +139,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -137,6 +150,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -147,6 +161,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '주거',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -157,6 +172,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '생활비',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -167,6 +183,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '육아',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -177,6 +194,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '교육',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -187,6 +205,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '취업',
         relevance: 95, monthlyAmount: 0
     },
     {
@@ -197,6 +216,7 @@ const welfareData = [
         apply_period: '',
         howTo: ['상세 공고 확인', '온라인/방문 신청'],
         condition: (d) => true,
+        category: '취업',
         relevance: 95, monthlyAmount: 0
     },
 ];
