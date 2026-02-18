@@ -24,7 +24,12 @@
         href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css">
+    <!-- Cache Busting -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <link rel="stylesheet" href="style.css?v=11.0">
 
     <!-- PDF Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -79,6 +84,38 @@
                 </div>
                 <button class="btn-next" id="next1" disabled onclick="nextStep(2)">다음 질문 🚀</button>
             </div>
+
+            <!-- 뉴스레터 <복지 줍줍> 섹션 (S1) -->
+            <section class="newsletter-section animate-fade">
+                <div class="newsletter-header" style="text-align:left; margin-bottom:20px;">
+                    <span class="newsletter-tag">TRENDY WELFARE</span>
+                    <h2 class="newsletter-title" style="font-family: 'Gaegu', cursive; margin-top:5px;">🎁 복지 줍줍 <span
+                            class="highlight">Pick!</span></h2>
+                    <p class="newsletter-desc">야, 너도 받을 수 있어! 놓치면 손해 보는 이달의 꿀혜택 🐝</p>
+                </div>
+
+                <!-- 매거진 커버 스타일 카드 -->
+                <div class="magazine-cover" onclick="window.open('https://10000nanzip.tistory.com/')"
+                    style="cursor:pointer;">
+                    <div class="cover-badge">HOT ISSUE 🔥</div>
+                    <div class="cover-content">
+                        <h3>2026년 복지 예산,<br>역대급 137조 풀렸다!</h3>
+                        <p>어르신부터 갓생러까지, 지금 신청 안 하면 못 받는 지원금 총정리</p>
+                        <span class="btn-read">지금 줍줍하러 가기 👉</span>
+                    </div>
+                </div>
+
+                <div class="magazine-grid">
+                    <article class="mini-card" onclick="window.open('https://10000nanzip.tistory.com/')">
+                        <span class="cat-label">MZ세대</span>
+                        <h4>월 50만원,<br>그냥 준대! 💸</h4>
+                    </article>
+                    <article class="mini-card highlight" onclick="window.open('https://10000nanzip.tistory.com/')">
+                        <span class="cat-label">소상공인</span>
+                        <h4>전기세 20만원<br>즉시 감면 ⚡️</h4>
+                    </article>
+                </div>
+            </section>
         </div>
 
         <!-- ── STEP 2: 가구 상황 ── -->
@@ -106,7 +143,10 @@
                         <span class="icon">🏘️</span>기타
                     </button>
                 </div>
-                <button class="btn-next" id="next2" disabled onclick="nextStep(3)">다음 질문 🚀</button>
+                <div class="step-footer">
+                    <button class="btn-prev" onclick="prevStep(1)">⬅️ 이전으로</button>
+                    <button class="btn-next" id="next2" disabled onclick="nextStep(3)">다음 질문 🚀</button>
+                </div>
             </div>
         </div>
 
@@ -129,7 +169,10 @@
                         <span class="icon">💰</span>월 450만원 이상
                     </button>
                 </div>
-                <button class="btn-next" id="next3" disabled onclick="nextStep(4)">다음 질문 🚀</button>
+                <div class="step-footer">
+                    <button class="btn-prev" onclick="prevStep(2)">⬅️ 이전으로</button>
+                    <button class="btn-next" id="next3" disabled onclick="nextStep(4)">다음 질문 🚀</button>
+                </div>
             </div>
         </div>
 
@@ -157,8 +200,15 @@
                     <button class="opt-btn" data-val="생활비" onclick="selectOption(this, 'category')">
                         <span class="icon">🛒</span>생활비 지원
                     </button>
+                    <button class="opt-btn" data-val="전체" onclick="selectOption(this, 'category')"
+                        style="grid-column: span 2;">
+                        <span class="icon">🌏</span>전체 보기
+                    </button>
                 </div>
-                <button class="btn-next" id="next4" disabled onclick="nextStep(5)">다음 질문 🚀</button>
+                <div class="step-footer">
+                    <button class="btn-prev" onclick="prevStep(3)">⬅️ 이전으로</button>
+                    <button class="btn-next" id="next4" disabled onclick="nextStep(5)">다음 질문 🚀</button>
+                </div>
             </div>
         </div>
 
@@ -220,7 +270,19 @@
                         <span class="icon">🏝️</span>제주
                     </button>
                 </div>
-                <button class="btn-next" id="next5" disabled onclick="startLoading()">결과 확인하기 📊</button>
+
+                <!-- 시군구 선택 영역 (V11 Fixed) -->
+                <div id="subRegionArea" style="display:none; margin-top:20px; animation: fadeUp 0.4s ease;">
+                    <h3 style="font-size:16px; margin-bottom:12px;">🏳️ 시/군/구를 선택해주세요</h3>
+                    <div class="options col3" id="subRegionOptions">
+                        <!-- JS로 동적 생성 -->
+                    </div>
+                </div>
+
+                <div class="step-footer">
+                    <button class="btn-prev" onclick="prevStep(4)">⬅️ 이전으로</button>
+                    <button class="btn-next" id="next5" disabled onclick="startLoading()">결과 확인하기 📊</button>
+                </div>
             </div>
         </div>
 
@@ -256,23 +318,34 @@
 
     <!-- ── 결과 ── -->
     <div id="step-result" class="step">
-        <div class="result-hero">
-            <div class="grade-badge" id="resultGrade">🥇 복지 마스터</div>
-            <div class="score-num" id="resultScore">0</div>
-            <div class="score-label">/ 100점</div>
-            <div class="rank-tag" id="resultRank">전국 상위 1%</div>
+        <div class="result-header">
+            <div class="result-score-container">
+                <div class="plant-icon">🌿</div>
+                <div class="score-circle">
+                    <span class="score-num" id="resultScore">0</span>
+                    <span class="score-unit">복지 점수</span>
+                </div>
+                <div class="result-message">
+                    <h3 id="resultTitle">대표님은 전국 상위 1% 복지 스마트!</h3>
+                    <p id="resultCountText">숨은 혜택이 6건 발견되었습니다!</p>
+                </div>
+                <div class="result-actions">
+                    <button class="btn-share" onclick="copyLink()">결과 공유하여 자랑하기 🔗</button>
+                    <button class="btn-retry" onclick="restart()">다시 계산하기 🔄</button>
+                </div>
+            </div>
         </div>
 
-        <!-- 예상 월 수령액 대시보드 이식 -->
-        <div class="amount-dashboard animate-fade" id="amount-dashboard">
-            <div class="amount-title">💰 예상 월 수령액</div>
-            <div class="amount-value"><span id="total-amount-display">0</span>원</div>
-            <p class="amount-notice">* 위 금액은 추산치이며 상세 조건에 따라 달라질 수 있습니다.</p>
+        <!-- 탭 시스템 -->
+        <div class="result-tabs">
+            <button class="tab-btn active" onclick="changeTab('custom', this)">💰 맞춤 혜택</button>
+            <button class="tab-btn" onclick="changeTab('local', this)">📍 지역 지원</button>
+            <button class="tab-btn" onclick="changeTab('agency', this)">🏢 지역 기관</button>
         </div>
 
-        <div class="benefits-title">💡 받을 수 있는 혜택 <span id="benefitCount">5</span>건 발견!</div>
-
-        <div id="benefitList"></div>
+        <div class="container">
+            <div id="benefitList" class="benefit-list"></div>
+        </div>
 
         <!-- 중간 광고 -->
         <div class="ad-mid">
@@ -299,43 +372,39 @@
         <button class="btn-next" onclick="downloadPdf()" style="margin-top: 20px; background: var(--accent2);">리포트 PDF로
             소장하기 📥</button>
         <button class="btn-restart" onclick="restart()">🔄 다시 계산하기</button>
+        <!-- 월간복지 뉴스레터 섹션 (이식) -->
+        <!-- 뉴스레터 <복지 줍줍> 섹션 (V11 Remastered) -->
+        <section class="newsletter-section animate-fade" style="margin-top:-20px;">
+            <div class="newsletter-header" style="text-align:left; margin-bottom:20px;">
+                <span class="newsletter-tag">TRENDY WELFARE</span>
+                <h2 class="newsletter-title" style="font-family: 'Gaegu', cursive; margin-top:5px;">🎁 복지 줍줍 <span
+                        class="highlight">Pick!</span></h2>
+                <p class="newsletter-desc">야, 너도 받을 수 있어! 놓치면 손해 보는 이달의 꿀혜택 🐝</p>
+            </div>
+
+            <!-- 매거진 커버 스타일 카드 -->
+            <div class="magazine-cover" onclick="window.open('https://10000nanzip.tistory.com/')"
+                style="cursor:pointer;">
+                <div class="cover-badge">HOT ISSUE 🔥</div>
+                <div class="cover-content">
+                    <h3>2026년 복지 예산,<br>역대급 137조 풀렸다!</h3>
+                    <p>어르신부터 갓생러까지, 지금 신청 안 하면 못 받는 지원금 총정리</p>
+                    <span class="btn-read">지금 줍줍하러 가기 👉</span>
+                </div>
+            </div>
+
+            <div class="magazine-grid">
+                <article class="mini-card" onclick="window.open('https://10000nanzip.tistory.com/')">
+                    <span class="cat-label">MZ세대</span>
+                    <h4>월 50만원,<br>그냥 준대! 💸</h4>
+                </article>
+                <article class="mini-card highlight" onclick="window.open('https://10000nanzip.tistory.com/')">
+                    <span class="cat-label">소상공인</span>
+                    <h4>전기세 20만원<br>즉시 감면 ⚡️</h4>
+                </article>
+            </div>
+        </section>
     </div>
-
-    <!-- 월간복지 뉴스레터 섹션 (이식) -->
-    <section class="newsletter-section animate-fade" id="newsletter-area">
-        <div class="newsletter-header">
-            <span class="newsletter-tag">MAGAZINE</span>
-            <h2 class="newsletter-title" style="font-family: 'Gaegu', cursive;">월간복지 <span
-                    class="highlight">VOL.01</span></h2>
-            <p class="newsletter-desc">로거가 깐깐하게 고른 이달의 복지 & 라이프 큐레이션</p>
-        </div>
-
-        <article class="newsletter-card">
-            <div class="newsletter-img-wrapper">
-                <img src="/Users/hong-eunseong/.gemini/antigravity/brain/29136cd5-13cc-42c2-8a2e-15a29690027e/korea_welfare_2026_concept_1771145006752.png"
-                    alt="국내 복지 동향">
-            </div>
-            <div class="newsletter-content">
-                <span class="content-cat">K-WELFARE</span>
-                <h3>2026년, 대한민국 복지 예산 '137조' 시대 개막!</h3>
-                <p>올해는 저출산과 고령화 대응에 화력을 집중합니다. 아동수당 지급 연령이 만 9세로 확대되고, 3월부터는 어르신을 위한 '통합돌봄' 서비스가 전국적으로 시행됩니다.</p>
-                <a href="https://10000nanzip.tistory.com/" class="newsletter-more text-primary">상세 동향 읽어보기 →</a>
-            </div>
-        </article>
-
-        <article class="newsletter-card inverse">
-            <div class="newsletter-img-wrapper">
-                <img src="/Users/hong-eunseong/.gemini/antigravity/brain/29136cd5-13cc-42c2-8a2e-15a29690027e/social_enterprise_products_concept_1771145026463.png"
-                    alt="사회적 기업 상품">
-            </div>
-            <div class="newsletter-content">
-                <span class="content-cat">GOOD CONSUMPTION</span>
-                <h3>까탈스러운 로거의 '사회적 기업' 원픽은?</h3>
-                <p>이번 달은 제로웨이스트를 실천하는 '비건 웰빙 세트'와 시니어 장인들이 만든 '프리미엄 우드 마사지 툴'을 추천해요. 힙한 디자인에 사회적 의미까지 담았죠.</p>
-                <a href="https://10000nanzip.tistory.com/" class="newsletter-more text-primary">착한 상품 구경가기 →</a>
-            </div>
-        </article>
-    </section>
 
     <footer>
         ※ 본 서비스는 참고용이며, 정확한 수혜 여부는<br>
@@ -346,9 +415,16 @@
     <div class="toast" id="toast"></div>
 
     <!-- AI Chatbot Floating Button -->
+    <div class="ai-chat-box" id="aiChatBox" style="display: none;">
+        <div class="chat-header">
+            <span>🤖 로거 AI 상담소</span>
+            <button class="close-chat" onclick="document.getElementById('aiChatBox').style.display='none'">×</button>
+        </div>
+        <div class="chat-content" id="chatContent"></div>
+    </div>
     <div class="ai-chat-btn" id="btn-ai-chat" title="로거 AI 상담">🤖</div>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=11.0"></script>
 </body>
 
 </html>

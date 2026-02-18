@@ -1,294 +1,277 @@
 const answers = {};
 const TOTAL_STEPS = 5;
 
+// 시군구 데이터 (V11)
+const SUB_REGIONS = {
+    'seoul': ['강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구', '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구', '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'],
+    'gyeonggi': ['수원시', '고양시', '용인시', '성남시', '부천시', '화성시', '안산시', '남양주시', '안양시', '평택시', '시흥시', '파주시', '의정부시', '김포시', '광주시', '광명시', '군포시', '하남시', '오산시', '양주시', '이천시', '구리시', '안성시', '포천시', '의왕시', '여주시', '양평군', '동두천시', '과천시', '가평군', '연천군'],
+    'busan': ['강서구', '금정구', '기장군', '남구', '동구', '동래구', '부산진구', '북구', '사상구', '사하구', '서구', '수영구', '연제구', '영도구', '중구', '해운대구'],
+    'incheon': ['강화군', '계양구', '남동구', '동구', '미추홀구', '부평구', '서구', '연수구', '옹진군', '중구'],
+    'daegu': ['군위군', '남구', '달서구', '달성군', '동구', '북구', '서구', '수성구', '중구'],
+    'gwangju': ['광산구', '남구', '동구', '북구', '서구'],
+    'daejeon': ['대덕구', '동구', '서구', '유성구', '중구'],
+    'ulsan': ['남구', '동구', '북구', '울주군', '중구'],
+    'sejong': ['세종시'],
+    'gangwon': ['춘천시', '원주시', '강릉시', '동해시', '속초시', '홍천군', '횡성군', '영월군', '평창군'],
+    'chungbuk': ['청주시', '충주시', '제천시', '보은군', '옥천군', '영동군', '증평군', '진천군', '괴산군', '음성군', '단양군'],
+    'chungnam': ['천안시', '공주시', '보령시', '아산시', '서산시', '논산시', '계룡시', '당진시'],
+    'jeonbuk': ['전주시', '군산시', '익산시', '정읍시', '남원시', '김제시', '완주군'],
+    'jeonnam': ['목포시', '여수시', '순천시', '나주시', '광양시', '담양군', '곡성군', '구례군'],
+    'gyeongbuk': ['포항시', '경주시', '김천시', '안동시', '구미시', '영주시', '영천시', '상주시', '문경시', '경산시'],
+    'gyeongnam': ['창원시', '진주시', '통영시', '사천시', '김해시', '밀양시', '거제시', '양산시'],
+    'jeju': ['제주시', '서귀포시']
+};
+
 // 소득 기준 데이터 (2026년 예정치 기준)
 const MEDIAN_INCOME_2026 = { 1: 2564238, 2: 4199292, 3: 5359036, 4: 6494738, 5: 7556719, 6: 8555952 };
 
-// 범정부·유관기관 통합 복지 데이터베이스 (V4)
 const welfareData = [
-    // ── [법정/중앙정부] 복지로 기반 ──
     {
-        name: '기초생활수급 (생계급여)',
-        description: '소득 인정액이 중위소득 32% 이하인 경우 생활비를 지원합니다.',
-        icon: '🍚', tag: '보건복지부', applyUrl: 'https://www.bokjiro.go.kr',
-        condition: (d) => {
-            const median = MEDIAN_INCOME_2026[Math.min(d.familyCount || 1, 6)];
-            return d.incomeNum <= (median * 0.32 / 10000);
-        }, relevance: 50, monthlyAmount: 713102
-    },
-    {
-        name: '기초생활수급 (주거급여)',
-        description: '임차료 지원 또는 주택 수리 지원 (중위소득 48% 이하)',
-        icon: '🏠', tag: '국토교통부', applyUrl: 'https://www.bokjiro.go.kr',
-        condition: (d) => {
-            const median = MEDIAN_INCOME_2026[Math.min(d.familyCount || 1, 6)];
-            return d.incomeNum <= (median * 0.48 / 10000);
-        }, relevance: 40, monthlyAmount: 341000
-    },
-    {
-        name: '2026 부모급여',
-        description: '0세 월 150만원, 1세 월 100만원 지원',
-        icon: '🍼', tag: '보건복지부', applyUrl: 'https://www.bokjiro.go.kr',
-        condition: (d) => d.category === '육아' || d.household === '자녀있음',
-        relevance: 50, monthlyAmount: 1250000
-    },
-    {
-        name: '근로장려금',
-        description: '저소득 근로자에게 최대 330만원 지급',
-        icon: '💰', tag: '국세청', applyUrl: 'https://www.hometax.go.kr',
-        condition: (d) => d.incomeNum <= 300,
-        relevance: 30, monthlyAmount: 275000
-    },
-
-    // ── [모빌리티/교통] K-패스 ──
-    {
-        name: 'K-패스 (교통비 환급)',
-        description: '대중교통 이용료 20~53% 무제한 환급 (전국 공통)',
-        icon: '🚌', tag: '국토교통부', applyUrl: 'https://korea-pass.kr',
-        condition: (d) => true, // 전국민 대상
-        relevance: 15, monthlyAmount: 30000
-    },
-
-    // ── [서울청년몽땅정보통] 서울시 특화 ──
-    {
-        name: '서울청년수당',
-        description: '서울 거주 미취업 청년 구직활동 지원금 (월 50만원)',
-        icon: '🏙️', tag: '서울특별시', applyUrl: 'https://youth.seoul.go.kr',
-        condition: (d) => d.region === 'seoul' && d.age === '20대' && (d.category === '취업' || d.incomeNum <= 250),
-        relevance: 45, monthlyAmount: 500000
-    },
-    {
-        name: '서울시 청년월세지원',
-        description: '서울 거주 청년 대상 월 20만원 주거비 지원',
-        icon: '🏘️', tag: '서울특별시', applyUrl: 'https://youth.seoul.go.kr',
-        condition: (d) => d.region === 'seoul' && d.age === '20대' && d.category === '주거',
-        relevance: 40, monthlyAmount: 200000
-    },
-    {
-        name: '서울 영테크 (재무상담)',
-        description: '청년 대상 1:1 맞춤형 재무 진단 및 금융 교육',
-        icon: '📈', tag: '서울특별시', applyUrl: 'https://youth.seoul.go.kr',
-        condition: (d) => d.region === 'seoul' && d.age === '20대',
-        relevance: 20, monthlyAmount: 0 // 서비스형 혜택
-    },
-
-    // ── [중소벤처기업부] 소상공인/창업 ──
-    {
-        name: '소상공인 경영안정 바우처',
-        description: '전기·가스료 등 고정비 부담 경감 (최대 25만원)',
-        icon: '⚡', tag: '중소벤처기업부', applyUrl: 'https://www.sbiz24.kr',
-        condition: (d) => d.category === '취업' && d.incomeNum <= 250, // 자영업자/창업 관심층 대상
-        relevance: 35, monthlyAmount: 250000 / 12 // 연간 환산
-    },
-    {
-        name: '청년 로컬 창업 지원 사업',
-        description: '지역 기반 혁신 아이디어 창업가 육성 및 자금 지원',
-        icon: '🚀', tag: '중소벤처기업부', applyUrl: 'https://www.k-startup.go.kr',
-        condition: (d) => d.category === '취업' && d.age === '20대',
-        relevance: 40, monthlyAmount: 0 // 교육/멘토링/사업비 지원
-    },
-    {
-        name: '희망리턴패키지 (재기 지원)',
-        description: '폐업 소상공인 취업/재창업 및 점포 철거비 지원',
-        icon: '🔄', tag: '중소벤처기업부', applyUrl: 'https://www.sbiz24.kr',
-        condition: (d) => d.category === '생활비' && d.incomeNum <= 150,
-        relevance: 30, monthlyAmount: 0
-    },
-
-    // ── [경기도] 잡아바 어플라이 ──
-    {
-        name: '경기도 청년 복지포인트',
-        description: '중소기업 재직 청년 대상 연 120만원 복지포인트',
-        icon: '🌲', tag: '경기도', applyUrl: 'https://youth.jobaba.net',
-        condition: (d) => d.region === 'gyeonggi' && d.age === '20대' && d.category === '취업',
-        relevance: 40, monthlyAmount: 100000
-    },
-    {
-        name: '경기도 청년면접수당',
-        description: '구직 청년 대상 면접 1회당 5만원 지급 (연 최대 50만원)',
-        icon: '💼', tag: '경기도', applyUrl: 'https://apply.jobaba.net',
-        condition: (d) => d.region === 'gyeonggi' && d.age === '20대' && d.category === '취업',
-        relevance: 30, monthlyAmount: 50000 // 회당 기준
-    },
-
-    // ── [전국 사회복지관] 커뮤니티 케어 ──
-    {
-        name: '전국 사회복지관 긴급 지원',
-        description: '위기 가구 대상 긴급 생계·의료·주거 지원 및 급식 서비스',
-        icon: '🆘', tag: '전국사회복지관', applyUrl: 'https://www.kaswc.or.kr',
-        condition: (d) => d.incomeNum <= 120 || d.category === '의료',
-        relevance: 45, monthlyAmount: 0 // 서비스 제공 중심
-    },
-    {
-        name: '복지관 교육문화 프로그램',
-        description: '취약 계층 및 어르신 대상 학습 지도 및 여가 문화 강좌',
-        icon: '📚', tag: '전국사회복지관', applyUrl: 'https://www.kaswc.or.kr',
-        condition: (d) => d.age === '60대이상' || d.category === '교육',
-        relevance: 25, monthlyAmount: 0
-    },
-
-    // ── [전북특별자치도] 하이퍼 로컬 특화 (V6) ──
-    {
-        name: '전북형 청년 활력 수당',
-        description: '미취업 청년 구직활동 수당 지원 (월 50만원, 6개월)',
-        icon: '💸', tag: '전북특별자치도', applyUrl: 'https://jbyouth.ezwel.com',
-        condition: (d) => d.region === 'jeonbuk' && d.age === '20대' && d.category === '취업',
-        relevance: 100, monthlyAmount: 500000
-    },
-    {
-        name: '전북청년 함께 두배 적금',
-        description: '본인 저축액만큼 도에서 추가 매칭 지원 (자산 형성)',
-        icon: '💰', tag: '전북특별자치도', applyUrl: 'https://www.jb.go.kr',
-        condition: (d) => d.region === 'jeonbuk' && (d.age === '20대' || d.age === '30대'),
-        relevance: 90, monthlyAmount: 100000
-    },
-    {
-        name: '전주 청년 만원주택 (청춘☆별채)',
-        description: '전주시 거주 청년 대상 파격 주거 임대 지원',
-        icon: '🏠', tag: '전주시', applyUrl: 'https://youth.jeonju.go.kr',
-        condition: (d) => d.region === 'jeonbuk' && d.category === '주거',
-        relevance: 95, monthlyAmount: 150000
-    },
-    {
-        name: '전북 소상공인 회생 보듬자금',
-        description: '소상공인 1%대 저금리 특례보증 및 이차보전 지원',
-        icon: '🏢', tag: '전북신용보증재단', applyUrl: 'https://www.jbba.kr',
-        condition: (d) => d.region === 'jeonbuk' && d.category === '취업' && d.incomeNum <= 300,
-        relevance: 85, monthlyAmount: 50000
-    },
-    {
-        name: '전북형 긴급복지지원',
-        description: '위기상황 발생 가구 대상 생계·의료·주거 지원 (기준 완화)',
-        icon: '🛡️', tag: '전북특별자치도', applyUrl: 'https://www.bokjiro.go.kr',
-        condition: (d) => d.region === 'jeonbuk' && d.incomeNum <= 150,
-        relevance: 80, monthlyAmount: 0
-    },
-    {
-        name: '전북인복지 (로컬 허브)',
-        description: '내 주변 지역 사회복지관 프로그램 및 시설 정보 통합 제공',
-        icon: '🔗', tag: '전북인복지플랫폼', applyUrl: 'https://jbwelfare.or.kr',
-        condition: (d) => d.region === 'jeonbuk',
-        relevance: 70, monthlyAmount: 0
-    },
-
-    // ── [부산광역시] 부산형 복지 (V7) ──
-    {
-        name: '부산 청년 기쁨두배 통장',
-        description: '저축액만큼 시에서 매칭 지원 (최대 1,080만원 자산 형성)',
-        icon: '💰', tag: '부산광역시', applyUrl: 'https://www.busanyouth.kr',
-        condition: (d) => d.region === 'busan' && d.age === '20대' && d.incomeNum <= 250,
-        relevance: 100, monthlyAmount: 150000
-    },
-    {
-        name: '부산 청년 월세 지원',
-        description: '부산 거주 무주택 청년 대상 월 20만원 주거비 지원',
-        icon: '🏠', tag: '부산광역시', applyUrl: 'https://www.busanyouth.kr',
-        condition: (d) => d.region === 'busan' && d.age === '20대' && d.category === '주거',
-        relevance: 90, monthlyAmount: 200000
-    },
-
-    // ── [인천광역시] 인천 드림 (V7) ──
-    {
-        name: '인천 재직청년 복지포인트',
-        description: '인천 중소기업 재직 청년 대상 연 120만원 복지비 지원',
-        icon: '💳', tag: '인천광역시', applyUrl: 'https://youth.incheon.go.kr',
-        condition: (d) => d.region === 'incheon' && d.age === '20대' && d.category === '취업',
-        relevance: 95, monthlyAmount: 100000
-    },
-
-    // ── [대구광역시] 대구 희망 (V7) ──
-    {
-        name: '대구 사회진입활동지원금',
-        description: '취업 준비 청년 대상 총 150만원 활동비 지급',
-        icon: '🚀', tag: '대구광역시', applyUrl: 'https://youthdream.daegu.go.kr',
-        condition: (d) => d.region === 'daegu' && d.age === '20대' && d.category === '취업',
-        relevance: 100, monthlyAmount: 500000
-    },
-
-    // ── [울산광역시] 울산 복지 (V7) ──
-    {
-        name: '울산 청년 구직 활동 지원금',
-        description: '울산 거주 미취업 청년 대상 월 50만원 (최대 6개월)',
-        icon: '💸', tag: '울산광역시', applyUrl: 'https://www.ulsan.go.kr/youth',
-        condition: (d) => d.region === 'ulsan' && d.age === '20대' && d.category === '취업',
-        relevance: 100, monthlyAmount: 500000
-    },
-
-    // ── [세종특별자치시] 세종 키움 (V7) ──
-    {
-        name: '세종 청년 주거임대료 지원',
-        description: '세종시 거주 무주택 청년 월 최대 20만원 지원',
-        icon: '🏘️', tag: '세종특별자치시', applyUrl: 'https://www.sejong.go.kr',
-        condition: (d) => d.region === 'sejong' && d.category === '주거',
-        relevance: 90, monthlyAmount: 200000
-    },
-
-    // ── [강원특별자치도] 강원 육아 (V7) ──
-    {
-        name: '강원특별자치도 육아기본수당',
-        description: '강원도 거주 아동 대상 부모급여와 별도 추가 지원',
-        icon: '👶', tag: '강원특별자치도', applyUrl: 'https://www.provin.gangwon.kr',
-        condition: (d) => d.region === 'gangwon' && (d.category === '육아' || d.household === '자녀있음'),
-        relevance: 100, monthlyAmount: 200000
-    },
-
-    // ── [충청도] 충청 나눔 (V7) ──
-    {
-        name: '충북형 의료·요양 통합돌봄',
-        description: '질병/장애 어르신 대상 거주지 방문 의료·돌봄 서비스',
-        icon: '🏥', tag: '충청북도', applyUrl: 'https://www.cb21.net',
-        condition: (d) => d.region === 'chungbuk' && (d.age === '60대이상' || d.category === '의료'),
+        name: '유아학비 (누리과정) 지원',
+        description: '○ 3~5세에 대해 교육비를 지급합니다.\r\n  - 국공립 100,000원, 사립 280,000원\r\n\r\n○ 3~5세에 대해 방과후과정비를 지급합니다.\r\n   - 국공립 50,000원, 사립 70,000원\r\n\r\n○ 사립유치원을 다니는 법정저소득층 유아에게 저소득층 유아학비를 추가 지급합니다.\r\n   - 사립 200,000원',
+        icon: '💎', tag: '교육부',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/000000465790',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
         relevance: 95, monthlyAmount: 0
     },
     {
-        name: '충남 꿈비채 (더 행복한 주택)',
-        description: '충남 유자녀 가구 대상 임대료 파격 감면 지원',
-        icon: '🏡', tag: '충청남도', applyUrl: 'https://www.chungnam.go.kr',
-        condition: (d) => d.region === 'chungnam' && d.household === '자녀있음',
-        relevance: 95, monthlyAmount: 150000
-    },
-
-    // ── [경상도] 영남 공감 (V7) ──
-    {
-        name: '경남형 그냥드림 (먹거리 지원)',
-        description: '위기 가구 대상 긴급 먹거리 팩 및 기본 생필품 지원',
-        icon: '🍎', tag: '경상남도', applyUrl: 'https://www.gyeongnam.go.kr',
-        condition: (d) => d.region === 'gyeongnam' && d.incomeNum <= 150,
-        relevance: 85, monthlyAmount: 0
+        name: '근로·자녀장려금',
+        description: '○ 전년도 연간 부부합산 총 급여액 등(근로소득, 사업소득 또는 종교인소득의 합계)에 따라\r\n - 근로장려금은\r\n  ㆍ 단독가구 최대 165만 원\r\n  ㆍ 홑벌이 가구 최대 285만 원\r\n  ㆍ 맞벌이 가구 최대 330만 원 지급\r\n - 자녀 장려금은\r\n  ㆍ 단독가구 해당 없음\r\n  ㆍ 홑벌이 가구 부양자녀 1명 당 최대 100만 원\r\n  ㆍ 맞벌이 가구 부양자녀 1명 당 최대 100만 원 지급\r\n\r\n* 자세한 산정식은 홈택스(www.hometax.go.kr)에서 확인 바랍니다',
+        icon: '💎', tag: '국세청',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/105100000001',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
+        relevance: 95, monthlyAmount: 0
     },
     {
-        name: '경북 다자녀 주택 취득세 지원',
-        description: '경북 거주 다자녀 가구 주택 구입 시 세제 혜택',
-        icon: '📜', tag: '경상북도', applyUrl: 'https://www.gb.go.kr',
-        condition: (d) => d.region === 'gyeongbuk' && d.household === '다자녀',
-        relevance: 80, monthlyAmount: 0
+        name: '주택금융공사 월세자금보증',
+        description: '○ 주택도시기금 주거안정 월세대출 요건을 충족하는 대상자에 대해 월세자금보증 지원\r\n -  최대 1,152만원 이내에서 월세금을 2년 환산한 금액의 80%까지 대출금액의 80%를 공사가 보증',
+        icon: '💎', tag: '한국주택금융공사',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/116010000001',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
+        relevance: 95, monthlyAmount: 0
     },
-
-    // ── [전라남도] 전남 행복 (V7) ──
     {
-        name: '전남 출생기본소득',
-        description: '전남 거주 모든 출생아 대상 월 10만원 (최대 18년)',
-        icon: '🎁', tag: '전라남도', applyUrl: 'https://www.jeonnam.go.kr',
-        condition: (d) => d.region === 'jeonnam' && (d.category === '육아' || d.household === '자녀있음'),
-        relevance: 100, monthlyAmount: 100000
+        name: '친환경 에너지절감장비 보급',
+        description: '○  고효율 등(燈)(LED, 무전극등(燈) 등)\r\n○  노후화된 기관(디젤, 가솔린기관 등)\r\n○  에너지 절감이 가능한 유류절감장치 \r\n○  대기오염 방지 및 탄소배출 절감이 가능한 매연저감장치 등',
+        icon: '💎', tag: '해양수산부',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000001',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
+        relevance: 95, monthlyAmount: 0
     },
-
-    // ── [제주특별자치도] 제주 가치 (V7) ──
     {
-        name: '제주 손주돌봄수당',
-        description: '맞벌이 가정의 조부모가 손자녀 돌봄 시 월 수당 지급',
-        icon: '👵', tag: '제주특별자치도', applyUrl: 'https://www.jeju.go.kr',
-        condition: (d) => d.region === 'jeju' && d.household === '자녀있음',
-        relevance: 100, monthlyAmount: 300000
-    }
+        name: '해양사고 국선 심판변론인 선정 지원',
+        description: '○ 해양사고관련자가 심판원에 대하여 하는 신청ㆍ청구ㆍ진술 등의 대리 또는 대행\r\n\r\n○ 해양사고관련자에 대하여 하는 해양사고와 관련된 기술적 자문',
+        icon: '💎', tag: '해양수산부',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000007',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
+        relevance: 95, monthlyAmount: 0
+    },
+    {
+        name: '옵서버 승선경비 지원',
+        description: '○ 원양어선에 승선하여 활동하는 국제옵서버 승선경비 및 활동 지원',
+        icon: '💎', tag: '해양수산부',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000008',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
+        relevance: 95, monthlyAmount: 0
+    },
+    {
+        name: '합작수산물 관세 감면 추진',
+        description: '○ 관세감면',
+        icon: '💎', tag: '해양수산부',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000010',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
+        relevance: 95, monthlyAmount: 0
+    },
+    {
+        name: '귀어 창업 및 주택구입 지원(융자)',
+        description: '○ 지원대상자로 선정된 자가 사업(일부완료 또는 완료) 후 담보(신용, 물건)를 제공하고, 금융기관(수협은행)에서 융자를 받으면, 해양수산부에서 이자 차이(기준금리-대출금리 1.5%)를 지원',
+        icon: '💎', tag: '해양수산부',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000012',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
+        relevance: 95, monthlyAmount: 0
+    },
+    {
+        name: '원양어업 경영자금 지원',
+        description: '○ 어업경영자금 융자(수협은행)',
+        icon: '💎', tag: '해양수산부',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000016',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
+        relevance: 95, monthlyAmount: 0
+    },
+    {
+        name: '원양어선안전관리',
+        description: '○ 원양어선의 안전성 확보와 어선원 복지 증진을 위해 안전펀드를 조성하여 노후 원양어선의 대체 및 건조를 지원',
+        icon: '💎', tag: '해양수산부',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000022',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
+        relevance: 95, monthlyAmount: 0
+    },
+    {
+        name: '산지 및 소비지 유통자금 융자 지원',
+        description: '○ 산지위판장 및 수산물 도매시장 어대금 결제자금, 직거래 자금 등  융자지원(금리 1.5~3%)',
+        icon: '💎', tag: '해양수산부',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000027',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
+        relevance: 95, monthlyAmount: 0
+    },
+    {
+        name: '수산경영인회생자금',
+        description: '○ 수산업경영회생자금 지원(5년 거치, 7년 균분 상환/ 융자금리 1%)\r\n -  지원대상자금: 상환기일이 도래하였거나 향후 도래할 수협은행 대출금의 원리금, 어업시설 개·보수 자금, 업종별 1회전 운영자금 등',
+        icon: '💎', tag: '해양수산부',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000044',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
+        relevance: 95, monthlyAmount: 0
+    },
+    {
+        name: '어업경영자금 지원',
+        description: '○ 어업경영자금 융자(수협은행 및 단위수협)',
+        icon: '💎', tag: '해양수산부',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000045',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
+        relevance: 95, monthlyAmount: 0
+    },
+    {
+        name: 'TAC 참여어업인 경영개선자금 지원',
+        description: '○ TAC 참여 어업인 대상 경영개선자금 지원(융자)\r\n - 융자 100%\r\n - 고정금리 연 2.5%~3.0%, 변동금리(매월 고시)',
+        icon: '💎', tag: '해양수산부',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000053',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
+        relevance: 95, monthlyAmount: 0
+    },
+    {
+        name: '연안선박 현대화 지원',
+        description: '○ 연안 선박 건조를 위한 금융기관 대출이자를 단순 신조인 경우 2.0, 노후선박 대체 또는 친환경선 도입(개조) 인 경우 2.5% 지원',
+        icon: '💎', tag: '해양수산부',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000055',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
+        relevance: 95, monthlyAmount: 0
+    },
+    {
+        name: '안전복지형 연근해어선 기반구축',
+        description: '○ 연근해어업의 허가를 받은 어선 중 선령 15년 이상 노후어선을 어선원 안전복지 및 에너지 절감 등을 고려한 현대화어선으로 대체 건조',
+        icon: '💎', tag: '해양수산부',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000056',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
+        relevance: 95, monthlyAmount: 0
+    },
+    {
+        name: '어업활동 지원',
+        description: '최대 12만원(국비 50%, 지방비 30%, 자부담 20%), 1인당 최대 30일(단, 4대중증질환 및 임심출산가구는 최대60일)',
+        icon: '💎', tag: '해양수산부',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000059',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
+        relevance: 95, monthlyAmount: 0
+    },
+    {
+        name: '어업인 역량 강화 교육 지원',
+        description: '○ 어업인 혹은 어업인 단체의 역량강화 교육\r\n\r\n○ 여성어업인, 다문화가정 여성어업인 대상 역량 강화\r\n\r\n○ 어업인, 수산업경영인, 해양수산신지식인 대상 역량강화\r\n\r\n○ 어업인 등 국내외 시장개척을 위한 박람회 참가, 벤치마킹, 기술교류 활동, 학술대회 지원',
+        icon: '💎', tag: '해양수산부',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000066',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
+        relevance: 95, monthlyAmount: 0
+    },
+    {
+        name: '어업인안전조업교육지원',
+        description: '○ ‘어선안전조업법’의 법정교육으로 연 1회(4시간) 어선의 선주, 선장, 기관장, 통신장 등 직무대행자에게 실시하는 안전조업교육\r\n- 어업인 안전조업교육지원을 위한 민간위탁보조 지원',
+        icon: '💎', tag: '해양수산부',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000067',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
+        relevance: 95, monthlyAmount: 0
+    },
+    {
+        name: '창업어가멘토링지원',
+        description: '○ 후견인이 창업어가에게 기술, 경영 측면 등에 대한 교육 지도 등 제공(창업어가 1인당 월 60만원 한도 지원)',
+        icon: '💎', tag: '해양수산부',
+        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000070',
+        apply_period: '',
+        howTo: ['상세 공고 확인', '온라인/방문 신청'],
+        condition: (d) => true,
+        relevance: 95, monthlyAmount: 0
+    },
 ];
-
 // 옵션 선택
 function selectOption(el, key) {
     const parent = el.closest('.options');
     parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
     el.classList.add('selected');
     answers[key] = el.dataset.val;
+
+    // 지역 선택 시 시군구 인터랙션 (V11)
+    if (key === 'region') {
+        const subArea = document.getElementById('subRegionArea');
+        const subOpts = document.getElementById('subRegionOptions');
+        const regionKey = el.dataset.val;
+
+        // 시군구 데이터가 있으면 렌더링
+        if (SUB_REGIONS[regionKey] && SUB_REGIONS[regionKey].length > 0) {
+            subOpts.innerHTML = ''; // 초기화
+            SUB_REGIONS[regionKey].forEach(sub => {
+                const btn = document.createElement('button');
+                btn.className = 'opt-btn';
+                btn.textContent = sub;
+                btn.onclick = function () { selectOption(this, 'subRegion'); };
+                subOpts.appendChild(btn);
+            });
+            subArea.style.display = 'block';
+
+            // 다음 버튼 비활성화 (시군구 선택 대기) -> 세종시 같은 예외가 있다면 자동 선택 고려 가능하나 일단 선택 강제
+            const stepNum = el.closest('.step').id.replace('step-', '');
+            const btn = document.getElementById('next' + stepNum);
+            if (btn) btn.disabled = true;
+
+            // 세종 같은 단일 항목은 자동 선택 처리 (User Friendly)
+            if (SUB_REGIONS[regionKey].length === 1) {
+                subOpts.firstChild.click();
+            }
+            return; // 시군구 선택 후 버튼 활성화를 위해 리턴
+        } else {
+            // 시군구 데이터 없으면 숨김
+            subArea.style.display = 'none';
+        }
+    }
+
+    // 시군구 선택 시 스크롤 부드럽게
+    if (key === 'subRegion') {
+        // 시군구 선택됨 -> 다음 버튼 활성화 로직으로 이동
+    }
 
     const stepNum = el.closest('.step').id.replace('step-', '');
     const btn = document.getElementById('next' + stepNum);
@@ -302,7 +285,39 @@ function nextStep(num) {
     document.getElementById('step-' + num).classList.add('active');
     updateProgress(current);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // History API 연동 (뒤로가기 지원)
+    history.pushState({ step: num }, '', '#step-' + num);
 }
+
+// 이전 스텝 (V9)
+function prevStep(num) {
+    document.querySelector('.step.active').classList.remove('active');
+    document.getElementById('step-' + num).classList.add('active');
+    updateProgress(num - 1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// 브라우저 뒤로가기 감지 (V9)
+window.onpopstate = function (event) {
+    const step = event.state ? event.state.step : 1;
+    const activeStep = document.querySelector('.step.active');
+    if (activeStep) activeStep.classList.remove('active');
+
+    // 결과 화면에서 뒤로가기 시 5단계로
+    if (step === 'result') {
+        document.getElementById('step-result').classList.add('active');
+    } else if (step === 'loading') {
+        document.getElementById('step-loading').classList.add('active');
+    } else {
+        const target = document.getElementById('step-' + step);
+        if (target) target.classList.add('active');
+        updateProgress(step - 1);
+    }
+};
+
+// 초기 상태 설정
+history.replaceState({ step: 1 }, '', '#step-1');
 
 // 진행바 업데이트
 function updateProgress(completed) {
@@ -320,10 +335,13 @@ function startLoading() {
     updateProgress(5);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
+    history.pushState({ step: 'loading' }, '', '#loading');
+
     const loadingIds = ['ls1', 'ls2', 'ls3', 'ls4', 'ls5'];
     loadingIds.forEach((id, i) => {
         setTimeout(() => {
-            document.getElementById(id).classList.add('show');
+            const el = document.getElementById(id);
+            if (el) el.classList.add('show');
             if (i === 4) setTimeout(showResult, 800);
         }, 500 + i * 600);
     });
@@ -381,6 +399,16 @@ function calcResult() {
     return { score, benefits: matched, totalAmount };
 }
 
+// 전역 변수로 검색 결과 저장
+let currentBenefits = { custom: [], local: [], agency: [] };
+
+// 탭 변경
+function changeTab(category, el) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    renderBenefits(category);
+}
+
 // 결과 표시
 function showResult() {
     const { score, benefits, totalAmount } = calcResult();
@@ -388,54 +416,77 @@ function showResult() {
     document.getElementById('step-result').classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
+    history.pushState({ step: 'result' }, '', '#result');
+
     // 점수 애니메이션
     animateNumber('resultScore', score, 1500);
-    // 수령액 애니메이션
-    animateNumber('total-amount-display', totalAmount, 2000, true);
 
-    // 등급 및 랭크
-    let grade, rank;
-    if (score >= 90) { grade = '👑 복지 마스터'; rank = '전국 상위 1%'; triggerConfetti(); }
-    else if (score >= 75) { grade = '🥈 복지 고수'; rank = '전국 상위 12%'; }
-    else if (score >= 60) { grade = '🥉 복지 중수'; rank = '전국 상위 30%'; }
-    else { grade = '🌱 복지 새싹'; rank = '전국 상위 55%'; }
+    // 메시지 업데이트
+    let title = '대표님은 전국 상위 1% 복지 스마트!';
+    if (score < 40) title = '복지 혜택, 더 많이 챙기실 수 있어요!';
+    else if (score < 70) title = '기초를 탄탄하게 챙기고 계시네요!';
+    else if (score < 90) title = '대단해요! 복지 고수의 기운이 느껴져요!';
 
-    document.getElementById('resultGrade').textContent = grade;
-    document.getElementById('resultRank').textContent = rank;
-    document.getElementById('benefitCount').textContent = benefits.length;
+    document.getElementById('resultTitle').textContent = title;
+    document.getElementById('resultCountText').textContent = `숨은 혜택이 ${benefits.length}건 발견되었습니다!`;
 
-    // 혜택 리스트 렌더링
+    // 혜택 분류
+    currentBenefits = { custom: [], local: [], agency: [] };
+
+    const regionBtn = document.querySelector(`.opt-btn.selected[onclick*="region"]`);
+    const regionName = regionBtn ? regionBtn.innerText.replace(/[^\uAC00-\uD7A3]/g, '').trim() : '내 지역';
+    const subRegionBtn = document.querySelector(`.opt-btn.selected[onclick*="subRegion"]`);
+    const subRegionName = subRegionBtn ? subRegionBtn.innerText : '';
+
+    benefits.forEach(b => {
+        if (['초록우산', '굿네이버스', '이랜드복지재단', '희망친구기아대책'].includes(b.tag)) {
+            currentBenefits.agency.push(b);
+        } else if (b.tag.includes(regionName) || b.tag === '지자체공통' || (subRegionName && b.tag.includes(subRegionName))) {
+            currentBenefits.local.push(b);
+        } else {
+            currentBenefits.custom.push(b);
+        }
+    });
+
+    // 기본 탭(맞춤 혜택) 렌더링
+    renderBenefits('custom');
+}
+
+// 혜택 리스트 렌더링
+function renderBenefits(category) {
     const list = document.getElementById('benefitList');
     list.innerHTML = '';
-    benefits.forEach((b, i) => {
-        setTimeout(() => {
-            const card = document.createElement('div');
-            card.className = 'benefit-card animate-fade';
 
-            // 하이퍼 로컬 뱃지 로직 (V7 가변형)
-            const regionBtn = document.querySelector(`.opt-btn.selected[onclick*="region"]`);
-            const regionName = regionBtn ? regionBtn.innerText.replace(/[^\uAC00-\uD7A3]/g, '').trim() : '';
-            const isLocal = b.tag.includes('전북') || b.tag.includes('전주') || (regionName && b.tag.includes(regionName));
-            const localBadgeHtml = isLocal ? `<div class="local-badge highlight">✨ ${regionName || '내 지역'} 맞춤</div>` : '';
+    const items = currentBenefits[category];
+    if (!items || items.length === 0) {
+        list.innerHTML = '<p style="text-align:center; padding:40px; color:#64748b;">관련된 혜택이 아직 없습니다.</p>';
+        return;
+    }
 
-            card.innerHTML = `
-                <div class="benefit-icon">${b.icon}</div>
-                <div class="benefit-info">
-                    ${localBadgeHtml}
-                    <div class="benefit-name">${b.name} <span class="benefit-tag-label" style="font-size: 10px; background: #e2e8f0; padding: 2px 6px; border-radius: 4px; vertical-align: middle; margin-left: 4px; color: #475569;">${b.tag}</span></div>
-                    <div class="benefit-desc">${b.desc || b.description}</div>
-                    ${b.monthlyAmount ? `<span class="benefit-amount">💰 월 약 ${b.monthlyAmount.toLocaleString()}원</span>` : '<span class="benefit-amount" style="background:#f1f5f9; color:#64748b;">✨ 서비스/현물 지원</span>'}
-                    <a class="benefit-link" href="${b.applyUrl || 'https://10000nanzip.tistory.com/'}" target="_blank">상세 방법 보기 →</a>
-                </div>
-            `;
-            list.appendChild(card);
-        }, i * 200);
+    items.forEach(b => {
+        const card = document.createElement('div');
+        card.className = 'benefit-card animate-fade';
+
+        // 금액 표시 포맷
+        const amountText = b.monthlyAmount ? `최대 ${Math.round(b.monthlyAmount).toLocaleString()}원` : '혜택 확인 필요';
+
+        card.innerHTML = `
+            <div class="agency-badge">🏛️ ${b.tag}</div>
+            <div class="benefit-title">${b.name}</div>
+            <div class="benefit-desc">${b.desc || b.description}</div>
+            <div class="benefit-meta">
+                <div class="benefit-amount">💰 ${amountText}</div>
+                <a href="${b.applyUrl || '#'}" class="benefit-link-btn" target="_blank">신청하기 ➔</a>
+            </div>
+        `;
+        list.appendChild(card);
     });
 }
 
 // 숫자 애니메이션 함수
 function animateNumber(id, target, duration, isLocale = false) {
     const el = document.getElementById(id);
+    if (!el) return;
     let start = 0;
     const startTime = performance.now();
     function step(currentTime) {
@@ -516,16 +567,68 @@ function showToast(msg) {
 }
 
 // AI 챗봇
-document.getElementById('btn-ai-chat').onclick = () => {
-    showToast('🤖 로거 AI: "반가워요 대표님! 중기부와 지자체 지원금까지 꼼꼼히 체크해드렸어요!"');
+// AI 챗봇 (V12 Scenario)
+const chatScenario = {
+    intro: "안녕하세요! 로거 AI입니다. 🤖<br>대표님의 복지 점수를 분석해드렸는데, 어떤 점이 궁금하신가요?",
+    options: [
+        { text: "💰 못 찾은 돈 더 찾아줘", answer: "현재 입력하신 정보로는 최적의 혜택을 모두 찾아드렸어요! 다만, 가족 구성원 정보를 수정하면 추가 혜택이 나올 수도 있습니다. 다시 진단해보시겠어요?" },
+        { text: "📝 신청은 어떻게 해?", answer: "각 혜택 카드의 '지금 바로 신청하기' 버튼을 누르시면 해당 기관의 공식 신청 페이지로 바로 연결해드립니다. 복잡한 서류는 제가 블로그에 정리해둘게요!" },
+        { text: "📊 내 점수가 평균이야?", answer: "대표님의 점수는 상위 그룹에 속합니다! 보통 처음 조회하시는 분들은 40~50점이 나오는데, 아주 훌륭한 복지 지능을 가지고 계시네요 👍" }
+    ]
 };
+
+document.getElementById('btn-ai-chat').onclick = () => {
+    const chatBox = document.getElementById('aiChatBox');
+    if (chatBox.style.display === 'block') {
+        chatBox.style.display = 'none';
+    } else {
+        chatBox.style.display = 'block';
+        initChat();
+    }
+};
+
+function initChat() {
+    const content = document.getElementById('chatContent');
+    if (content.childElementCount > 0) return; // 이미 초기화됨
+
+    addMessage('bot', chatScenario.intro);
+    renderOptions();
+}
+
+function addMessage(sender, text) {
+    const content = document.getElementById('chatContent');
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `chat-msg ${sender}`;
+    msgDiv.innerHTML = text;
+    content.appendChild(msgDiv);
+    content.scrollTop = content.scrollHeight;
+}
+
+function renderOptions() {
+    const content = document.getElementById('chatContent');
+    const optDiv = document.createElement('div');
+    optDiv.className = 'chat-options';
+
+    chatScenario.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'chat-opt-btn';
+        btn.textContent = opt.text;
+        btn.onclick = () => {
+            addMessage('user', opt.text);
+            setTimeout(() => addMessage('bot', opt.answer), 600);
+        };
+        optDiv.appendChild(btn);
+    });
+    content.appendChild(optDiv);
+    content.scrollTop = content.scrollHeight;
+}
 
 // PDF 다운로드
 function downloadPdf() {
     const element = document.getElementById('app-content');
     const opt = {
         margin: 10,
-        filename: 'my_welfare_report_v7.pdf',
+        filename: 'my_welfare_report_v10.pdf',
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
@@ -533,7 +636,18 @@ function downloadPdf() {
     html2pdf().from(element).set(opt).save();
 }
 
-// 다시 시작
+// 다시 시작 (페이지 새로고침 없는 테마)
 function restart() {
-    location.reload();
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    Object.keys(answers).forEach(key => delete answers[key]);
+
+    document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.btn-next').forEach(b => b.disabled = true);
+
+    document.querySelector('.step.active').classList.remove('active');
+    document.getElementById('step-1').classList.add('active');
+    updateProgress(0);
+
+    // 히스토리 초기화
+    history.replaceState({ step: 1 }, '', '#step-1');
 }

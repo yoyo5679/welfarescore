@@ -1,0 +1,81 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "WelfareBenefit",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string",
+            "description": "Unique identifier (SourcePrefix_ID)"
+        },
+        "name": {
+            "type": "string",
+            "description": "Benefit Title"
+        },
+        "agency": {
+            "type": "string",
+            "description": "Providing Agency"
+        },
+        "category": {
+            "enum": [
+                "Custom",
+                "Local",
+                "Agency"
+            ],
+            "description": "Display category"
+        },
+        "amount_text": {
+            "type": "string",
+            "description": "Display text for amount (e.g. 최대 50만원)"
+        },
+        "amount_max": {
+            "type": "integer",
+            "description": "Numerical max amount for sorting"
+        },
+        "description": {
+            "type": "string",
+            "description": "Core benefit summary"
+        },
+        "eligibility": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "description": "[min, max]"
+                },
+                "income": {
+                    "type": "string",
+                    "description": "Income threshold description"
+                },
+                "residence": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Region codes (e.g. ['45', '45110'])"
+                }
+            }
+        },
+        "apply_period": {
+            "type": "string"
+        },
+        "source_url": {
+            "type": "string",
+            "format": "uri"
+        },
+        "tags": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    },
+    "required": [
+        "id",
+        "name",
+        "agency",
+        "category"
+    ]
+}

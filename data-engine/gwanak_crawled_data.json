@@ -1,0 +1,30 @@
+[
+  {
+    "name": "청년전담변호사 무료법률상담예약",
+    "description": "관악구청 공지사항에서 수집된 정보입니다. 원문에서 상세 내용을 확인하세요.",
+    "icon": "🏛️",
+    "tag": "관악구청(수집됨)",
+    "applyUrl": "https://www.gwanak.go.kr/site/gwanak/ex/bbs//site/gwanak/reservation/reservationView.do?riIdx=RI002817",
+    "apply_period": "공고 확인",
+    "howTo": [
+      "관악구청 홈페이지 확인"
+    ],
+    "condition": "gwanak_resident_match",
+    "relevance": 90,
+    "monthlyAmount": 0
+  },
+  {
+    "name": "청년전담변호사 무료법률상담예약",
+    "description": "관악구청 공지사항에서 수집된 정보입니다. 원문에서 상세 내용을 확인하세요.",
+    "icon": "🏛️",
+    "tag": "관악구청(수집됨)",
+    "applyUrl": "https://www.gwanak.go.kr/site/gwanak/ex/bbs//site/gwanak/reservation/reservationView.do?riIdx=RI002817",
+    "apply_period": "공고 확인",
+    "howTo": [
+      "관악구청 홈페이지 확인"
+    ],
+    "condition": "gwanak_resident_match",
+    "relevance": 90,
+    "monthlyAmount": 0
+  }
+]

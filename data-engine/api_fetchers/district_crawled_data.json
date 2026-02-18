@@ -1,0 +1,290 @@
+[
+  {
+    "id": "CRAWL_gwanak_-8004834928610568292",
+    "name": "관악로 지하보도 문화공간 대관",
+    "description": "[gwanak청 수집] 관악로 지하보도 문화공간 대관",
+    "icon": "🏛️",
+    "agency": "gwanak청",
+    "tag": "gwanak청 (자동수집)",
+    "applyUrl": "https://www.gwanak.go.kr/site/gwanak/reservation/reservationView.do?riIdx=RI003124",
+    "apply_period": "공고 확인",
+    "howTo": [
+      "홈페이지 방문",
+      "담당부서 문의"
+    ],
+    "condition": "d.region === 'seoul' && d.subRegion === 'gwanak'",
+    "relevance": 90,
+    "monthlyAmount": 0,
+    "category": "Culture"
+  },
+  {
+    "id": "CRAWL_gwanak_8551061272630838260",
+    "name": "민원상담",
+    "description": "[gwanak청 수집] 민원상담",
+    "icon": "🏛️",
+    "agency": "gwanak청",
+    "tag": "gwanak청 (자동수집)",
+    "applyUrl": "https://www.gwanak.go.kr/site/gwanak/ex/minwon/minwonView.do?type=A",
+    "apply_period": "공고 확인",
+    "howTo": [
+      "홈페이지 방문",
+      "담당부서 문의"
+    ],
+    "condition": "d.region === 'seoul' && d.subRegion === 'gwanak'",
+    "relevance": 90,
+    "monthlyAmount": 0,
+    "category": "Medical"
+  },
+  {
+    "id": "CRAWL_gwanak_6811558057901291844",
+    "name": "민원상담(국민신문고)",
+    "description": "[gwanak청 수집] 민원상담(국민신문고)",
+    "icon": "🏛️",
+    "agency": "gwanak청",
+    "tag": "gwanak청 (자동수집)",
+    "applyUrl": "https://www.gwanak.go.kr/site/gwanak/ex/minwon/minwonView.do?type=A",
+    "apply_period": "공고 확인",
+    "howTo": [
+      "홈페이지 방문",
+      "담당부서 문의"
+    ],
+    "condition": "d.region === 'seoul' && d.subRegion === 'gwanak'",
+    "relevance": 90,
+    "monthlyAmount": 0,
+    "category": "Medical"
+  },
+  {
+    "id": "CRAWL_gwanak_1010065249466404201",
+    "name": "무료법률상담예약",
+    "description": "[gwanak청 수집] 무료법률상담예약",
+    "icon": "🏛️",
+    "agency": "gwanak청",
+    "tag": "gwanak청 (자동수집)",
+    "applyUrl": "https://www.gwanak.go.kr/site/gwanak/reservation/reservationView.do?riIdx=RI001013",
+    "apply_period": "공고 확인",
+    "howTo": [
+      "홈페이지 방문",
+      "담당부서 문의"
+    ],
+    "condition": "d.region === 'seoul' && d.subRegion === 'gwanak'",
+    "relevance": 90,
+    "monthlyAmount": 0,
+    "category": "Medical"
+  },
+  {
+    "id": "CRAWL_gwanak_6014141283071380463",
+    "name": "청년전담변호사 무료법률상담예약",
+    "description": "[gwanak청 수집] 청년전담변호사 무료법률상담예약",
+    "icon": "🏛️",
+    "agency": "gwanak청",
+    "tag": "gwanak청 (자동수집)",
+    "applyUrl": "https://www.gwanak.go.kr/site/gwanak/reservation/reservationView.do?riIdx=RI002817",
+    "apply_period": "공고 확인",
+    "howTo": [
+      "홈페이지 방문",
+      "담당부서 문의"
+    ],
+    "condition": "d.region === 'seoul' && d.subRegion === 'gwanak'",
+    "relevance": 90,
+    "monthlyAmount": 0,
+    "category": "Medical"
+  },
+  {
+    "id": "CRAWL_gwanak_-8004834928610568292",
+    "name": "관악로 지하보도 문화공간 대관",
+    "description": "[gwanak청 수집] 관악로 지하보도 문화공간 대관",
+    "icon": "🏛️",
+    "agency": "gwanak청",
+    "tag": "gwanak청 (자동수집)",
+    "applyUrl": "https://www.gwanak.go.kr/site/gwanak/reservation/reservationView.do?riIdx=RI003124",
+    "apply_period": "공고 확인",
+    "howTo": [
+      "홈페이지 방문",
+      "담당부서 문의"
+    ],
+    "condition": "d.region === 'seoul' && d.subRegion === 'gwanak'",
+    "relevance": 90,
+    "monthlyAmount": 0,
+    "category": "Culture"
+  },
+  {
+    "id": "CRAWL_gwanak_8551061272630838260",
+    "name": "민원상담",
+    "description": "[gwanak청 수집] 민원상담",
+    "icon": "🏛️",
+    "agency": "gwanak청",
+    "tag": "gwanak청 (자동수집)",
+    "applyUrl": "https://www.gwanak.go.kr/site/gwanak/ex/minwon/minwonView.do?type=A",
+    "apply_period": "공고 확인",
+    "howTo": [
+      "홈페이지 방문",
+      "담당부서 문의"
+    ],
+    "condition": "d.region === 'seoul' && d.subRegion === 'gwanak'",
+    "relevance": 90,
+    "monthlyAmount": 0,
+    "category": "Medical"
+  },
+  {
+    "id": "CRAWL_gwanak_6811558057901291844",
+    "name": "민원상담(국민신문고)",
+    "description": "[gwanak청 수집] 민원상담(국민신문고)",
+    "icon": "🏛️",
+    "agency": "gwanak청",
+    "tag": "gwanak청 (자동수집)",
+    "applyUrl": "https://www.gwanak.go.kr/site/gwanak/ex/minwon/minwonView.do?type=A",
+    "apply_period": "공고 확인",
+    "howTo": [
+      "홈페이지 방문",
+      "담당부서 문의"
+    ],
+    "condition": "d.region === 'seoul' && d.subRegion === 'gwanak'",
+    "relevance": 90,
+    "monthlyAmount": 0,
+    "category": "Medical"
+  },
+  {
+    "id": "CRAWL_gwanak_1010065249466404201",
+    "name": "무료법률상담예약",
+    "description": "[gwanak청 수집] 무료법률상담예약",
+    "icon": "🏛️",
+    "agency": "gwanak청",
+    "tag": "gwanak청 (자동수집)",
+    "applyUrl": "https://www.gwanak.go.kr/site/gwanak/reservation/reservationView.do?riIdx=RI001013",
+    "apply_period": "공고 확인",
+    "howTo": [
+      "홈페이지 방문",
+      "담당부서 문의"
+    ],
+    "condition": "d.region === 'seoul' && d.subRegion === 'gwanak'",
+    "relevance": 90,
+    "monthlyAmount": 0,
+    "category": "Medical"
+  },
+  {
+    "id": "CRAWL_gwanak_6014141283071380463",
+    "name": "청년전담변호사 무료법률상담예약",
+    "description": "[gwanak청 수집] 청년전담변호사 무료법률상담예약",
+    "icon": "🏛️",
+    "agency": "gwanak청",
+    "tag": "gwanak청 (자동수집)",
+    "applyUrl": "https://www.gwanak.go.kr/site/gwanak/reservation/reservationView.do?riIdx=RI002817",
+    "apply_period": "공고 확인",
+    "howTo": [
+      "홈페이지 방문",
+      "담당부서 문의"
+    ],
+    "condition": "d.region === 'seoul' && d.subRegion === 'gwanak'",
+    "relevance": 90,
+    "monthlyAmount": 0,
+    "category": "Medical"
+  },
+  {
+    "id": "CRAWL_gwanak_2368155989655345778",
+    "name": "둘레길/황톳길",
+    "description": "[gwanak청 수집] 둘레길/황톳길",
+    "icon": "🏛️",
+    "agency": "gwanak청",
+    "tag": "gwanak청 (자동수집)",
+    "applyUrl": "https://www.gwanak.go.kr/site/gwanak/gis/Road_View.do?type=all",
+    "apply_period": "공고 확인",
+    "howTo": [
+      "홈페이지 방문",
+      "담당부서 문의"
+    ],
+    "condition": "d.region === 'seoul' && d.subRegion === 'gwanak'",
+    "relevance": 90,
+    "monthlyAmount": 0,
+    "category": "General"
+  },
+  {
+    "id": "CRAWL_gwanak_-6876748807652291607",
+    "name": "관악산둘레길",
+    "description": "[gwanak청 수집] 관악산둘레길",
+    "icon": "🏛️",
+    "agency": "gwanak청",
+    "tag": "gwanak청 (자동수집)",
+    "applyUrl": "https://www.gwanak.go.kr/site/gwanak/gis/Road_View.do?type=all",
+    "apply_period": "공고 확인",
+    "howTo": [
+      "홈페이지 방문",
+      "담당부서 문의"
+    ],
+    "condition": "d.region === 'seoul' && d.subRegion === 'gwanak'",
+    "relevance": 90,
+    "monthlyAmount": 0,
+    "category": "General"
+  },
+  {
+    "id": "CRAWL_gwanak_-1652226143375709850",
+    "name": "둘레길안내",
+    "description": "[gwanak청 수집] 둘레길안내",
+    "icon": "🏛️",
+    "agency": "gwanak청",
+    "tag": "gwanak청 (자동수집)",
+    "applyUrl": "https://www.gwanak.go.kr/site/gwanak/gis/Road_View.do?type=all",
+    "apply_period": "공고 확인",
+    "howTo": [
+      "홈페이지 방문",
+      "담당부서 문의"
+    ],
+    "condition": "d.region === 'seoul' && d.subRegion === 'gwanak'",
+    "relevance": 90,
+    "monthlyAmount": 0,
+    "category": "General"
+  },
+  {
+    "id": "CRAWL_gwanak_1894272117131682243",
+    "name": "애국의 숲길",
+    "description": "[gwanak청 수집] 애국의 숲길",
+    "icon": "🏛️",
+    "agency": "gwanak청",
+    "tag": "gwanak청 (자동수집)",
+    "applyUrl": "https://www.gwanak.go.kr/site/gwanak/gis/Road_View.do?type=road1",
+    "apply_period": "공고 확인",
+    "howTo": [
+      "홈페이지 방문",
+      "담당부서 문의"
+    ],
+    "condition": "d.region === 'seoul' && d.subRegion === 'gwanak'",
+    "relevance": 90,
+    "monthlyAmount": 0,
+    "category": "General"
+  },
+  {
+    "id": "CRAWL_gwanak_9119167709757206038",
+    "name": "체험의 숲길",
+    "description": "[gwanak청 수집] 체험의 숲길",
+    "icon": "🏛️",
+    "agency": "gwanak청",
+    "tag": "gwanak청 (자동수집)",
+    "applyUrl": "https://www.gwanak.go.kr/site/gwanak/gis/Road_View.do?type=road2",
+    "apply_period": "공고 확인",
+    "howTo": [
+      "홈페이지 방문",
+      "담당부서 문의"
+    ],
+    "condition": "d.region === 'seoul' && d.subRegion === 'gwanak'",
+    "relevance": 90,
+    "monthlyAmount": 0,
+    "category": "General"
+  },
+  {
+    "id": "CRAWL_gwanak_6538459204167781291",
+    "name": "사색의 숲길",
+    "description": "[gwanak청 수집] 사색의 숲길",
+    "icon": "🏛️",
+    "agency": "gwanak청",
+    "tag": "gwanak청 (자동수집)",
+    "applyUrl": "https://www.gwanak.go.kr/site/gwanak/gis/Road_View.do?type=road3",
+    "apply_period": "공고 확인",
+    "howTo": [
+      "홈페이지 방문",
+      "담당부서 문의"
+    ],
+    "condition": "d.region === 'seoul' && d.subRegion === 'gwanak'",
+    "relevance": 90,
+    "monthlyAmount": 0,
+    "category": "General"
+  }
+]
