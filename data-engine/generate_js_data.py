@@ -70,10 +70,22 @@ def generate_js():
         url = item.get('source_url') or item.get('applyUrl') or item.get('url') or '#'
         
         # Apply Link Overrides for flagship policies (V13 Engine)
+        has_override = False
         for key, override_url in LINK_OVERRIDE.items():
             if key in name:
                 url = override_url
+                has_override = True
                 break
+        
+        # If no override, and it's a search link, try to make it better
+        if not has_override and "searchWrd=" in url:
+            # If we have a Service ID (from Gov24 API), use it to make a direct link
+            svc_id = item.get('id', '').replace('gov24_', '')
+            if svc_id.startswith('WLF'): # If it looks like a Bokjiro ID
+                 url = f"https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52005M.do?wlfareInfoId={svc_id}"
+            else:
+                 # Fallback: Just ensure the URL is clean (it's already set)
+                 pass
         
         eligibility = item.get('eligibility', {})
         res_list = eligibility.get('residence', [])
