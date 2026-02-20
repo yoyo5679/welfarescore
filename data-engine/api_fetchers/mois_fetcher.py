@@ -16,25 +16,21 @@ BASE_URL = "https://api.odcloud.kr/api/gov24/v1/serviceList"
 OUTPUT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_FILE = os.path.join(OUTPUT_DIR, "mois_gov24_data.json")
 
-# Category Mapping
-# Category Mapping
-# Based on observed values: "교육부" -> Education/Childcare, "국세청" -> Living/Finance?
-# Actually, the 'tag' (dept_name) is more useful if 'category_raw' is empty.
 CATEGORY_MAP = {
     # If category_raw is returned
-    "생활안정": "Living", "주거·자립": "Housing", "보육·교육": "Education", 
-    "고용·창업": "Job", "행정·안전": "General", "농림·축산·어업": "General",
-    "문화·예술": "Culture", "건강·의료": "Medical",
+    "생활안정": "생활비", "주거·자립": "주거", "보육·교육": "교육", 
+    "고용·창업": "취업", "행정·안전": "기타", "농림·축산·어업": "기타",
+    "문화·예술": "생활비", "건강·의료": "의료",
     # Mapping based on Department (fallback)
-    "교육부": "Education",
-    "국세청": "Living",
-    "한국주택금융공사": "Housing",
-    "해양수산부": "Job" # Many fishery supports
+    "교육부": "교육",
+    "국세청": "생활비",
+    "한국주택금융공사": "주거",
+    "해양수산부": "취업" # Many fishery supports
 }
 
 def fetch_data():
     page = 1
-    per_page = 20 # Start small for testing
+    per_page = 500 # Increased for production data
     all_data = []
     
     print(f"Fetching MOIS Public Service Data with Key: {API_KEY[:5]}...")
@@ -102,11 +98,19 @@ def process_items(items):
         svc_name = item.get('서비스명', 'Unknown')
         svc_desc = item.get('서비스목적', '') or item.get('지원내용', '')
         dept_name = item.get('소관기관명', 'GOV24')
-        category_raw = item.get('분야', '기타')
-        url = item.get('상세조회URL', '#')
+        # The Gov24 API V3 returns '지원유형' instead of '분야', and it describes what is supported
+        category_raw = item.get('지원유형', '기타')
+        # Replace normal URL with a direct Bokjiro Search URL
+        encoded_name = urllib.parse.quote(svc_name)
+        url = f"https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52005M.do?searchWrd={encoded_name}"
         
-        # Apply Category Map
-        my_category = CATEGORY_MAP.get(category_raw, "General")
+        # Determine internal V13 category mapping based on '지원유형'
+        if '의료' in category_raw: my_category = '의료'
+        elif '교육' in category_raw: my_category = '교육'
+        elif '돌봄' in category_raw: my_category = '육아'
+        elif '주거' in svc_desc or '주거' in svc_name or '전세' in svc_name or '월세' in svc_name: my_category = '주거'
+        elif '일자리' in category_raw or '고용' in svc_name or '취업' in svc_name: my_category = '취업'
+        else: my_category = '생활비'
         
         converted = {
             "name": svc_name,
@@ -115,7 +119,7 @@ def process_items(items):
             "agency": dept_name, # Changed from 'tag' to meet schema
             "tag": dept_name, # Keep tag just in case
             "applyUrl": url,
-            "category": my_category, # Internal use
+            "category": my_category, # Internal use V13 format
             "raw_category": category_raw, # Debugging
             "relevance": 80, 
             "amount_max": 0, # Changed from monthlyAmount

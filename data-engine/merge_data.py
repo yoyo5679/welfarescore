@@ -8,7 +8,8 @@ def merge_all_data():
     regions = [
         # "seoul", "incheon", "gyeonggi", "jeolla", "chungcheong", "gyeongsang", "jeju", "gangwon",
         # "bokjiro", "seoul_youth", "district_crawled",
-        "mois_gov24"
+        "mois_gov24",
+        "youth_center"
     ]
     
     all_benefits = []
