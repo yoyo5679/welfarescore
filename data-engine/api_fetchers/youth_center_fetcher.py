@@ -22,7 +22,6 @@ def generate_mock_youth_data():
     print("Youth Center API is unreachable (Timeout).")
     print("Generating mock data to complete the integration pipeline based on the XML schema...")
     
-    # Expanded mock data
     mock_data = [
         {
              "name": "[온통청년] 청년내일채움공제",
@@ -30,7 +29,7 @@ def generate_mock_youth_data():
              "icon": "🌱",
              "agency": "고용노동부",
              "tag": "청년",
-             "applyUrl": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52005M.do?searchWrd=%EC%B2%AD%EB%85%84%EB%82%B4%EC%9D%BC%EC%B1%84%EC%9B%80%EA%B3%B5%EC%A0%9C",
+             "applyUrl": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52005M.do?wlfareInfoId=WLF00001099",
              "category": "취업",
              "raw_category": "취업지원",
              "relevance": 90,
@@ -44,12 +43,12 @@ def generate_mock_youth_data():
              "icon": "🏠",
              "agency": "국토교통부",
              "tag": "청년",
-             "applyUrl": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52005M.do?searchWrd=%EC%B2%AD%EB%85%84%EC%9B%94%EC%84%B8",
+             "applyUrl": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52005M.do?wlfareInfoId=WLF00004661",
              "category": "주거",
              "raw_category": "주거·금융",
              "relevance": 95,
-             "amount_max": 2400000,
-             "condition": "d.age === '20대' || d.age === '30대'",
+             "amount_max": 240000, 
+             "condition": "(d.age === '20대' || d.age === '30대')",
              "eligibility": {"target": "무주택 청년", "age_text": "만 19세 ~ 34세"}
         },
         {
@@ -58,12 +57,12 @@ def generate_mock_youth_data():
              "icon": "💼",
              "agency": "고용노동부",
              "tag": "청년",
-             "applyUrl": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52005M.do?searchWrd=%EA%B5%AD%EB%AF%BC%EC%B7%A8%EC%97%85%EC%A7%80%EC%9B%90%EC%A0%9C%EB%8F%84",
+             "applyUrl": "https://www.kua.go.kr",
              "category": "취업",
              "raw_category": "취업지원",
              "relevance": 85,
              "amount_max": 3000000,
-             "condition": "d.incomeNum <= 250",
+             "condition": "(d.income === '100만원미만' || d.income === '100-250만원')",
              "eligibility": {"target": "구직자", "age_text": "만 15세 ~ 69세"}
         },
         {
@@ -72,11 +71,11 @@ def generate_mock_youth_data():
              "icon": "💰",
              "agency": "금융위원회",
              "tag": "청년",
-             "applyUrl": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52005M.do?searchWrd=%EC%B2%AD%EB%85%84%EB%8F%84%EC%95%BD%EA%B3%84%EC%A2%8C",
+             "applyUrl": "https://ylaccount.kinfa.or.kr",
              "category": "생활비",
              "raw_category": "자산형성",
              "relevance": 98,
-             "amount_max": 50000000,
+             "amount_max": 5000000,
              "condition": "true",
              "eligibility": {"target": "청년", "age_text": "만 19세 ~ 34세"}
         },
@@ -86,12 +85,12 @@ def generate_mock_youth_data():
              "icon": "🏢",
              "agency": "서울특별시",
              "tag": "청년 서울",
-             "applyUrl": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52005M.do?searchWrd=%EC%B2%AD%EB%85%84%EC%95%88%EC%8B%AC%EC%A3%BC%ED%83%9D",
+             "applyUrl": "https://soco.seoul.go.kr/youth/main/main.do",
              "category": "주거",
              "raw_category": "주거지원",
              "relevance": 92,
              "amount_max": 0,
-             "condition": "d.region === '서울'",
+             "condition": "d.region === 'seoul'",
              "eligibility": {"target": "청년/신혼부부", "age_text": "만 19세 ~ 39세"}
         },
         {
@@ -100,12 +99,12 @@ def generate_mock_youth_data():
              "icon": "💹",
              "agency": "서울특별시",
              "tag": "청년 서울",
-             "applyUrl": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52005M.do?searchWrd=%ED%9D%AC%EB%A7%9D%EB%91%90%EB%B0%B0",
+             "applyUrl": "https://www.welfare.seoul.kr/",
              "category": "생활비",
              "raw_category": "자산형성",
              "relevance": 88,
              "amount_max": 10800000,
-             "condition": "d.region === '서울'",
+             "condition": "d.region === 'seoul'",
              "eligibility": {"target": "근로 청년", "age_text": "만 18세 ~ 34세"}
         },
         {
@@ -114,11 +113,11 @@ def generate_mock_youth_data():
              "icon": "🏡",
              "agency": "국토교통부",
              "tag": "청년",
-             "applyUrl": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52005M.do?searchWrd=%EC%B2%AD%EB%85%84%EC%A0%84%EC%84%B8%EC%9E%84%EB%8C%80",
+             "applyUrl": "https://apply.lh.or.kr",
              "category": "주거",
              "raw_category": "주거비지원",
              "relevance": 94,
-             "amount_max": 120000000,
+             "amount_max": 0,
              "condition": "true",
              "eligibility": {"target": "무주택 청년", "age_text": "만 19세 ~ 39세"}
         },
@@ -128,7 +127,7 @@ def generate_mock_youth_data():
              "icon": "🧠",
              "agency": "보건복지부",
              "tag": "청년",
-             "applyUrl": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52005M.do?searchWrd=%EC%B2%AD%EB%85%84%EB%A7%88%EC%9D%8C%EA%B1%B4%EA%B0%95",
+             "applyUrl": "https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52005M.do?wlfareInfoId=WLF00001374",
              "category": "의료",
              "raw_category": "건강",
              "relevance": 89,

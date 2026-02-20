@@ -35,6 +35,18 @@ def generate_js():
         '생활비': ['생계', '지원금', '바우처', '교통비', '문화', '예술', '통신비', '에너지', '가스', '전기', '난방']
     }
 
+    # Direct Link Overrides: Map partial name to direct URL
+    LINK_OVERRIDE = {
+        '청년내일채움공제': 'https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52005M.do?wlfareInfoId=WLF00001099',
+        '청년월세 특별지원': 'https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52005M.do?wlfareInfoId=WLF00004661',
+        '국민취업지원제도': 'https://www.kua.go.kr',
+        '청년도약계좌': 'https://ylaccount.kinfa.or.kr',
+        '역세권 청년안심주택': 'https://soco.seoul.go.kr/youth/main/main.do',
+        '희망두배 청년통장': 'https://www.welfare.seoul.kr/',
+        '청년 마음건강': 'https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52005M.do?wlfareInfoId=WLF00001374',
+        '청년전세임대': 'https://apply.lh.or.kr'
+    }
+
     js_code = "const welfareData = [\n"
     
     for item in data:
@@ -57,31 +69,28 @@ def generate_js():
         # Handle various URL keys from different sources
         url = item.get('source_url') or item.get('applyUrl') or item.get('url') or '#'
         
+        # Apply Link Overrides for flagship policies (V13 Engine)
+        for key, override_url in LINK_OVERRIDE.items():
+            if key in name:
+                url = override_url
+                break
+        
         eligibility = item.get('eligibility', {})
         res_list = eligibility.get('residence', [])
         age_range = eligibility.get('age', [0, 100])
         income_text = eligibility.get('income', '')
         target = eligibility.get('target', '')
 
-        # Build JS condition string
+        # --- Smarter Condition Generation (V13 Engine) ---
         conditions = []
         
-        # Residence check
+        # 1. Residence & Age (from structured eligibility dictionary)
         if res_list:
-            # Match internal slug to human name
             slugs = [k for k, v in region_map.items() if any(r in v for r in res_list)]
             if slugs:
                 slug_check = " || ".join([f"d.region === '{s}'" for s in slugs])
-                
-                # District (Sub-residence) check
-                sub_res_list = eligibility.get('sub_residence', [])
-                if sub_res_list:
-                    sub_slug_check = " || ".join([f"d.subRegion === '{sr}'" for sr in sub_res_list])
-                    conditions.append(f"({slug_check} && {sub_slug_check})")
-                else:
-                    conditions.append(f"({slug_check})")
+                conditions.append(f"({slug_check})")
         
-        # Age check
         if age_range:
             age_conds = []
             for label, val in age_map.items():
@@ -90,32 +99,41 @@ def generate_js():
             if age_conds:
                 conditions.append(f"({' || '.join(age_conds)})")
 
-        # Income / Target (Strict Logic according to V13 flow)
-        if income_text:
-            if '100%' in income_text or '120%' in income_text:
-                conditions.append("(d.income === '100-250만원' || d.income === '100만원미만' || d.income === '250-450만원')")
-            elif '75%' in income_text or '50%' in income_text or '기초' in income_text or '차상위' in income_text:
-                conditions.append("(d.income === '100만원미만' || d.income === '100-250만원')")
+        # 2. Raw Eligibility Parsing (MOIS / Youth Center)
+        elig_raw = item.get('eligibility_raw', {})
+        target_text = ((elig_raw.get('target') or '') + " " + (elig_raw.get('criteria') or '') + " " + (elig_raw.get('user_type') or '') + " " + full_text).lower()
 
-        if target:
-            if '소상공인' in target or '자영업' in target:
-                conditions.append("(d.target === '소상공인')")
-            if '임산부' in target or '출산' in target:
-                conditions.append("(d.target === '임산부')")
-            if '위기' in target or '채무' in target:
-                 conditions.append("(d.target === '위기가구')")
-            if '구직' in target or '실업' in target or '미취업' in target:
-                 conditions.append("(d.target === '구직')")
+        # Youth specific
+        if any(x in target_text for x in ['청년', '대학생', '취준생', '사회초년생']):
+             conditions.append("(d.age === '10대이하' || d.age === '20대' || d.age === '30대')")
 
-        # Household Check
-        household_text = eligibility.get('household', '') + " " + target + " " + full_text
-        if '다자녀' in household_text:
+        # Industry Suppression (Fishery / Agriculture)
+        # If it's a very specific industry benefit, restrict it unless there's a match
+        is_fishery = any(x in target_text for x in ['어업', '어선', '양식', '해양', '선박', '원양', '염전', '창업어가'])
+        if is_fishery:
+             # If it's fishery, only show if user specifically selected a related category or interest
+             # For now, let's make it more strict: it must contain '청년' to show for youth
+             if '청년' not in target_text:
+                  conditions.append("false") # Hide general fishery from general users
+             else:
+                  conditions.append("d.age === '20대' || d.age === '30대'")
+
+        # Household / Income / Target (V13 flow)
+        if '소상공인' in target_text or '자영업' in target_text:
+            conditions.append("(d.target === '소상공인')")
+        if '임산부' in target_text or '출산' in target_text:
+            conditions.append("(d.target === '임산부')")
+        if '다자녀' in target_text:
              conditions.append("(d.household === '다자녀')")
-        if '한부모' in household_text:
+        if '한부모' in target_text:
              conditions.append("(d.household === '한부모')")
-        if '신혼부부' in household_text:
-             conditions.append("(d.household === '신혼부부')")
-        
+
+        # Default for MOIS if still too loose
+        if not conditions:
+            condition_str = "true"
+        else:
+            condition_str = " && ".join(conditions)
+
         # --- Generate Bokjiro Hashtags ---
         tags = []
         
@@ -151,13 +169,6 @@ def generate_js():
         
         # 4. Filter empty/None values and unique
         tags_str = json.dumps(list(set(tags)), ensure_ascii=False)
-        
-        if 'condition' in item and item['condition']:
-             condition_str = item['condition']
-        elif not conditions:
-            condition_str = "true" # Default if no info
-        else:
-            condition_str = " && ".join(conditions)
 
         js_code += "    {\n"
         js_code += f"        name: '{name}',\n"

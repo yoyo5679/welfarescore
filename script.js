@@ -22,231 +22,7 @@ const SUB_REGIONS = {
     'jeju': ['제주시', '서귀포시']
 };
 
-// 소득 기준 데이터 (2026년 예정치 기준)
-const MEDIAN_INCOME_2026 = { 1: 2564238, 2: 4199292, 3: 5359036, 4: 6494738, 5: 7556719, 6: 8555952 };
-
-const welfareData = [
-    {
-        name: '유아학비 (누리과정) 지원',
-        description: '○ 3~5세에 대해 교육비를 지급합니다.\r\n  - 국공립 100,000원, 사립 280,000원\r\n\r\n○ 3~5세에 대해 방과후과정비를 지급합니다.\r\n   - 국공립 50,000원, 사립 70,000원\r\n\r\n○ 사립유치원을 다니는 법정저소득층 유아에게 저소득층 유아학비를 추가 지급합니다.\r\n   - 사립 200,000원',
-        icon: '💎', tag: '교육부',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/000000465790',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '육아',
-        relevance: 95, monthlyAmount: 0
-    },
-    {
-        name: '근로·자녀장려금',
-        description: '○ 전년도 연간 부부합산 총 급여액 등(근로소득, 사업소득 또는 종교인소득의 합계)에 따라\r\n - 근로장려금은\r\n  ㆍ 단독가구 최대 165만 원\r\n  ㆍ 홑벌이 가구 최대 285만 원\r\n  ㆍ 맞벌이 가구 최대 330만 원 지급\r\n - 자녀 장려금은\r\n  ㆍ 단독가구 해당 없음\r\n  ㆍ 홑벌이 가구 부양자녀 1명 당 최대 100만 원\r\n  ㆍ 맞벌이 가구 부양자녀 1명 당 최대 100만 원 지급\r\n\r\n* 자세한 산정식은 홈택스(www.hometax.go.kr)에서 확인 바랍니다',
-        icon: '💎', tag: '국세청',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/105100000001',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '취업',
-        relevance: 95, monthlyAmount: 0
-    },
-    {
-        name: '주택금융공사 월세자금보증',
-        description: '○ 주택도시기금 주거안정 월세대출 요건을 충족하는 대상자에 대해 월세자금보증 지원\r\n -  최대 1,152만원 이내에서 월세금을 2년 환산한 금액의 80%까지 대출금액의 80%를 공사가 보증',
-        icon: '💎', tag: '한국주택금융공사',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/116010000001',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '주거',
-        relevance: 95, monthlyAmount: 0
-    },
-    {
-        name: '친환경 에너지절감장비 보급',
-        description: '○  고효율 등(燈)(LED, 무전극등(燈) 등)\r\n○  노후화된 기관(디젤, 가솔린기관 등)\r\n○  에너지 절감이 가능한 유류절감장치 \r\n○  대기오염 방지 및 탄소배출 절감이 가능한 매연저감장치 등',
-        icon: '💎', tag: '해양수산부',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000001',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '생활비',
-        relevance: 95, monthlyAmount: 0
-    },
-    {
-        name: '해양사고 국선 심판변론인 선정 지원',
-        description: '○ 해양사고관련자가 심판원에 대하여 하는 신청ㆍ청구ㆍ진술 등의 대리 또는 대행\r\n\r\n○ 해양사고관련자에 대하여 하는 해양사고와 관련된 기술적 자문',
-        icon: '💎', tag: '해양수산부',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000007',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '생활비',
-        relevance: 95, monthlyAmount: 0
-    },
-    {
-        name: '옵서버 승선경비 지원',
-        description: '○ 원양어선에 승선하여 활동하는 국제옵서버 승선경비 및 활동 지원',
-        icon: '💎', tag: '해양수산부',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000008',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '생활비',
-        relevance: 95, monthlyAmount: 0
-    },
-    {
-        name: '합작수산물 관세 감면 추진',
-        description: '○ 관세감면',
-        icon: '💎', tag: '해양수산부',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000010',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '생활비',
-        relevance: 95, monthlyAmount: 0
-    },
-    {
-        name: '귀어 창업 및 주택구입 지원(융자)',
-        description: '○ 지원대상자로 선정된 자가 사업(일부완료 또는 완료) 후 담보(신용, 물건)를 제공하고, 금융기관(수협은행)에서 융자를 받으면, 해양수산부에서 이자 차이(기준금리-대출금리 1.5%)를 지원',
-        icon: '💎', tag: '해양수산부',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000012',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '주거',
-        relevance: 95, monthlyAmount: 0
-    },
-    {
-        name: '원양어업 경영자금 지원',
-        description: '○ 어업경영자금 융자(수협은행)',
-        icon: '💎', tag: '해양수산부',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000016',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '생활비',
-        relevance: 95, monthlyAmount: 0
-    },
-    {
-        name: '원양어선안전관리',
-        description: '○ 원양어선의 안전성 확보와 어선원 복지 증진을 위해 안전펀드를 조성하여 노후 원양어선의 대체 및 건조를 지원',
-        icon: '💎', tag: '해양수산부',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000022',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '생활비',
-        relevance: 95, monthlyAmount: 0
-    },
-    {
-        name: '산지 및 소비지 유통자금 융자 지원',
-        description: '○ 산지위판장 및 수산물 도매시장 어대금 결제자금, 직거래 자금 등  융자지원(금리 1.5~3%)',
-        icon: '💎', tag: '해양수산부',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000027',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '생활비',
-        relevance: 95, monthlyAmount: 0
-    },
-    {
-        name: '수산경영인회생자금',
-        description: '○ 수산업경영회생자금 지원(5년 거치, 7년 균분 상환/ 융자금리 1%)\r\n -  지원대상자금: 상환기일이 도래하였거나 향후 도래할 수협은행 대출금의 원리금, 어업시설 개·보수 자금, 업종별 1회전 운영자금 등',
-        icon: '💎', tag: '해양수산부',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000044',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '주거',
-        relevance: 95, monthlyAmount: 0
-    },
-    {
-        name: '어업경영자금 지원',
-        description: '○ 어업경영자금 융자(수협은행 및 단위수협)',
-        icon: '💎', tag: '해양수산부',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000045',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '생활비',
-        relevance: 95, monthlyAmount: 0
-    },
-    {
-        name: 'TAC 참여어업인 경영개선자금 지원',
-        description: '○ TAC 참여 어업인 대상 경영개선자금 지원(융자)\r\n - 융자 100%\r\n - 고정금리 연 2.5%~3.0%, 변동금리(매월 고시)',
-        icon: '💎', tag: '해양수산부',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000053',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '생활비',
-        relevance: 95, monthlyAmount: 0
-    },
-    {
-        name: '연안선박 현대화 지원',
-        description: '○ 연안 선박 건조를 위한 금융기관 대출이자를 단순 신조인 경우 2.0, 노후선박 대체 또는 친환경선 도입(개조) 인 경우 2.5% 지원',
-        icon: '💎', tag: '해양수산부',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000055',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '주거',
-        relevance: 95, monthlyAmount: 0
-    },
-    {
-        name: '안전복지형 연근해어선 기반구축',
-        description: '○ 연근해어업의 허가를 받은 어선 중 선령 15년 이상 노후어선을 어선원 안전복지 및 에너지 절감 등을 고려한 현대화어선으로 대체 건조',
-        icon: '💎', tag: '해양수산부',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000056',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '생활비',
-        relevance: 95, monthlyAmount: 0
-    },
-    {
-        name: '어업활동 지원',
-        description: '최대 12만원(국비 50%, 지방비 30%, 자부담 20%), 1인당 최대 30일(단, 4대중증질환 및 임심출산가구는 최대60일)',
-        icon: '💎', tag: '해양수산부',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000059',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '육아',
-        relevance: 95, monthlyAmount: 0
-    },
-    {
-        name: '어업인 역량 강화 교육 지원',
-        description: '○ 어업인 혹은 어업인 단체의 역량강화 교육\r\n\r\n○ 여성어업인, 다문화가정 여성어업인 대상 역량 강화\r\n\r\n○ 어업인, 수산업경영인, 해양수산신지식인 대상 역량강화\r\n\r\n○ 어업인 등 국내외 시장개척을 위한 박람회 참가, 벤치마킹, 기술교류 활동, 학술대회 지원',
-        icon: '💎', tag: '해양수산부',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000066',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '교육',
-        relevance: 95, monthlyAmount: 0
-    },
-    {
-        name: '어업인안전조업교육지원',
-        description: '○ ‘어선안전조업법’의 법정교육으로 연 1회(4시간) 어선의 선주, 선장, 기관장, 통신장 등 직무대행자에게 실시하는 안전조업교육\r\n- 어업인 안전조업교육지원을 위한 민간위탁보조 지원',
-        icon: '💎', tag: '해양수산부',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000067',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '취업',
-        relevance: 95, monthlyAmount: 0
-    },
-    {
-        name: '창업어가멘토링지원',
-        description: '○ 후견인이 창업어가에게 기술, 경영 측면 등에 대한 교육 지도 등 제공(창업어가 1인당 월 60만원 한도 지원)',
-        icon: '💎', tag: '해양수산부',
-        applyUrl: 'https://www.gov.kr/portal/rcvfvrSvc/dtlEx/119200000070',
-        apply_period: '',
-        howTo: ['상세 공고 확인', '온라인/방문 신청'],
-        condition: (d) => true,
-        category: '취업',
-        relevance: 95, monthlyAmount: 0
-    },
-];
+// welfareData is now provided by generated_data.js
 // 옵션 선택
 function selectOption(el, key) {
     const parent = el.closest('.options');
@@ -374,14 +150,14 @@ function calcResult() {
 
     // 1. 기본 점수 (30~50점 랜덤) - 변별력 확보
     let baseScore = Math.floor(Math.random() * 21) + 30;
-    
+
     // 2. 소득/가구별 필요도 점수 (복지 시급성)
     let needScore = 0;
     // 소득 점수: 낮을수록 높음
     if (answers.income === '100만원미만') needScore += 30;
     else if (answers.income === '100-250만원') needScore += 15;
     else if (answers.income === '250-450만원') needScore += 5;
-    
+
     // 가구 점수: 다자녀/한부모 우대
     if (['다자녀', '한부모', '자녀있음'].includes(answers.household)) needScore += 10;
     if (answers.household === '1인가구' || answers.household === '신혼부부') needScore += 5;
@@ -399,33 +175,43 @@ function calcResult() {
         // 카테고리 필터링 (V11 Smart Filter)
         let isCategoryMatch = true;
         if (answers.category && answers.category !== '전체') {
-             if (item.category !== answers.category) isCategoryMatch = false;
+            if (item.category !== answers.category) isCategoryMatch = false;
         }
 
         if (item.condition(data) && isCategoryMatch) {
             matched.push(item);
             totalAmount += (item.monthlyAmount || 0);
-            
+
             // 매칭 아이템당 가산점 (최대 40점 제한)
             if (potentialScore < 40) {
-                potentialScore += 3; 
+                potentialScore += 3;
             }
         }
     });
 
     // 4. 최종 점수 계산 및 테마 적용
     let finalScore = baseScore + needScore + potentialScore;
-    
+
     // 감점 요인 (고소득 + 생활비 지원 요청 시)
     if (answers.income === '450만원이상' && answers.category === '생활비') finalScore -= 10;
 
     // 만점 방지 및 보정
     finalScore = Math.min(Math.max(finalScore, 45), 99); // 최소 45, 최대 99
 
-    // 지역별 정렬 로직 (기존 유지)
+    // 지역별 및 우선순위 정렬 로직
     matched.sort((a, b) => {
-        let scoreA = a.relevance;
-        let scoreB = b.relevance;
+        let scoreA = a.relevance || 0;
+        let scoreB = b.relevance || 0;
+
+        // 1. 온통청년(Youth Center) 데이터 가산점 (가장 공신력 있고 혜택이 큼)
+        if (a.name.includes('[온통청년]')) scoreA += 2000;
+        if (b.name.includes('[온통청년]')) scoreB += 2000;
+
+        // 2. 핵심 정책 (내일채움공제 등) 추가 가산점
+        if (a.name.includes('내일채움공제')) scoreA += 5000;
+        if (b.name.includes('내일채움공제')) scoreB += 5000;
+
+        // 3. 지역별 정렬 로직 (기존 유지)
         const regionBtn = document.querySelector(`.opt-btn.selected[onclick*="region"]`);
         if (regionBtn) {
             const regionName = regionBtn.innerText.replace(/[^\uAC00-\uD7A3]/g, '').trim();
@@ -450,11 +236,11 @@ function calcResult() {
 // 점수별 테마 적용 함수
 function applyScoreTheme(score) {
     const resContainer = document.querySelector('.result-container');
-    
+
     // 기존 테마 클래스 제거
     if (resContainer) {
         resContainer.classList.remove('score-tier-basic', 'score-tier-bronze', 'score-tier-silver', 'score-tier-gold');
-        
+
         if (score >= 90) {
             resContainer.classList.add('score-tier-gold');
             shootConfetti();
@@ -471,7 +257,7 @@ function applyScoreTheme(score) {
 // 꽃가루 효과 함수
 function shootConfetti() {
     const colors = ['#f59e0b', '#ef4444', '#3b82f6', '#10b981', '#fcd34d'];
-    for(let i=0; i<50; i++) {
+    for (let i = 0; i < 50; i++) {
         const conf = document.createElement('div');
         conf.className = 'confetti';
         conf.style.left = Math.random() * 100 + 'vw';
@@ -479,7 +265,7 @@ function shootConfetti() {
         conf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
         conf.style.animationDuration = (Math.random() * 3 + 2) + 's';
         document.body.appendChild(conf);
-        
+
         // Remove after animation
         setTimeout(() => conf.remove(), 5000);
     }

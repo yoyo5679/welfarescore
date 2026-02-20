@@ -94,36 +94,48 @@ def fetch_data():
 def process_items(items):
     processed = []
     for item in items:
-        # Map fields (Adjust keys based on actual response if needed)
+        # Map fields (Gov24 API V3 structure)
         svc_name = item.get('서비스명', 'Unknown')
-        svc_desc = item.get('서비스목적', '') or item.get('지원내용', '')
+        svc_desc = item.get('서비스목적요약', '') or item.get('지원내용', '')
         dept_name = item.get('소관기관명', 'GOV24')
-        # The Gov24 API V3 returns '지원유형' instead of '분야', and it describes what is supported
         category_raw = item.get('지원유형', '기타')
-        # Replace normal URL with a direct Bokjiro Search URL
-        encoded_name = urllib.parse.quote(svc_name)
-        url = f"https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52005M.do?searchWrd={encoded_name}"
         
-        # Determine internal V13 category mapping based on '지원유형'
+        # Use Direct URL from API
+        url = item.get('상세조회URL') or '#'
+        svc_id = item.get('서비스ID', '')
+        
+        # Targeting Info for conditions
+        target_raw = item.get('지원대상', '')
+        criteria_raw = item.get('선정기준', '')
+        user_type = item.get('사용자구분', '')
+        
+        # Determine internal V13 category mapping
         if '의료' in category_raw: my_category = '의료'
         elif '교육' in category_raw: my_category = '교육'
         elif '돌봄' in category_raw: my_category = '육아'
-        elif '주거' in svc_desc or '주거' in svc_name or '전세' in svc_name or '월세' in svc_name: my_category = '주거'
-        elif '일자리' in category_raw or '고용' in svc_name or '취업' in svc_name: my_category = '취업'
+        elif '주거' in svc_desc or '주거' in svc_name: my_category = '주거'
+        elif '일자리' in category_raw or '취업' in svc_name: my_category = '취업'
         else: my_category = '생활비'
         
         converted = {
+            "id": f"gov24_{svc_id}",
             "name": svc_name,
             "description": svc_desc,
             "icon": "🇰🇷",
-            "agency": dept_name, # Changed from 'tag' to meet schema
-            "tag": dept_name, # Keep tag just in case
+            "agency": dept_name,
+            "tag": dept_name,
             "applyUrl": url,
-            "category": my_category, # Internal use V13 format
-            "raw_category": category_raw, # Debugging
+            "category": my_category,
+            "raw_category": category_raw,
             "relevance": 80, 
-            "amount_max": 0, # Changed from monthlyAmount
-            "condition": "true" 
+            "amount_max": 0,
+            # Pass targeting raw data to generate_js_data.py
+            "eligibility_raw": {
+                "target": target_raw,
+                "criteria": criteria_raw,
+                "user_type": user_type
+            },
+            "condition": "true" # Fallback if logic fails
         }
         processed.append(converted)
     return processed
