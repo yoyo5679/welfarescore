@@ -444,6 +444,10 @@
             <button class="close-chat" onclick="document.getElementById('aiChatBox').style.display='none'">×</button>
         </div>
         <div class="chat-content" id="chatContent"></div>
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" class="chat-input" placeholder="궁금한 지원을 물어보세요..." />
+            <button class="chat-send-btn" onclick="handleChatInput()">전송</button>
+        </div>
     </div>
     <script src="generated_data.js"></script>
     <script src="script.js?v=11.1"></script>

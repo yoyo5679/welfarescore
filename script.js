@@ -482,6 +482,10 @@ function renderBenefits(category) {
         // 금액 표시 포맷
         const amountText = b.monthlyAmount ? `최대 ${Math.round(b.monthlyAmount).toLocaleString()}원` : '혜택 확인 필요';
 
+        // 블로그 검색 URL: 혜택명 키워드로 자동 연결
+        const blogKeyword = encodeURIComponent(b.name.replace(/[\[\]]/g, '').trim());
+        const blogUrl = `https://10000nanzip.tistory.com/search/${blogKeyword}`;
+
         card.innerHTML = `
             <div class="agency-badge">🏛️ ${b.tag}</div>
             <div class="benefit-title">${b.name}</div>
@@ -490,6 +494,9 @@ function renderBenefits(category) {
                 <div class="benefit-amount">💰 ${amountText}</div>
                 <a href="${b.applyUrl || '#'}" class="benefit-link-btn" target="_blank">신청하기 ➔</a>
             </div>
+            <a href="${blogUrl}" class="blog-cta-btn" target="_blank">
+                📖 신청 꿀팁 블로그에서 확인하기
+            </a>
         `;
         list.appendChild(card);
     });
@@ -749,6 +756,94 @@ function renderOptions() {
         content.scrollTop = content.scrollHeight;
     });
 }
+
+// 챗봇 자유 검색 (V20)
+function handleChatInput() {
+    const input = document.getElementById('chatInput');
+    const query = input.value.trim();
+    if (!query) return;
+
+    addMessage('user', query);
+    input.value = '';
+
+    setTimeout(() => {
+        const results = chatSearch(query);
+        if (results.length === 0) {
+            addMessage('bot', `"${query}"에 대한 혜택을 찾지 못했어요 😅<br>더 구체적으로 입력해보시거나, <a href="https://10000nanzip.tistory.com" target="_blank" style="color:var(--primary);font-weight:700;">블로그</a>에서 검색해보세요!`);
+        } else {
+            let html = `<b>🔍 "${query}"</b> 관련 혜택 <b>${results.length}건</b>을 찾았어요!<br><br>`;
+            results.slice(0, 4).forEach(b => {
+                const blogKeyword = encodeURIComponent(b.name.replace(/[\[\]]/g, '').trim());
+                html += `<div style="background:#f1f5f9;border-radius:10px;padding:10px 12px;margin-bottom:8px;">
+                    <div style="font-weight:700;font-size:13px;margin-bottom:3px;">${b.icon || '💎'} ${b.name}</div>
+                    <div style="font-size:11px;color:#64748b;margin-bottom:6px;">${(b.desc || b.description || '').substring(0, 50)}...</div>
+                    <a href="https://10000nanzip.tistory.com/search/${blogKeyword}" target="_blank" style="font-size:11px;color:var(--primary);font-weight:700;">📖 블로그에서 상세보기 →</a>
+                </div>`;
+            });
+            if (results.length > 4) html += `<div style="font-size:12px;color:#64748b;">외 ${results.length - 4}건 더 있어요. 결과 페이지에서 확인해보세요!</div>`;
+            addMessage('bot', html);
+        }
+    }, 600);
+}
+
+// 키워드 기반 혜택 검색
+function chatSearch(query) {
+    const ageMap = { '10대': '10대이하', '20대': '20대', '30대': '30대', '40대': '40대', '50대': '50대', '60대': '60대이상' };
+    const categoryMap = {
+        '주거': '주거', '집': '주거', '전세': '주거', '월세': '주거',
+        '취업': '취업', '일자리': '취업', '취직': '취업', '창업': '취업',
+        '육아': '육아', '아이': '육아', '보육': '육아', '출산': '육아',
+        '교육': '교육', '학비': '교육', '장학': '교육',
+        '의료': '의료', '건강': '의료', '병원': '의료',
+        '생활비': '생활비', '생계': '생활비', '지원금': '생활비'
+    };
+    const householdMap = {
+        '1인': '1인가구', '혼자': '1인가구', '독신': '1인가구',
+        '신혼': '신혼부부', '결혼': '신혼부부',
+        '자녀': '자녀있음', '아이': '자녀있음',
+        '다자녀': '다자녀', '3명': '다자녀',
+        '한부모': '한부모', '미혼모': '한부모', '미혼부': '한부모'
+    };
+
+    let targetAge = null, targetCategory = null, targetHousehold = null;
+
+    Object.entries(ageMap).forEach(([k, v]) => { if (query.includes(k)) targetAge = v; });
+    Object.entries(categoryMap).forEach(([k, v]) => { if (query.includes(k)) targetCategory = v; });
+    Object.entries(householdMap).forEach(([k, v]) => { if (query.includes(k)) targetHousehold = v; });
+
+    // 아무 키워드도 없으면 빈 배열
+    if (!targetAge && !targetCategory && !targetHousehold) return [];
+
+    const incomeNum = 200; // 검색 시 기본값 200만원 가정
+    const familyCount = 1;
+    const fakeData = {
+        age: targetAge || answers.age || '30대',
+        household: targetHousehold || answers.household || '1인가구',
+        income: answers.income || '100-250만원',
+        category: targetCategory || '전체',
+        region: answers.region || 'seoul',
+        subRegion: answers.subRegion || '',
+        incomeNum, familyCount
+    };
+
+    return welfareData.filter(item => {
+        try {
+            let catMatch = true;
+            if (targetCategory) catMatch = item.category === targetCategory;
+            return item.condition(fakeData) && catMatch;
+        } catch { return false; }
+    }).slice(0, 8);
+}
+
+// 엔터키로 전송
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('chatInput');
+    if (input) {
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') handleChatInput();
+        });
+    }
+});
 
 // PDF 다운로드
 function downloadPdf() {
