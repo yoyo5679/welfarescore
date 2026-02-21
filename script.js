@@ -440,6 +440,28 @@ function showResult() {
         }
     });
 
+    // ── V20: 자립준비청년 선택 시 전용 혜택 카드 맞춤혜택 최상단 추가 ──
+    if (answers.household === '자립준비청년') {
+        currentBenefits.custom.unshift({
+            name: '자립준비청년 맞춤 지원사업 안내',
+            tag: '아동권리보장원',
+            desc: '보호종료 후 자립을 준비하는 청년을 위한 주거·취업·생활·심리 맞춤 지원사업 통합 포털. 나에게 맞는 지원을 한눈에 확인하세요.',
+            applyUrl: 'https://jaripon.ncrc.or.kr/home/kor/support/projectMng/index.do',
+            monthlyAmount: 0,
+            icon: '🌱',
+            relevance: 9999
+        });
+        currentBenefits.custom.unshift({
+            name: '자립준비청년 자립수당 (월 40만원)',
+            tag: '아동권리보장원',
+            desc: '보호종료 후 5년 이내 자립준비청년에게 자립활동비로 매월 40만원 지급. 만 24세 이하 대상.',
+            applyUrl: 'https://jaripon.ncrc.or.kr/home/kor/support/projectMng/index.do',
+            monthlyAmount: 400000,
+            icon: '💰',
+            relevance: 9998
+        });
+    }
+
     // 지역별 정렬 최적화 (relevance 높은 것 상단)
     currentBenefits.local.sort((a, b) => (b.relevance || 0) - (a.relevance || 0));
 
@@ -492,9 +514,9 @@ function renderBenefits(category) {
             <div class="benefit-desc">${b.desc || b.description}</div>
             <div class="benefit-meta">
                 <div class="benefit-amount">💰 ${amountText}</div>
-                <a href="${b.applyUrl || '#'}" class="benefit-link-btn" target="_blank">신청하기 ➔</a>
+                <a href="${b.applyUrl || '#'}" class="benefit-link-btn">신청하기 ➔</a>
             </div>
-            <a href="${blogUrl}" class="blog-cta-btn" target="_blank">
+            <a href="${blogUrl}" class="blog-cta-btn">
                 📖 신청 꿀팁 블로그에서 확인하기
             </a>
         `;
