@@ -16,7 +16,7 @@ def generate_js():
         'jeonbuk': '전북', 'jeonnam': '전남', 'chungbuk': '충북',
         'chungnam': '충남', 'gyeongnam': '경남', 'gyeongbuk': '경북',
         'jeju': '제주', 'gangwon': '강원', 'busan': '부산',
-        'daegu': '대구', 'ulsan': '울산', 'daejeon': '대전', 'sejong': '세종'
+        'daegu': '대구', 'ulsan': '울산', 'daejeon': '대전', 'gwangju': '광주', 'sejong': '세종'
     }
 
     # Age range mapping for overlap check (V14 Engine)
@@ -51,6 +51,19 @@ def generate_js():
         '청년 마음건강': 'https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWAT52005M.do?wlfareInfoId=WLF00001374',
         '청년전세임대': 'https://apply.lh.or.kr'
     }
+
+    # Regional Youth Portals (V14 Data Injection)
+    REGIONAL_PORTALS = [
+        {"name": "청년몽땅정보통 (서울 청년포털)", "url": "https://youth.seoul.go.kr", "region": "seoul"},
+        {"name": "잡아바 (경기 청년포털)", "url": "https://www.jobaba.net", "region": "gyeonggi"},
+        {"name": "부산청년플랫폼", "url": "https://www.busan.go.kr/young", "region": "busan"},
+        {"name": "인천청년포털", "url": "https://www.incheon.go.kr/youth", "region": "incheon"},
+        {"name": "대구청년커뮤니티재단", "url": "https://dgyouth.kr", "region": "daegu"},
+        {"name": "대전청년포털", "url": "https://www.daejeonyouthportal.kr", "region": "daejeon"},
+        {"name": "광주청년정책플랫폼", "url": "https://www.gwangju.go.kr/youth", "region": "gwangju"},
+        {"name": "울산청년정책플랫폼", "url": "https://www.ulsan.go.kr/youth", "region": "ulsan"},
+        {"name": "세종청년희망내일센터", "url": "https://sjyouth.sjtp.or.kr", "region": "sejong"}
+    ]
 
     js_code = "const welfareData = [\n"
     
@@ -119,9 +132,21 @@ def generate_js():
             if age_conds:
                 conditions.append(f"({' || '.join(age_conds)})")
 
-        # 2. Raw Eligibility Parsing (MOIS / Youth Center)
+        # 2. Raw Eligibility/Agency Parsing (Strict Regional Filtering V14)
         elig_raw = item.get('eligibility_raw', {})
         target_text = ((elig_raw.get('target') or '') + " " + (elig_raw.get('criteria') or '') + " " + (elig_raw.get('user_type') or '') + " " + full_text).lower()
+
+        # Check for Region match in agency or name
+        matched_regions = []
+        is_local = False
+        for slug, r_name in region_map.items():
+            if r_name in (agency + " " + name):
+                matched_regions.append(slug)
+                is_local = True
+        
+        if matched_regions:
+            slug_check = " || ".join([f"d.region === '{s}'" for s in matched_regions])
+            conditions.append(f"({slug_check})")
 
         # Youth specific
         if any(x in target_text for x in ['청년', '대학생', '취준생', '사회초년생']):
@@ -197,12 +222,29 @@ def generate_js():
         js_code += f"        hashtags: {tags_str},\n"
         js_code += f"        applyUrl: '{url}',\n"
         js_code += f"        apply_period: '{item.get('apply_period', '')}',\n"
-        js_code += f"        howTo: ['상세 공고 확인', '온라인/방문 신청'],\n"
+        js_code += f"        howTo: {json.dumps(item.get('howTo', ['온라인/방문 신청']), ensure_ascii=False)},\n"
         js_code += f"        condition: (d) => {condition_str},\n"
-        js_code += f"        raw_category: '{category}',\n"
+        js_code += f"        isLocal: {'true' if is_local else 'false'},\n"
+        js_code += f"        raw_category: '{item.get('raw_category', '')}',\n"
         js_code += f"        category: '{category}',\n"
         js_code += f"        relevance: 95, monthlyAmount: {amount // 6 if '6개월' in item.get('amount_text', '') else amount}\n"
         js_code += "    },\n"
+
+    # --- Inject Regional Portals into JS ---
+    for p in REGIONAL_PORTALS:
+        js_code += f"""    {{
+        name: '{p['name']}',
+        description: '{p['name']}을 통해 지역별 숨은 정책을 한눈에 확인하세요.',
+        icon: '🏛️', tag: '{region_map[p['region']]} 청년',
+        applyUrl: '{p['url']}',
+        apply_period: '상시',
+        howTo: ['온라인 홈페이지 접속'],
+        condition: (d) => d.region === '{p['region']}' && (d.age === '20대' || d.age === '30대'),
+        isLocal: true,
+        category: '전체',
+        relevance: 100, monthlyAmount: 0
+    }},
+"""
 
     js_code += "];"
 

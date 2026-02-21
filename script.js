@@ -329,17 +329,17 @@ function showResult() {
     const subRegionName = subRegionBtn ? subRegionBtn.innerText : '';
 
     benefits.forEach(b => {
-        // [온통청년]은 국가 핵심 사업이므로 가장 먼저 보여주기 위해 'custom'으로 분류 (V14)
-        if (b.name.includes('[온통청년]')) {
-            currentBenefits.custom.push(b);
-        } else if (['초록우산', '굿네이버스', '이랜드복지재단', '희망친구기아대책'].includes(b.tag)) {
+        if (['초록우산', '굿네이버스', '이랜드복지재단', '희망친구기아대책'].includes(b.tag)) {
             currentBenefits.agency.push(b);
-        } else if (b.tag.includes(regionName) || b.tag === '지자체공통' || (subRegionName && b.tag.includes(subRegionName))) {
+        } else if (b.isLocal) {
             currentBenefits.local.push(b);
         } else {
             currentBenefits.custom.push(b);
         }
     });
+
+    // 지역별 정렬 최적화 (사이트 링크 최상단 노출)
+    currentBenefits.local.sort((a, b) => (b.relevance || 0) - (a.relevance || 0));
 
     // 기본 탭(맞춤 혜택) 렌더링
     renderBenefits('custom');
@@ -441,7 +441,6 @@ function initMap() {
 function searchNearbyAgencies() {
     if (!ps) return;
 
-    // 카테고리 검색: KB6(사회복지시설), PO3(공공기관)
     const callback = (data, status) => {
         if (status === kakao.maps.services.Status.OK) {
             for (let i = 0; i < data.length; i++) {
@@ -450,8 +449,20 @@ function searchNearbyAgencies() {
         }
     };
 
-    ps.categorySearch('KB6', callback, { useMapBounds: true }); // 사회복지시설
-    ps.categorySearch('PO3', callback, { useMapBounds: true }); // 공공기관
+    // 1. 카테고리 검색: KB6(사회복지시설), PO3(공공기관)
+    ps.categorySearch('KB6', callback, { useMapBounds: true });
+    ps.categorySearch('PO3', callback, { useMapBounds: true });
+
+    // 2. 키워드 검색 추가 (사회복지관 등 상세 기관 확보)
+    const regionBtn = document.querySelector(`.opt-btn.selected[onclick*="region"]`);
+    const regionName = regionBtn ? regionBtn.innerText.replace(/[^가-힣]/g, '').trim() : '';
+    const subRegionBtn = document.querySelector(`.opt-btn.selected[onclick*="subRegion"]`);
+    const subRegionName = subRegionBtn ? subRegionBtn.innerText : '';
+    const baseKeyword = `${regionName} ${subRegionName}`.trim();
+
+    ps.keywordSearch(`${baseKeyword} 복지관`, callback, { useMapBounds: true });
+    ps.keywordSearch(`${baseKeyword} 복지센터`, callback, { useMapBounds: true });
+    ps.keywordSearch(`${baseKeyword} 센터`, callback, { useMapBounds: true });
 }
 
 function displayMarker(place) {
