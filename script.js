@@ -10,6 +10,84 @@ const REGION_NAMES = {
     'gyeongnam': '경남', 'jeju': '제주'
 };
 
+// ── 지역별 청년포털 & 복지포털 데이터 (V20) ──
+const REGIONAL_PORTALS = {
+    'seoul': [
+        { name: '서울청년포털 (청년몽땅정보통)', tag: '서울특별시', desc: '서울시 청년 정책 원스톱 포털. 주거·취업·교육·문화 분야 지원사업 한눈에 확인!', applyUrl: 'https://youth.seoul.go.kr/', monthlyAmount: 0, icon: '🏙️', relevance: 100 },
+        { name: '서울시 청년수당', tag: '서울특별시', desc: '미취업 만 19~34세 서울 청년에게 최대 6개월간 월 50만원 지원', applyUrl: 'https://youth.seoul.go.kr/site/main/content/youth_pay', monthlyAmount: 500000, icon: '💰', relevance: 98 },
+        { name: '서울형 강소기업 취업지원', tag: '서울특별시', desc: '중소기업 취업 청년 대상 인턴십·연계 정규직 채용 및 장려금 지원', applyUrl: 'https://youth.seoul.go.kr/', monthlyAmount: 300000, icon: '💼', relevance: 90 }
+    ],
+    'gyeonggi': [
+        { name: '경기도 청년포털 (잡아바)', tag: '경기도', desc: '경기도 청년 취업·창업·복지 종합 정보 포털. 다양한 지원정책을 한 곳에서!', applyUrl: 'https://www.jobaba.net/', monthlyAmount: 0, icon: '⛰️', relevance: 100 },
+        { name: '경기 청년 복지포인트', tag: '경기도', desc: '경기도 중소기업 재직 청년에게 연 120만원 복지포인트 지급', applyUrl: 'https://www.gyeonggi.go.kr/', monthlyAmount: 120000, icon: '🎁', relevance: 97 },
+        { name: '경기도 청년 갭이어 프로그램', tag: '경기도', desc: '취업 준비 청년을 위한 역량개발·진로탐색 프로그램 및 활동비 지원', applyUrl: 'https://www.gyeonggi.go.kr/', monthlyAmount: 200000, icon: '🌱', relevance: 88 }
+    ],
+    'incheon': [
+        { name: '인천광역시 청년포털', tag: '인천광역시', desc: '인천 청년 맞춤형 지원정책 통합포털. 주거·일자리·창업 지원 안내', applyUrl: 'https://youth.incheon.go.kr/', monthlyAmount: 0, icon: '✈️', relevance: 100 },
+        { name: '인천 청년도약장려금', tag: '인천광역시', desc: '만 18~34세 인천 거주 미취업 청년 대상 구직활동 지원금 지급', applyUrl: 'https://youth.incheon.go.kr/', monthlyAmount: 500000, icon: '💰', relevance: 95 }
+    ],
+    'busan': [
+        { name: '부산청년플랫폼 (BYP)', tag: '부산광역시', desc: '부산 청년 정책·일자리·문화·주거 원스톱 지원 플랫폼', applyUrl: 'https://youth.busan.go.kr/', monthlyAmount: 0, icon: '🌊', relevance: 100 },
+        { name: '부산 청년 희망지원금', tag: '부산광역시', desc: '부산 거주 만 18~34세 청년 취업준비생 대상 월 최대 30만원 지원', applyUrl: 'https://youth.busan.go.kr/', monthlyAmount: 300000, icon: '🌟', relevance: 96 },
+        { name: '부산 청년 주거비 지원', tag: '부산광역시', desc: '청년 임차가구 대상 월세 일부 지원으로 주거비 부담 완화', applyUrl: 'https://youth.busan.go.kr/', monthlyAmount: 200000, icon: '🏠', relevance: 90 }
+    ],
+    'daegu': [
+        { name: '대구청년센터 (청년드림)', tag: '대구광역시', desc: '대구 청년을 위한 일자리·창업·주거·문화 복합지원 플랫폼', applyUrl: 'https://www.daegu.go.kr/youth/', monthlyAmount: 0, icon: '🍎', relevance: 100 },
+        { name: '대구형 청년 일자리 사업', tag: '대구광역시', desc: '대구 지역 중소기업 취업 청년 대상 임금 보전 및 재직장려금 지원', applyUrl: 'https://www.daegu.go.kr/youth/', monthlyAmount: 200000, icon: '💼', relevance: 92 }
+    ],
+    'gwangju': [
+        { name: '광주광역시 청년센터', tag: '광주광역시', desc: '광주 청년 복지정책 종합안내. 주거·취업·창업·문화 지원 정보 제공', applyUrl: 'https://www.gwangju.go.kr/youth/', monthlyAmount: 0, icon: '🎨', relevance: 100 },
+        { name: '광주청년드림통장', tag: '광주광역시', desc: '근로·사업소득이 있는 청년이 저축하면 시에서 매칭 적립해주는 청년지원 사업', applyUrl: 'https://www.gwangju.go.kr/youth/', monthlyAmount: 200000, icon: '💳', relevance: 95 }
+    ],
+    'daejeon': [
+        { name: '대전광역시 청년포털', tag: '대전광역시', desc: '대전 청년 지원정책. 일자리·주거·창업·문화 맞춤 지원 안내', applyUrl: 'https://www.daejeon.go.kr/youth/', monthlyAmount: 0, icon: '🔬', relevance: 100 },
+        { name: '대전 청년 구직활동지원금', tag: '대전광역시', desc: '취업을 준비하는 대전 청년에게 구직활동 비용 지원', applyUrl: 'https://www.daejeon.go.kr/youth/', monthlyAmount: 300000, icon: '💰', relevance: 90 }
+    ],
+    'ulsan': [
+        { name: '울산청년센터', tag: '울산광역시', desc: '울산 청년 지원정책 및 취업·창업·주거 정보 안내 센터', applyUrl: 'https://www.ulsan.go.kr/youth/', monthlyAmount: 0, icon: '🐋', relevance: 100 },
+        { name: '울산 청년 취업장려금', tag: '울산광역시', desc: '울산 지역 기업 취업 청년 대상 정착금 및 장려금 지원', applyUrl: 'https://www.ulsan.go.kr/youth/', monthlyAmount: 200000, icon: '💼', relevance: 90 }
+    ],
+    'sejong': [
+        { name: '세종시 청년지원센터', tag: '세종특별자치시', desc: '세종시 청년 정책·일자리·주거 지원 통합 안내', applyUrl: 'https://www.sejong.go.kr/youth/', monthlyAmount: 0, icon: '🏢', relevance: 100 },
+        { name: '세종시 청년 월세지원', tag: '세종특별자치시', desc: '세종시 거주 무주택 청년 대상 월세 일부 지원', applyUrl: 'https://www.sejong.go.kr/youth/', monthlyAmount: 200000, icon: '🏠', relevance: 88 }
+    ],
+    'gangwon': [
+        { name: '강원도 청년센터', tag: '강원특별자치도', desc: '강원 청년 창업·취업·귀촌 지원 종합 정보 포털', applyUrl: 'https://www.gw.go.kr/youth/', monthlyAmount: 0, icon: '⛷️', relevance: 100 },
+        { name: '강원 청년 창업지원 (강소연)', tag: '강원특별자치도', desc: '강원 청년 창업가 대상 초기 창업자금 및 멘토링 지원', applyUrl: 'https://www.gw.go.kr/youth/', monthlyAmount: 300000, icon: '🚀', relevance: 92 }
+    ],
+    'chungbuk': [
+        { name: '충청북도 청년지원센터', tag: '충청북도', desc: '충북 청년 취업·창업·주거·복지 지원 정책 안내', applyUrl: 'https://www.cb.go.kr/youth/', monthlyAmount: 0, icon: '🏞️', relevance: 100 },
+        { name: '충북 청년 취업지원', tag: '충청북도', desc: '충북 지역 기업 취업 청년 대상 정착장려금 및 인턴십 지원', applyUrl: 'https://www.cb.go.kr/youth/', monthlyAmount: 200000, icon: '💼', relevance: 88 }
+    ],
+    'chungnam': [
+        { name: '충청남도 청년센터', tag: '충청남도', desc: '충남 청년 맞춤형 정책. 일자리·주거·복지·교육 지원 안내', applyUrl: 'https://www.chungnam.go.kr/youth/', monthlyAmount: 0, icon: '🌅', relevance: 100 },
+        { name: '충남 청년 행복카드', tag: '충청남도', desc: '충남 거주 청년 대상 문화·여가·교통 할인 혜택 제공 카드', applyUrl: 'https://www.chungnam.go.kr/youth/', monthlyAmount: 100000, icon: '🎴', relevance: 88 }
+    ],
+    'jeonbuk': [
+        { name: '전북특별자치도 청년센터', tag: '전북특별자치도', desc: '전북 청년 지원정책 포털. 주거·일자리·창업 등 맞춤 지원 안내', applyUrl: 'https://www.jb.go.kr/youth/', monthlyAmount: 0, icon: '🍚', relevance: 100 },
+        { name: '전주시 청년지원 프로그램', tag: '전주시', desc: '전주 청년을 위한 취업·창업·주거·문화 특화 지원 사업', applyUrl: 'https://www.jeonju.go.kr/youth/', monthlyAmount: 0, icon: '🏯', relevance: 98 },
+        { name: '전북 청년 희망공제 (적금 매칭)', tag: '전북특별자치도', desc: '전북 중소기업 재직 청년이 저축하면 기업·도가 매칭 적립해주는 목돈 마련 사업', applyUrl: 'https://www.jb.go.kr/youth/', monthlyAmount: 240000, icon: '💰', relevance: 96 },
+        { name: '전북 청년 월세 특별지원', tag: '전북특별자치도', desc: '무주택 청년 1인 가구 대상 월세 지원 (최대 월 20만원, 12개월)', applyUrl: 'https://www.jb.go.kr/youth/', monthlyAmount: 200000, icon: '🏠', relevance: 93 }
+    ],
+    'jeonnam': [
+        { name: '전라남도 청년센터', tag: '전라남도', desc: '전남 청년 정착·취업·창업·귀농귀촌 종합 지원 포털', applyUrl: 'https://www.jeonnam.go.kr/youth/', monthlyAmount: 0, icon: '🥘', relevance: 100 },
+        { name: '전남 청년 농어촌 정착지원금', tag: '전라남도', desc: '전남 농어촌 정착 청년 대상 5년간 매월 최대 100만원 지원', applyUrl: 'https://www.jeonnam.go.kr/youth/', monthlyAmount: 1000000, icon: '🌾', relevance: 95 }
+    ],
+    'gyeongbuk': [
+        { name: '경상북도 청년정책포털 (경북청년)', tag: '경상북도', desc: '경북 청년 취업·창업·주거·귀농 지원 정책 통합 안내', applyUrl: 'https://youth.gyeongbuk.go.kr/', monthlyAmount: 0, icon: '🏰', relevance: 100 },
+        { name: '경북 청년 내일채움공제 플러스', tag: '경상북도', desc: '경북 중소기업 청년 재직자 목돈 마련 지원 (기업·도 매칭)', applyUrl: 'https://youth.gyeongbuk.go.kr/', monthlyAmount: 300000, icon: '💰', relevance: 95 }
+    ],
+    'gyeongnam': [
+        { name: '경상남도 청년센터', tag: '경상남도', desc: '경남 청년 지원정책. 취업·창업·주거 분야 맞춤 안내 포털', applyUrl: 'https://www.gyeongnam.go.kr/youth/', monthlyAmount: 0, icon: '⚓', relevance: 100 },
+        { name: '경남 청년 구직활동지원금', tag: '경상남도', desc: '경남 거주 미취업 청년 대상 구직활동비 월 최대 30만원 지원', applyUrl: 'https://www.gyeongnam.go.kr/youth/', monthlyAmount: 300000, icon: '💼', relevance: 92 }
+    ],
+    'jeju': [
+        { name: '제주청년센터 (제주청년)', tag: '제주특별자치도', desc: '제주 청년 경제·주거·문화·교육 지원 종합 포털', applyUrl: 'https://youth.jeju.go.kr/', monthlyAmount: 0, icon: '🏝️', relevance: 100 },
+        { name: '제주 청년 이주지원금', tag: '제주특별자치도', desc: '제주 이주 청년에게 정착 지원금 및 주거비 일부 지원', applyUrl: 'https://youth.jeju.go.kr/', monthlyAmount: 200000, icon: '✈️', relevance: 92 },
+        { name: '제주 청년 창업지원 (탐나는 청년)', tag: '제주특별자치도', desc: '제주 청년 창업가 대상 창업자금·교육·멘토링·공간 지원', applyUrl: 'https://youth.jeju.go.kr/', monthlyAmount: 300000, icon: '🚀', relevance: 90 }
+    ]
+};
+
 // 시군구 데이터 (V11)
 const SUB_REGIONS = {
     'seoul': ['강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구', '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구', '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'],
@@ -337,19 +415,39 @@ function showResult() {
     const regionName = regionBtn ? regionBtn.innerText.replace(/[^\uAC00-\uD7A3]/g, '').trim() : '내 지역';
     const subRegionBtn = document.querySelector(`.opt-btn.selected[onclick*="subRegion"]`);
     const subRegionName = subRegionBtn ? subRegionBtn.innerText : '';
+    const selectedRegion = answers.region || '';
 
+    // ── V20: 지역별 청년포털 데이터 자동 주입 ──
+    if (selectedRegion && REGIONAL_PORTALS[selectedRegion]) {
+        REGIONAL_PORTALS[selectedRegion].forEach(portal => {
+            currentBenefits.local.push({
+                ...portal,
+                isLocal: true,
+                category: '생활비'
+            });
+        });
+    }
+
+    // 중앙정부 데이터 중 지역 매칭된 isLocal 항목도 추가
     benefits.forEach(b => {
         if (['초록우산', '굿네이버스', '이랜드복지재단', '희망친구기아대책'].includes(b.tag)) {
             currentBenefits.agency.push(b);
         } else if (b.isLocal) {
+            // condition이 true인 경우만 (false 하드코딩 제외)
             currentBenefits.local.push(b);
         } else {
             currentBenefits.custom.push(b);
         }
     });
 
-    // 지역별 정렬 최적화 (사이트 링크 최상단 노출)
+    // 지역별 정렬 최적화 (relevance 높은 것 상단)
     currentBenefits.local.sort((a, b) => (b.relevance || 0) - (a.relevance || 0));
+
+    // 지역지원 탭 버튼에 배지 표시
+    const localTabBtn = document.querySelector('.tab-btn[onclick*="local"]');
+    if (localTabBtn && currentBenefits.local.length > 0) {
+        localTabBtn.innerHTML = `📍 지역 지원 <span style="background:#ef4444;color:white;border-radius:10px;padding:1px 6px;font-size:11px;margin-left:4px;">${currentBenefits.local.length}</span>`;
+    }
 
     // 기본 탭(맞춤 혜택) 렌더링
     renderBenefits('custom');
