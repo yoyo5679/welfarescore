@@ -242,7 +242,7 @@ function calcResult() {
         // 3. 지역별 정렬 로직 (기존 유지)
         const regionBtn = document.querySelector(`.opt-btn.selected[onclick*="region"]`);
         if (regionBtn) {
-            const regionName = regionBtn.innerText.replace(/[^\uAC00-\D7A3]/g, '').trim();
+            const regionName = regionBtn.innerText.replace(/[^\uAC00-\uD7A3]/g, '').trim();
             if (answers.region === 'jeonbuk' && (a.tag.includes('전북') || a.tag.includes('전주'))) scoreA += 1000;
             if (answers.region === 'jeonbuk' && (b.tag.includes('전북') || b.tag.includes('전주'))) scoreB += 1000;
             if (a.tag.includes(regionName)) scoreA += 800;
@@ -334,7 +334,7 @@ function showResult() {
     currentBenefits = { custom: [], local: [], agency: [] };
 
     const regionBtn = document.querySelector(`.opt-btn.selected[onclick*="region"]`);
-    const regionName = regionBtn ? regionBtn.innerText.replace(/[^\uAC00-\D7A3]/g, '').trim() : '내 지역';
+    const regionName = regionBtn ? regionBtn.innerText.replace(/[^\uAC00-\uD7A3]/g, '').trim() : '내 지역';
     const subRegionBtn = document.querySelector(`.opt-btn.selected[onclick*="subRegion"]`);
     const subRegionName = subRegionBtn ? subRegionBtn.innerText : '';
 
