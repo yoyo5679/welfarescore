@@ -391,6 +391,12 @@ function renderBenefits(category) {
 let kakaoMap = null;
 let ps = null;
 let infowindow = null;
+let markers = []; // 지도의 모든 마커를 추적하기 위한 배열 (V15)
+
+function clearMarkers() {
+    markers.forEach(m => m.setMap(null));
+    markers = [];
+}
 
 function initMap() {
     const mapStatus = document.getElementById('mapStatus');
@@ -426,6 +432,11 @@ function initMap() {
                 kakaoMap = new kakao.maps.Map(container, options);
                 ps = new kakao.maps.services.Places(kakaoMap);
                 infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+
+                // 지도가 이동하거나 확대/축소되면 새로 검색 (V15)
+                kakao.maps.event.addListener(kakaoMap, 'idle', function () {
+                    searchNearbyAgencies();
+                });
             } else {
                 kakaoMap.setCenter(locPosition);
             }
@@ -440,6 +451,9 @@ function initMap() {
 
 function searchNearbyAgencies() {
     if (!ps) return;
+
+    // 기존 마커 제거 (새로운 지역 검색 시 겹침 방지 V15)
+    clearMarkers();
 
     const callback = (data, status) => {
         if (status === kakao.maps.services.Status.OK) {
@@ -470,6 +484,9 @@ function displayMarker(place) {
         map: kakaoMap,
         position: new kakao.maps.LatLng(place.y, place.x)
     });
+
+    // 마커 배열에 추가하여 나중에 지울 수 있도록 함
+    markers.push(marker);
 
     kakao.maps.event.addListener(marker, 'click', function () {
         infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');

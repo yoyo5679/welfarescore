@@ -10,13 +10,53 @@ def generate_js():
     with open(input_path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    # Region mapping: answers[region] -> residence name
+    # Region mapping: answers[region] -> key display name
     region_map = {
         'seoul': '서울', 'gyeonggi': '경기', 'incheon': '인천',
         'jeonbuk': '전북', 'jeonnam': '전남', 'chungbuk': '충북',
         'chungnam': '충남', 'gyeongnam': '경남', 'gyeongbuk': '경북',
         'jeju': '제주', 'gangwon': '강원', 'busan': '부산',
         'daegu': '대구', 'ulsan': '울산', 'daejeon': '대전', 'gwangju': '광주', 'sejong': '세종'
+    }
+
+    # Region aliases for smarter filtering (V15)
+    region_aliases = {
+        'seoul': ['서울', '서울특별시'],
+        'gyeonggi': ['경기', '경기도'],
+        'incheon': ['인천', '인천광역시'],
+        'busan': ['부산', '부산광역시'],
+        'daegu': ['대구', '대구광역시'],
+        'ulsan': ['울산', '울산광역시'],
+        'daejeon': ['대전', '대전광역시'],
+        'gwangju': ['광주', '광주광역시'],
+        'sejong': ['세종', '세종특별자치시', '세종시'],
+        'jeonbuk': ['전북', '전라북도', '전북특별자치도', '전주'],
+        'jeonnam': ['전남', '전라남도', '목포', '여수'],
+        'chungbuk': ['충북', '충청북도', '청주'],
+        'chungnam': ['충남', '충청남도', '천안'],
+        'gyeongnam': ['경남', '경상남도', '창원'],
+        'gyeongbuk': ['경북', '경상북도', '포항'],
+        'jeju': ['제주', '제주특별자치도', '제주시'],
+        'gangwon': ['강원', '강원특별자치도', '춘천']
+    }
+
+    sub_region_map = {
+        'seoul': ['강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구', '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구', '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'],
+        'gyeonggi': ['수원시', '고양시', '용인시', '성남시', '부천시', '화성시', '안산시', '남양주시', '안양시', '평택시', '시흥시', '파주시', '의정부시', '김포시', '광주시', '광명시', '군포시', '하남시', '오산시', '양주시', '이천시', '구리시', '안성시', '포천시', '의왕시', '여주시', '양평군', '동두천시', '과천시', '가평군', '연천군'],
+        'busan': ['강서구', '금정구', '기장군', '남구', '동구', '동래구', '부산진구', '북구', '사상구', '사하구', '서구', '수영구', '연제구', '영도구', '중구', '해운대구'],
+        'incheon': ['강화군', '계양구', '남동구', '동구', '미추홀구', '부평구', '서구', '연수구', '옹진군', '중구'],
+        'daegu': ['군위군', '남구', '달서구', '달성군', '동구', '북구', '서구', '수성구', '중구'],
+        'gwangju': ['광산구', '남구', '동구', '북구', '서구'],
+        'daejeon': ['대덕구', '동구', '서구', '유성구', '중구'],
+        'ulsan': ['남구', '동구', '북구', '울주군', '중구'],
+        'gangwon': ['춘천시', '원주시', '강릉시', '동해시', '속초시', '홍천군', '횡성군', '영월군', '평창군'],
+        'chungbuk': ['청주시', '충주시', '제천시', '보은군', '옥천군', '영동군', '증평군', '진천군', '괴산군', '음성군', '단양군'],
+        'chungnam': ['천안시', '공주시', '보령시', '아산시', '서산시', '논산시', '계룡시', '당진시'],
+        'jeonbuk': ['전주시', '군산시', '익산시', '정읍시', '남원시', '김제시', '완주군'],
+        'jeonnam': ['목포시', '여수시', '순천시', '나주시', '광양시', '담양군', '곡성군', '구례군'],
+        'gyeongbuk': ['포항시', '경주시', '김천시', '안동시', '구미시', '영주시', '영천시', '상주시', '문경시', '경산시'],
+        'gyeongnam': ['창원시', '진주시', '통영시', '사천시', '김해시', '밀양시', '거제시', '양산시'],
+        'jeju': ['제주시', '서귀포시']
     }
 
     # Age range mapping for overlap check (V14 Engine)
@@ -62,7 +102,15 @@ def generate_js():
         {"name": "대전청년포털", "url": "https://www.daejeonyouthportal.kr", "region": "daejeon"},
         {"name": "광주청년정책플랫폼", "url": "https://www.gwangju.go.kr/youth", "region": "gwangju"},
         {"name": "울산청년정책플랫폼", "url": "https://www.ulsan.go.kr/youth", "region": "ulsan"},
-        {"name": "세종청년희망내일센터", "url": "https://sjyouth.sjtp.or.kr", "region": "sejong"}
+        {"name": "세종청년희망내일센터", "url": "https://sjyouth.sjtp.or.kr", "region": "sejong"},
+        {"name": "전북청년허브 (전북청년포털)", "url": "https://www.jb2030.or.kr", "region": "jeonbuk"},
+        {"name": "전남청년센터", "url": "https://www.전남청년센터.kr", "region": "jeonnam"},
+        {"name": "경북청년정책포털", "url": "https://www.gb.go.kr/youth", "region": "gyeongbuk"},
+        {"name": "경남청년센터 (청년온나)", "url": "https://www.gnyouth.kr", "region": "gyeongnam"},
+        {"name": "강원청년포털", "url": "https://www.gyf.or.kr", "region": "gangwon"},
+        {"name": "충북청년광장", "url": "https://www.young.cb21.net", "region": "chungbuk"},
+        {"name": "충남청년포털", "url": "https://www.cn2030.or.kr", "region": "chungnam"},
+        {"name": "제주청년포털", "url": "https://www.jejuyouth.com", "region": "jeju"}
     ]
 
     js_code = "const welfareData = [\n"
@@ -132,21 +180,40 @@ def generate_js():
             if age_conds:
                 conditions.append(f"({' || '.join(age_conds)})")
 
-        # 2. Raw Eligibility/Agency Parsing (Strict Regional Filtering V14)
+        # 2. Raw Eligibility/Agency Parsing (Strict Regional Filtering V14+)
         elig_raw = item.get('eligibility_raw', {})
         target_text = ((elig_raw.get('target') or '') + " " + (elig_raw.get('criteria') or '') + " " + (elig_raw.get('user_type') or '') + " " + full_text).lower()
 
-        # Check for Region match in agency or name
+        # Check for Region / SubRegion match in agency or name
         matched_regions = []
+        matched_sub_regions = []
         is_local = False
-        for slug, r_name in region_map.items():
-            if r_name in (agency + " " + name):
-                matched_regions.append(slug)
-                is_local = True
         
-        if matched_regions:
-            slug_check = " || ".join([f"d.region === '{s}'" for s in matched_regions])
-            conditions.append(f"({slug_check})")
+        # Check sub-regions first (more specific)
+        for r_slug, subs in sub_region_map.items():
+            for sub in subs:
+                # Remove '시', '군', '구' from the end for broader matching
+                sub_short = sub[:-1] if len(sub) > 2 else sub
+                if sub_short in (agency + " " + name):
+                    matched_sub_regions.append((r_slug, sub))
+                    is_local = True
+
+        # Check regions
+        for slug, aliases in region_aliases.items():
+            if any(alias in (agency + " " + name) for alias in aliases):
+                # If we haven't found a more specific sub-region match for this parent region
+                if not any(msr[0] == slug for msr in matched_sub_regions):
+                    matched_regions.append(slug)
+                    is_local = True
+        
+        # Generate condition for sub-regions
+        if matched_sub_regions:
+            sub_conds = [f"(d.region === '{r}' && d.subRegion === '{s}')" for r, s in matched_sub_regions]
+            conditions.append(f"({' || '.join(sub_conds)})")
+        # Generate condition for broad regions (only if no sub-region matches for that region)
+        elif matched_regions:
+            reg_conds = [f"d.region === '{s}'" for s in matched_regions]
+            conditions.append(f"({' || '.join(reg_conds)})")
 
         # Youth specific
         if any(x in target_text for x in ['청년', '대학생', '취준생', '사회초년생']):
