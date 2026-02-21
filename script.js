@@ -396,7 +396,12 @@ function initMap() {
     const mapStatus = document.getElementById('mapStatus');
 
     if (typeof kakao === 'undefined' || !kakao.maps) {
-        mapStatus.innerHTML = '⚠️ 지도 API 키 설정이 필요합니다. (Kakao Maps SDK)';
+        mapStatus.innerHTML = '⚠️ 지도 라이브러리를 불러오는 중입니다... (잠시만 기다려주세요)';
+        // 1초 후 재시도
+        setTimeout(initMap, 1000);
+
+        // 도메인 등록 안내를 위한 콘솔 로그 추가
+        console.warn('Kakao Maps SDK not loaded. Please check if your domain (e.g., http://localhost:8080) is registered in Kakao Developers Console.');
         return;
     }
 
