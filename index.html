@@ -32,6 +32,9 @@
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4943960812497979"
         crossorigin="anonymous"></script>
+    <!-- 카카오 맵 API (라이브러리 포함) -->
+    <script type="text/javascript"
+        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e475d24373055357fdd479eaf5913c14&libraries=services"></script>
 
     <link rel="stylesheet" href="style.css?v=11.0">
 
@@ -348,6 +351,13 @@
         </div>
 
         <div class="container">
+            <div id="mapWrapper" style="display:none; margin-bottom:20px;">
+                <div id="map"
+                    style="width:100%; height:350px; border-radius:16px; border:1px solid var(--border); box-shadow: var(--shadow);">
+                </div>
+                <p id="mapStatus" style="font-size:12px; color:var(--muted); text-align:center; margin-top:8px;">📍 주변의
+                    기관을 불러오고 있습니다...</p>
+            </div>
             <div id="benefitList" class="benefit-list"></div>
         </div>
 

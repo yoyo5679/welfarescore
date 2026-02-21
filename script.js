@@ -1,6 +1,15 @@
 const answers = {};
 const TOTAL_STEPS = 5;
 
+const REGION_NAMES = {
+    'seoul': '서울', 'gyeonggi': '경기', 'incheon': '인천',
+    'busan': '부산', 'daegu': '대구', 'ulsan': '울산',
+    'daejeon': '대전', 'gwangju': '광주', 'sejong': '세종',
+    'gangwon': '강원', 'chungbuk': '충북', 'chungnam': '충남',
+    'jeonbuk': '전북', 'jeonnam': '전남', 'gyeongbuk': '경북',
+    'gyeongnam': '경남', 'jeju': '제주'
+};
+
 // 시군구 데이터 (V11)
 const SUB_REGIONS = {
     'seoul': ['강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구', '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구', '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'],
@@ -113,6 +122,15 @@ window.onpopstate = function (event) {
 };
 
 // 초기 상태 설정
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+
+// Ensure we start at the top, even with #step-1 in URL
+window.scrollTo(0, 0);
+setTimeout(() => window.scrollTo(0, 0), 0);
+setTimeout(() => window.scrollTo(0, 0), 100);
+
 history.replaceState({ step: 1 }, '', '#step-1');
 
 // 진행바 업데이트
@@ -311,7 +329,10 @@ function showResult() {
     const subRegionName = subRegionBtn ? subRegionBtn.innerText : '';
 
     benefits.forEach(b => {
-        if (['초록우산', '굿네이버스', '이랜드복지재단', '희망친구기아대책'].includes(b.tag)) {
+        // [온통청년]은 국가 핵심 사업이므로 가장 먼저 보여주기 위해 'custom'으로 분류 (V14)
+        if (b.name.includes('[온통청년]')) {
+            currentBenefits.custom.push(b);
+        } else if (['초록우산', '굿네이버스', '이랜드복지재단', '희망친구기아대책'].includes(b.tag)) {
             currentBenefits.agency.push(b);
         } else if (b.tag.includes(regionName) || b.tag === '지자체공통' || (subRegionName && b.tag.includes(subRegionName))) {
             currentBenefits.local.push(b);
@@ -327,11 +348,22 @@ function showResult() {
 // 혜택 리스트 렌더링
 function renderBenefits(category) {
     const list = document.getElementById('benefitList');
+    const mapWrapper = document.getElementById('mapWrapper');
     list.innerHTML = '';
+
+    // 지도 표시 제어
+    if (category === 'agency') {
+        mapWrapper.style.display = 'block';
+        initMap(); // 지도 초기화
+    } else {
+        mapWrapper.style.display = 'none';
+    }
 
     const items = currentBenefits[category];
     if (!items || items.length === 0) {
-        list.innerHTML = '<p style="text-align:center; padding:40px; color:#64748b;">관련된 혜택이 아직 없습니다.</p>';
+        if (category !== 'agency') {
+            list.innerHTML = '<p style="text-align:center; padding:40px; color:#64748b;">관련된 혜택이 아직 없습니다.</p>';
+        }
         return;
     }
 
@@ -352,6 +384,80 @@ function renderBenefits(category) {
             </div>
         `;
         list.appendChild(card);
+    });
+}
+
+// ── 내 주변 지도 기능 (V13) ──
+let kakaoMap = null;
+let ps = null;
+let infowindow = null;
+
+function initMap() {
+    const mapStatus = document.getElementById('mapStatus');
+
+    if (typeof kakao === 'undefined' || !kakao.maps) {
+        mapStatus.innerHTML = '⚠️ 지도 API 키 설정이 필요합니다. (Kakao Maps SDK)';
+        return;
+    }
+
+    const regionName = REGION_NAMES[answers.region] || '';
+    const subRegionName = answers.subRegion || '';
+    const fullAddr = `${regionName} ${subRegionName}`.trim();
+
+    if (!fullAddr) {
+        mapStatus.innerHTML = '⚠️ 지역 정보가 선택되지 않았습니다.';
+        return;
+    }
+
+    const geocoder = new kakao.maps.services.Geocoder();
+
+    geocoder.addressSearch(fullAddr, function (result, status) {
+        if (status === kakao.maps.services.Status.OK) {
+            const locPosition = new kakao.maps.LatLng(result[0].y, result[0].x);
+
+            if (!kakaoMap) {
+                const container = document.getElementById('map');
+                const options = { center: locPosition, level: 5 };
+                kakaoMap = new kakao.maps.Map(container, options);
+                ps = new kakao.maps.services.Places(kakaoMap);
+                infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
+            } else {
+                kakaoMap.setCenter(locPosition);
+            }
+
+            mapStatus.innerHTML = `📍 [${fullAddr}] 주변의 사회복지 시설 및 관공서를 찾았습니다.`;
+            searchNearbyAgencies();
+        } else {
+            mapStatus.innerHTML = '⚠️ 선택하신 지역의 위치를 찾을 수 없습니다.';
+        }
+    });
+}
+
+function searchNearbyAgencies() {
+    if (!ps) return;
+
+    // 카테고리 검색: KB6(사회복지시설), PO3(공공기관)
+    const callback = (data, status) => {
+        if (status === kakao.maps.services.Status.OK) {
+            for (let i = 0; i < data.length; i++) {
+                displayMarker(data[i]);
+            }
+        }
+    };
+
+    ps.categorySearch('KB6', callback, { useMapBounds: true }); // 사회복지시설
+    ps.categorySearch('PO3', callback, { useMapBounds: true }); // 공공기관
+}
+
+function displayMarker(place) {
+    const marker = new kakao.maps.Marker({
+        map: kakaoMap,
+        position: new kakao.maps.LatLng(place.y, place.x)
+    });
+
+    kakao.maps.event.addListener(marker, 'click', function () {
+        infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
+        infowindow.open(kakaoMap, marker);
     });
 }
 

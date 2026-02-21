@@ -19,10 +19,15 @@ def generate_js():
         'daegu': '대구', 'ulsan': '울산', 'daejeon': '대전', 'sejong': '세종'
     }
 
-    # Age mapping: labels -> typical number or range
-    # label: typical_age (for simple range check)
-    age_map = {
-        '10대이하': 15, '20대': 25, '30대': 35, '40대': 45, '50대': 55, '60대이상': 70
+    # Age range mapping for overlap check (V14 Engine)
+    # label: [min_age, max_age]
+    age_ranges_map = {
+        '10대이하': [0, 19],
+        '20대': [20, 29],
+        '30대': [30, 39],
+        '40대': [40, 49],
+        '50대': [50, 59],
+        '60대이상': [60, 100]
     }
 
     # Keyword Mapping for Auto-Categorization (Housing, Job, Medical, etc.)
@@ -105,8 +110,11 @@ def generate_js():
         
         if age_range:
             age_conds = []
-            for label, val in age_map.items():
-                if age_range[0] <= val <= age_range[1]:
+            p_min, p_max = age_range
+            for label, r in age_ranges_map.items():
+                r_min, r_max = r
+                # Check for overlap: max of mins <= min of maxes
+                if max(p_min, r_min) <= min(p_max, r_max):
                     age_conds.append(f"d.age === '{label}'")
             if age_conds:
                 conditions.append(f"({' || '.join(age_conds)})")
@@ -198,10 +206,16 @@ def generate_js():
 
     js_code += "];"
 
-    output_path = "/Users/hong-eunseong/Documents/안티그래비티/블로그/welfare-score-app/data-engine/generated_data.js"
-    with open(output_path, "w", encoding="utf-8") as f:
-        f.write(js_code)
-    print(f"Generated JS data at {output_path}")
+    # Save to BOTH data-engine and ROOT directory for consistency
+    output_paths = [
+        "/Users/hong-eunseong/Documents/안티그래비티/블로그/welfare-score-app/data-engine/generated_data.js",
+        "/Users/hong-eunseong/Documents/안티그래비티/블로그/welfare-score-app/generated_data.js"
+    ]
+    
+    for path in output_paths:
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(js_code)
+        print(f"Generated JS data at {path}")
 
 if __name__ == "__main__":
     generate_js()
