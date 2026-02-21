@@ -57,7 +57,10 @@ function selectOption(el, key) {
             });
             subArea.style.display = 'block';
 
-            // 다음 버튼 비활성화 (시군구 선택 대기) -> 세종시 같은 예외가 있다면 자동 선택 고려 가능하나 일단 선택 강제
+            // 도 선택 시 시/군/구 목록으로 자동 스크롤 (V17)
+            subArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            // 다음 버튼 비활성화 (시군구 선택 대기)
             const stepNum = el.closest('.step').id.replace('step-', '');
             const btn = document.getElementById('next' + stepNum);
             if (btn) btn.disabled = true;
@@ -89,7 +92,14 @@ function nextStep(num) {
     document.getElementById('step-' + current).classList.remove('active');
     document.getElementById('step-' + num).classList.add('active');
     updateProgress(current);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // 첫 페이지를 제외하고는 중앙으로 자동 스크롤 (V16)
+    if (num > 1) {
+        const nextEl = document.getElementById('step-' + num);
+        nextEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
     // History API 연동 (뒤로가기 지원)
     history.pushState({ step: num }, '', '#step-' + num);
@@ -232,7 +242,7 @@ function calcResult() {
         // 3. 지역별 정렬 로직 (기존 유지)
         const regionBtn = document.querySelector(`.opt-btn.selected[onclick*="region"]`);
         if (regionBtn) {
-            const regionName = regionBtn.innerText.replace(/[^\uAC00-\uD7A3]/g, '').trim();
+            const regionName = regionBtn.innerText.replace(/[^\uAC00-\D7A3]/g, '').trim();
             if (answers.region === 'jeonbuk' && (a.tag.includes('전북') || a.tag.includes('전주'))) scoreA += 1000;
             if (answers.region === 'jeonbuk' && (b.tag.includes('전북') || b.tag.includes('전주'))) scoreB += 1000;
             if (a.tag.includes(regionName)) scoreA += 800;
@@ -324,7 +334,7 @@ function showResult() {
     currentBenefits = { custom: [], local: [], agency: [] };
 
     const regionBtn = document.querySelector(`.opt-btn.selected[onclick*="region"]`);
-    const regionName = regionBtn ? regionBtn.innerText.replace(/[^\uAC00-\uD7A3]/g, '').trim() : '내 지역';
+    const regionName = regionBtn ? regionBtn.innerText.replace(/[^\uAC00-\D7A3]/g, '').trim() : '내 지역';
     const subRegionBtn = document.querySelector(`.opt-btn.selected[onclick*="subRegion"]`);
     const subRegionName = subRegionBtn ? subRegionBtn.innerText : '';
 
@@ -580,11 +590,11 @@ function showToast(msg) {
 // AI 챗봇
 // AI 챗봇 (V12 Scenario)
 const chatScenario = {
-    intro: "안녕하세요! 로거 AI입니다. 🤖<br>대표님의 복지 점수를 분석해드렸는데, 어떤 점이 궁금하신가요?",
+    intro: "안녕 하세요! 당신의 든든한 지원군, **로거**예요! 🐶✨<br>복지 점수 리포트는 잘 보셨나요? 궁금한 게 있다면 무엇이든 편하게 물어봐 주세요!",
     options: [
-        { text: "💰 못 찾은 돈 더 찾아줘", answer: "현재 입력하신 정보로는 최적의 혜택을 모두 찾아드렸어요! 다만, 가족 구성원 정보를 수정하면 추가 혜택이 나올 수도 있습니다. 다시 진단해보시겠어요?" },
-        { text: "📝 신청은 어떻게 해?", answer: "각 혜택 카드의 '지금 바로 신청하기' 버튼을 누르시면 해당 기관의 공식 신청 페이지로 바로 연결해드립니다. 복잡한 서류는 제가 블로그에 정리해둘게요!" },
-        { text: "📊 내 점수가 평균이야?", answer: "대표님의 점수는 상위 그룹에 속합니다! 보통 처음 조회하시는 분들은 40~50점이 나오는데, 아주 훌륭한 복지 지능을 가지고 계시네요 👍" }
+        { text: "💰 제가 놓친 돈이 더 있을까요?", answer: "지금 입력하신 정보로는 최적의 혜택을 다 찾아드렸어요! 혹시 가족 관계에 변화가 생기거나, 소득 기준이 바뀌면 새로운 혜택이 뜰 수 있으니 가끔씩 저를 다시 찾아주세요! 😉" },
+        { text: "📝 신청 방법이 궁금해요!", answer: "각 혜택 카드에 있는 **'신청하기'** 버튼을 누르면 바로 연결해 드려요! 준비물이 복잡할 땐 제가 블로그에 꿀팁을 정리해둘게요. 걱정 마세요! 🙌" },
+        { text: "📊 제 점수, 이 정도면 괜찮은 건가요?", answer: "와우! 상위권에 속하는 아주 훌륭한 점수예요! 👍 평소에 복지 정보에 관심이 많으시군요? 부족한 부분은 제가 채워드릴 테니 함께 만점을 향해 가봐요!" }
     ]
 };
 
@@ -612,7 +622,11 @@ function addMessage(sender, text) {
     msgDiv.className = `chat-msg ${sender}`;
     msgDiv.innerHTML = text;
     content.appendChild(msgDiv);
-    content.scrollTop = content.scrollHeight;
+
+    // 메시지 추가 후 항상 최하단으로 스크롤 (V17 개선)
+    requestAnimationFrame(() => {
+        content.scrollTop = content.scrollHeight;
+    });
 }
 
 function renderOptions() {
@@ -631,7 +645,11 @@ function renderOptions() {
         optDiv.appendChild(btn);
     });
     content.appendChild(optDiv);
-    content.scrollTop = content.scrollHeight;
+
+    // 옵션 표시 후에도 최하단으로 스크롤 (V17 개선)
+    requestAnimationFrame(() => {
+        content.scrollTop = content.scrollHeight;
+    });
 }
 
 // PDF 다운로드

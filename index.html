@@ -421,17 +421,26 @@
     </div>
 
     <footer>
-        ※ 본 서비스는 참고용이며, 정확한 수혜 여부는<br>
-        복지로(www.bokjiro.go.kr)에서 확인하세요.<br><br>
+        ※ 본 정밀 진단 결과는 인공지능 분석을 통한 참고용이에요! 😉<br>
+        정확한 수혜 자격과 신청 방법은 각 사업별 공식 홈페이지<br>
+        (온통청년, 지자체 포털 등)에서 꼭 한 번 더 확인해 주세요. ✨<br><br>
         © 2026 웰페어 스코어 | 문의: representante@loggermaster.com
     </footer>
 
     <div class="toast" id="toast"></div>
 
     <!-- AI Chatbot Floating Button -->
+    <div class="ai-chat-btn" id="btn-ai-chat" title="로거에게 물어보세요!">
+        <img src="chatbot_avatar.png" alt="로거 아이콘"
+            style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+    </div>
     <div class="ai-chat-box" id="aiChatBox" style="display: none;">
         <div class="chat-header">
-            <span>🤖 로거 AI 상담소</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <img src="chatbot_avatar.png" alt="로거"
+                    style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid white;">
+                <span>반가워요! 로거예요 🐶</span>
+            </div>
             <button class="close-chat" onclick="document.getElementById('aiChatBox').style.display='none'">×</button>
         </div>
         <div class="chat-content" id="chatContent"></div>
