@@ -10,6 +10,10 @@ const REGION_NAMES = {
     'gyeongnam': '경남', 'jeju': '제주'
 };
 
+// PC/모바일 구분 (V21)
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+const linkTarget = isMobile ? '_self' : '_blank';
+
 // ── 지역별 청년포털 & 복지포털 데이터 (V20) ──
 const REGIONAL_PORTALS = {
     'seoul': [
@@ -514,9 +518,9 @@ function renderBenefits(category) {
             <div class="benefit-desc">${b.desc || b.description}</div>
             <div class="benefit-meta">
                 <div class="benefit-amount">💰 ${amountText}</div>
-                <a href="${b.applyUrl || '#'}" class="benefit-link-btn">신청하기 ➔</a>
+                <a href="${b.applyUrl || '#'}" target="${linkTarget}" class="benefit-link-btn">신청하기 ➔</a>
             </div>
-            <a href="${blogUrl}" class="blog-cta-btn">
+            <a href="${blogUrl}" target="${linkTarget}" class="blog-cta-btn">
                 📖 신청 꿀팁 블로그에서 확인하기
             </a>
         `;
@@ -791,7 +795,7 @@ function handleChatInput() {
     setTimeout(() => {
         const results = chatSearch(query);
         if (results.length === 0) {
-            addMessage('bot', `"${query}"에 대한 혜택을 찾지 못했어요 😅<br>더 구체적으로 입력해보시거나, <a href="https://10000nanzip.tistory.com" target="_blank" style="color:var(--primary);font-weight:700;">블로그</a>에서 검색해보세요!`);
+            addMessage('bot', `"${query}"에 대한 혜택을 찾지 못했어요 😅<br>더 구체적으로 입력해보시거나, <a href="https://10000nanzip.tistory.com" target="${linkTarget}" style="color:var(--primary);font-weight:700;">블로그</a>에서 검색해보세요!`);
         } else {
             let html = `<b>🔍 "${query}"</b> 관련 혜택 <b>${results.length}건</b>을 찾았어요!<br><br>`;
             results.slice(0, 4).forEach(b => {
@@ -799,7 +803,7 @@ function handleChatInput() {
                 html += `<div style="background:#f1f5f9;border-radius:10px;padding:10px 12px;margin-bottom:8px;">
                     <div style="font-weight:700;font-size:13px;margin-bottom:3px;">${b.icon || '💎'} ${b.name}</div>
                     <div style="font-size:11px;color:#64748b;margin-bottom:6px;">${(b.desc || b.description || '').substring(0, 50)}...</div>
-                    <a href="https://10000nanzip.tistory.com/search/${blogKeyword}" target="_blank" style="font-size:11px;color:var(--primary);font-weight:700;">📖 블로그에서 상세보기 →</a>
+                    <a href="https://10000nanzip.tistory.com/search/${blogKeyword}" target="${linkTarget}" style="font-size:11px;color:var(--primary);font-weight:700;">📖 블로그에서 상세보기 →</a>
                 </div>`;
             });
             if (results.length > 4) html += `<div style="font-size:12px;color:#64748b;">외 ${results.length - 4}건 더 있어요. 결과 페이지에서 확인해보세요!</div>`;

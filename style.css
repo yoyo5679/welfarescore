@@ -1,17 +1,16 @@
 :root {
-    --primary: #1a56db;
-    --primary-light: #e8f0fe;
-    --accent: #f59e0b;
-    --accent2: #10b981;
+    --primary: #FF6B6B;
+    --primary-light: #FFF0F0;
+    --accent: #D4AF37;
+    --accent2: #FFAD87;
     --danger: #ef4444;
-    --bg: #f0f4ff;
+    --bg: #FFF9F0;
     --card: #ffffff;
-    --text: #1e293b;
-    --muted: #64748b;
-    --border: #e2e8f0;
-    --shadow: 0 4px 24px rgba(26, 86, 219, 0.10);
-    --radius: 20px;
-    --neon-blue: #00f2ff;
+    --text: #3D2B1F;
+    --muted: #8E7C6E;
+    --border: #F0E2D0;
+    --shadow: 0 4px 24px rgba(255, 107, 107, 0.15);
+    --radius: 24px;
 }
 
 * {
@@ -30,7 +29,7 @@ body {
 
 /* ── 헤더 ── */
 header {
-    background: linear-gradient(135deg, #1a56db 0%, #1e3a8a 100%);
+    background: linear-gradient(135deg, #FF6B6B 0%, #E65555 100%);
     color: white;
     text-align: center;
     padding: 36px 20px 28px;
