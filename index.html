@@ -44,9 +44,9 @@
 
 <body>
 
-    <header>
+    <header onclick="restart()" style="cursor: pointer;" title="홈으로 이동">
         <div class="badge">🔥 2026년 최신 업데이트</div>
-        <h1>내 숨은 복지혜택 찾기<br>💰 복(지)주머니</h1>
+        <h1>내 숨은 복지혜택 찾기<br>🧧 복주머니</h1>
         <p>3분이면 나만 몰랐던 정부지원금을<br>바로 찾아드려요!</p>
     </header>
 
@@ -302,10 +302,10 @@
             <div class="step-card" style="text-align:center; padding:40px 20px;">
                 <div class="spinner-wrap">
                     <div class="spinner"></div>
-                    <div class="spinner-icon">🔍</div>
+                    <div class="spinner-icon">🧧</div>
                 </div>
-                <div class="loading-text">정부 데이터 분석 중...</div>
-                <div class="loading-sub">전국 복지 DB와 비교하고 있어요</div>
+                <div class="loading-text">복 들어오는 중... 🧧</div>
+                <div class="loading-sub">숨겨져 있던 당신의 복을 찾고 있어요</div>
                 <div class="loading-steps">
                     <div class="loading-step-item" id="ls1">
                         <div class="dot">✅</div><span>📊 소득 기준 중위소득 대비 계산 중</span>
@@ -331,14 +331,15 @@
     <div id="step-result" class="step">
         <div class="result-header">
             <div class="result-score-container">
-                <div class="plant-icon">🌿</div>
-                <div class="score-circle">
-                    <span class="score-num" id="resultScore">0</span>
-                    <span class="score-unit">복지 점수</span>
+                <div class="found-badge">🎉 찾았다!!</div>
+                <div class="score-circle lucky-count-mode">
+                    <span class="score-unit">숨겨진 복!</span>
+                    <span class="score-num" id="resultBenefitCount">0</span>
+                    <span class="score-unit">개</span>
                 </div>
                 <div class="result-message">
-                    <h3 id="resultTitle">대표님은 전국 상위 1% 복지 스마트!</h3>
-                    <p id="resultCountText">숨은 혜택이 6건 발견되었습니다!</p>
+                    <h3 id="resultTitle">복주머니가 가득 찼어요! 🧧</h3>
+                    <p id="resultCountSubtitle">대표님을 기다리는 소중한 혜택들이에요</p>
                 </div>
                 <div class="result-actions">
                     <button class="btn-share" onclick="copyLink()">결과 공유하여 자랑하기 🔗</button>
@@ -428,7 +429,7 @@
         ※ 본 정밀 진단 결과는 인공지능 분석을 통한 참고용이에요! 😉<br>
         정확한 수혜 자격과 신청 방법은 각 사업별 공식 홈페이지<br>
         (온통청년, 지자체 포털 등)에서 꼭 한 번 더 확인해 주세요. ✨<br><br>
-        © 2026 웰페어 스코어 | 문의: representante@loggermaster.com
+        © 2026 복주머니 | 문의: representante@loggermaster.com
     </footer>
 
     <div class="toast" id="toast"></div>

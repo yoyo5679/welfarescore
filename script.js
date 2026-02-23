@@ -400,17 +400,16 @@ function showResult() {
 
     history.pushState({ step: 'result' }, '', '#result');
 
-    // 점수 애니메이션
-    animateNumber('resultScore', score, 1500);
+    // 점수 대신 혜택 개수 애니메이션
+    animateNumber('resultBenefitCount', benefits.length, 1500);
 
     // 메시지 업데이트
-    let title = '대표님은 전국 상위 1% 복지 스마트!';
-    if (score < 40) title = '복지 혜택, 더 많이 챙기실 수 있어요!';
-    else if (score < 70) title = '기초를 탄탄하게 챙기고 계시네요!';
-    else if (score < 90) title = '대단해요! 복지 고수의 기운이 느껴져요!';
+    let title = '복주머니가 혜택으로 가득 찼어요! 🧧';
+    if (score < 40) title = '복주머니에 담을 혜택을 더 찾아볼까요?';
+    else if (score < 70) title = '실속 있는 복지 혜택이 가득 담겼네요!';
+    else if (score < 90) title = '와! 복주머니가 묵직할 정도로 혜택이 많아요!';
 
     document.getElementById('resultTitle').textContent = title;
-    document.getElementById('resultCountText').textContent = `숨은 혜택이 ${benefits.length}건 발견되었습니다!`;
 
     // 혜택 분류
     currentBenefits = { custom: [], local: [], agency: [] };
