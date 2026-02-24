@@ -16,25 +16,57 @@ const linkTarget = isMobile ? '_self' : '_blank';
 
 // ── 지역별 청년포털 & 복지포털 데이터 (V20) ──
 const REGIONAL_PORTALS = {
+    'national': [
+        { name: '2026년 중앙정부 청년 월세지원', tag: '중앙정부', desc: '무주택 청년 대상 월 최대 20만원 임차료 지원 (최대 24개월 상시 신청)', applyUrl: 'https://www.bokjiro.go.kr/', monthlyAmount: 200000, icon: '🏠', relevance: 120 },
+        { name: '국민취업지원제도 구직촉진수당 (인상)', tag: '중앙정부', desc: '2026년 월 60만원으로 인상된 구직 수당 및 맞춤형 취업 지원 서비스', applyUrl: 'https://www.kua.go.kr/', monthlyAmount: 600000, icon: '💼', relevance: 115 },
+        { name: '청년미래적금 (2026년 6월 출시)', tag: '중앙정부', desc: '3년 만기 시 약 2,200만원 목돈 마련 지원 (연 소득 6천만원 이하 청년)', applyUrl: 'https://www.kinfa.or.kr/', monthlyAmount: 0, icon: '💰', relevance: 110 }
+    ],
     'seoul': [
-        { name: '마포구 청년일자리센터 (청년숲)', tag: '마포구', desc: '마포구 청년들을 위한 취업 공채 면접 지원, 창업 공간 및 프로그램 제공', applyUrl: 'https://www.mapo.go.kr/site/main/content/mapo05050401', monthlyAmount: 0, icon: '🌳', relevance: 120 },
+        // ── 25개 자치구별 특화 지원 정보 ──
+        { name: '[종로구] 청년 숲 마켓 판매자 모집', tag: '종로구', desc: '청년 수공예가 및 창업가들의 판로 지원을 위한 플리마켓 참여 기회 제공', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/list.do?key=2309130006', monthlyAmount: 0, icon: '🌿', relevance: 110 },
+        { name: '[중구] 을지유니크팩토리 청년성장프로젝트', tag: '중구', desc: '차(茶)와 함께하는 나를 마주하는 시간, 청년 심리 회복 및 성장 지원 프로그램', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67300&key=2309130006', monthlyAmount: 0, icon: '🍵', relevance: 115 },
+        { name: '[용산구] 청년 국가자격증 응시료 지원', tag: '용산구', desc: '어학 및 국가기술자격증 시험 응시료 실비 지원 (1인당 연 최대 10만원)', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67159&key=2309130006', monthlyAmount: 0, icon: '📝', relevance: 120 },
+        { name: '[성동구] 성동형 청년월세 지원사업', tag: '성동구', desc: '정부 지원 사각지대의 청년 1인가구에게 월 20만원, 최대 10개월간 월세 지원', applyUrl: 'https://www.sd.go.kr/', monthlyAmount: 200000, icon: '🏠', relevance: 125 },
+        { name: '[광진구] 자립준비청년 맞춤형 패키지 지원', tag: '광진구', desc: '자립준비청년들의 안정적인 사회 정착을 위한 생활 생활 물품 및 지원금 패키지', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67720&key=2309130006', monthlyAmount: 0, icon: '🎁', relevance: 110 },
+        { name: '[동대문구] 구립체육문화시설 프로그램 지원', tag: '동대문구', desc: '청년들의 건강한 여가 생활을 위한 체육 및 문화 강좌 수강료 지원 및 우선 접수', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67619&key=2309130006', monthlyAmount: 0, icon: '🎾', relevance: 105 },
+        { name: '[중랑구] 슬기로운 중랑생활 이벤트', tag: '중랑구', desc: '제로웨이스트 실천 및 쓰레기 줄이기 참여 청년 대상 이벤트 및 경품 증정', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67669&key=2309130006', monthlyAmount: 0, icon: '♻️', relevance: 100 },
+        { name: '[성북구] 청년 커뮤니티 "와글와글 성북마을"', tag: '성북구', desc: '청년 소모임 활동비 지원 및 지역 네트워크 형성 프로그램', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67756&key=2309130006', monthlyAmount: 0, icon: '👥', relevance: 115 },
+        { name: '[강북구] 청년도전지원사업 참여자 모집', tag: '강북구', desc: '구직 단념 청년들의 사회 참여 및 취업 역량 강화를 위한 맞춤형 상담 및 교육', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67119&key=2309130006', monthlyAmount: 500000, icon: '🪜', relevance: 120 },
+        { name: '[도봉구] 성인독서동아리 "달밤" 모집', tag: '도봉구', desc: '도봉문화정보도서관에서 운영하는 야간 독서 모임 및 독서 문화 활동 지원', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/list.do?key=2309130006', monthlyAmount: 0, icon: '🌙', relevance: 105 },
+        { name: '[노원구] 인상파 특별 전시 할인 혜택', tag: '노원구', desc: '노원문화재단 기획 전시 "인상파, 찬란한 순간들" 청년 특별 할인 지원', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67753&key=2309130006', monthlyAmount: 0, icon: '🎨', relevance: 110 },
+        { name: '[은평구] 청년 일자리사업 (인건비 지원)', tag: '은평구', desc: '은평구 내 기업과 청년 연계 및 기업에 채용 지원금(인건비 80%) 지원', applyUrl: 'https://www.ep.go.kr/www/selectEminwonView.do?notAncmtMgtNo=48183&key=748', monthlyAmount: 0, icon: '💼', relevance: 125 },
+        { name: '[서대문구] 고혈압 당뇨 관리 공부방', tag: '서대문구', desc: '청년 건강 관리를 위한 만성질환 예방 교육 및 식단 상담 서비스', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/list.do?key=2309130006', monthlyAmount: 0, icon: '🍎', relevance: 100 },
+        { name: '[마포구] 청년 일자리 매칭 데이', tag: '마포구', desc: '마포구 우수 기업과 청년 구직자의 직접 면접 및 채용 연계 행사', applyUrl: 'https://www.mapo.go.kr/site/main/content/mapo05050401', monthlyAmount: 0, icon: '🤝', relevance: 120 },
+        { name: '[양천구] 청년점포 & 청년창업가 모집', tag: '양천구', desc: '전통시장 내 청년 점포 입점 지원 및 창업 초기 자금 지원 프로그램', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67750&key=2309130006', monthlyAmount: 0, icon: '🏪', relevance: 120 },
+        { name: '[강서구] 곰달래도서관 개관기념 행사', tag: '강서구', desc: '강서구 청년 및 주민을 위한 인문학 강연, 공연 등 문화 행사 안내', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67670&key=2309130006', monthlyAmount: 0, icon: '📚', relevance: 105 },
+        { name: '[구로구] 에너지 절약 에코마일리지', tag: '구로구', desc: '에너지 사용량 절감 시 마일리지를 적립하여 온누리상품권 등으로 교환 지원', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67364&key=2309130006', monthlyAmount: 0, icon: '🔋', relevance: 100 },
+        { name: '[금천구] 전세피해 임차인 법률 지원', tag: '금천구', desc: '전세 사기 등 피해를 입은 청년 임차인을 위한 전문 법률 상담 및 대응 지원', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67736&key=2309130006', monthlyAmount: 0, icon: '⚖️', relevance: 115 },
+        { name: '[영등포구] 클라이밍 & 러닝 참여자 모집', tag: '영등포구', desc: '청년들의 건강한 신체 활동을 위한 클라이밍 및 러닝 동호회 활동 지원', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67640&key=2309130006', monthlyAmount: 0, icon: '🧗', relevance: 110 },
+        { name: '[동작구] 동작 청년 카페 운영 지원', tag: '동작구', desc: '청년 창업가 대상 동작구 내 카페 공간 제공 및 운영 컨설팅 지원', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/list.do?key=2309130006', monthlyAmount: 0, icon: '☕', relevance: 115 },
+        { name: '[관악구] 청년 네트워크 위원 모집', tag: '관악구', desc: '청년 정책 수립 과정에 직접 참여하는 관악구 청년 거버넌스 위원 지원', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/list.do?key=2309130006', monthlyAmount: 0, icon: '📢', relevance: 110 },
+        { name: '[서초구] 프로젝트 리더 선정 지원', tag: '서초구', desc: '서초구 청년들이 직접 지역 사회에 필요한 프로젝트를 기획하고 실행할 리더 모집', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/list.do?key=2309130006', monthlyAmount: 0, icon: '👔', relevance: 115 },
+        { name: '[강남구] 사회복지 공모사업 지원', tag: '강남구', desc: '강남구 내 복지 사각지대 해소를 위한 참신한 사회복지 사업 아이디어 공모 및 지원', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/list.do?key=2309130006', monthlyAmount: 0, icon: '🏛️', relevance: 110 },
+        { name: '[송파구] AI 면접 무료 체험 신청', tag: '송파구', desc: '취업 준비 청년을 위한 AI 역량 검사 및 면접 체험 시스템 무료 제공', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67251&key=2309130006', monthlyAmount: 0, icon: '🤖', relevance: 120 },
+        { name: '[강동구] 스텝업 프로젝트 참여자 모집', tag: '강동구', desc: '강동구 구직 청년들의 진로 탐색 및 실무 역량 강화를 위한 스텝업 프로그램', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/list.do?key=2309130006', monthlyAmount: 500000, icon: '🪜', relevance: 115 },
+
+        // ── 서울시 공통 포털 ──
         { name: '서울청년포털 (청년몽땅정보통)', tag: '서울특별시', desc: '서울시 청년 정책 원스톱 포털. 주거·취업·교육·문화 분야 지원사업 한눈에 확인!', applyUrl: 'https://youth.seoul.go.kr/', monthlyAmount: 0, icon: '🏙️', relevance: 100 },
         { name: '서울시 청년수당', tag: '서울특별시', desc: '미취업 만 19~34세 서울 청년에게 최대 6개월간 월 50만원 지원', applyUrl: 'https://youth.seoul.go.kr/site/main/content/youth_pay', monthlyAmount: 500000, icon: '💰', relevance: 98 },
         { name: '서울형 강소기업 취업지원', tag: '서울특별시', desc: '중소기업 취업 청년 대상 인턴십·연계 정규직 채용 및 장려금 지원', applyUrl: 'https://youth.seoul.go.kr/', monthlyAmount: 300000, icon: '💼', relevance: 90 }
     ],
     'gyeonggi': [
-        { name: '경기도 청년포털 (잡아바)', tag: '경기도', desc: '경기도 청년 취업·창업·복지 종합 정보 포털. 다양한 지원정책을 한 곳에서!', applyUrl: 'https://www.jobaba.net/', monthlyAmount: 0, icon: '⛰️', relevance: 100 },
-        { name: '경기 청년 복지포인트', tag: '경기도', desc: '경기도 중소기업 재직 청년에게 연 120만원 복지포인트 지급', applyUrl: 'https://www.gyeonggi.go.kr/', monthlyAmount: 120000, icon: '🎁', relevance: 97 },
-        { name: '경기도 청년 갭이어 프로그램', tag: '경기도', desc: '취업 준비 청년을 위한 역량개발·진로탐색 프로그램 및 활동비 지원', applyUrl: 'https://www.gyeonggi.go.kr/', monthlyAmount: 200000, icon: '🌱', relevance: 88 }
+        { name: '경기도 청년기본소득 (2026)', tag: '경기도', desc: '만 24세 경기 청년에게 연 100만원 지원 (거주지 학원비 사용 가능)', applyUrl: 'https://www.jobaba.net/', monthlyAmount: 83333, icon: '💳', relevance: 125 },
+        { name: '경기청년 메디케어 플러스 (신설)', tag: '경기도', desc: '미취업·저소득 청년 대상 건강검진 및 예방접종비 최대 20만원 지원', applyUrl: 'https://www.jobaba.net/', monthlyAmount: 0, icon: '🏥', relevance: 110 },
+        { name: '경기도 청년 갭이어 프로그램', tag: '경기도', desc: '진로 탐색 프로젝트 지원금(최대 500만원) 및 역량 강화 프로그램 지원', applyUrl: 'https://www.jobaba.net/', monthlyAmount: 200000, icon: '🌱', relevance: 88 }
     ],
     'incheon': [
         { name: '인천광역시 청년포털', tag: '인천광역시', desc: '인천 청년 맞춤형 지원정책 통합포털. 주거·일자리·창업 지원 안내', applyUrl: 'https://youth.incheon.go.kr/', monthlyAmount: 0, icon: '✈️', relevance: 100 },
         { name: '인천 청년도약장려금', tag: '인천광역시', desc: '만 18~34세 인천 거주 미취업 청년 대상 구직활동 지원금 지급', applyUrl: 'https://youth.incheon.go.kr/', monthlyAmount: 500000, icon: '💰', relevance: 95 }
     ],
     'busan': [
-        { name: '부산청년플랫폼 (BYP)', tag: '부산광역시', desc: '부산 청년 정책·일자리·문화·주거 원스톱 지원 플랫폼', applyUrl: 'https://youth.busan.go.kr/', monthlyAmount: 0, icon: '🌊', relevance: 100 },
-        { name: '부산 청년 희망지원금', tag: '부산광역시', desc: '부산 거주 만 18~34세 청년 취업준비생 대상 월 최대 30만원 지원', applyUrl: 'https://youth.busan.go.kr/', monthlyAmount: 300000, icon: '🌟', relevance: 96 },
-        { name: '부산 청년 주거비 지원', tag: '부산광역시', desc: '청년 임차가구 대상 월세 일부 지원으로 주거비 부담 완화', applyUrl: 'https://youth.busan.go.kr/', monthlyAmount: 200000, icon: '🏠', relevance: 90 }
+        { name: '부산 청년모두가(家) 주거비 지원', tag: '부산광역시', desc: '공공임대주택 거주 청년 및 신혼부부 대상 월 임대료 지원 (최대 6-7년)', applyUrl: 'https://youth.busan.go.kr/', monthlyAmount: 150000, icon: '🏠', relevance: 120 },
+        { name: '부산 청년 머물자리론 (확대)', tag: '부산광역시', desc: '임차보증금 최대 1억원 대출 및 이자 지원 (심사 기간 5일로 단축)', applyUrl: 'https://youth.busan.go.kr/', monthlyAmount: 0, icon: '🏦', relevance: 115 },
+        { name: '부산청년플랫폼 (BYP)', tag: '부산광역시', desc: '부산 청년 정책·일자리·문화·주거 원스톱 지원 플랫폼', applyUrl: 'https://youth.busan.go.kr/', monthlyAmount: 0, icon: '🌊', relevance: 100 }
     ],
     'daegu': [
         { name: '대구청년센터 (청년드림)', tag: '대구광역시', desc: '대구 청년을 위한 일자리·창업·주거·문화 복합지원 플랫폼', applyUrl: 'https://www.daegu.go.kr/youth/', monthlyAmount: 0, icon: '🍎', relevance: 100 },
@@ -422,14 +454,29 @@ function showResult() {
     const subRegionName = subRegionBtn ? subRegionBtn.innerText : '';
     const selectedRegion = answers.region || '';
 
-    // ── V20: 지역별 청년포털 데이터 자동 주입 ──
+    // ── V23: 중앙정부 & 지역별 청년포털 데이터 자동 주입 ──
+    // 1. 중앙정부 정책 (항상 포함)
+    if (REGIONAL_PORTALS['national']) {
+        REGIONAL_PORTALS['national'].forEach(portal => {
+            currentBenefits.local.push({ ...portal, isLocal: true, category: '생활비' });
+        });
+    }
+
+    // 2. 선택 지역 정책
     if (selectedRegion && REGIONAL_PORTALS[selectedRegion]) {
         REGIONAL_PORTALS[selectedRegion].forEach(portal => {
-            currentBenefits.local.push({
-                ...portal,
-                isLocal: true,
-                category: '생활비'
-            });
+            // 필터링 로직 (V22): 태그가 광역지역명과 일치하거나, 선택된 시군구명과 일치하는 경우만 노출
+            const isRegionMatch = portal.tag === regionName;
+            const isSubRegionMatch = subRegionName && portal.tag.includes(subRegionName);
+            const isGlobal = portal.tag === '전체' || portal.tag === '중앙정부';
+
+            if (isRegionMatch || isSubRegionMatch || isGlobal) {
+                currentBenefits.local.push({
+                    ...portal,
+                    isLocal: true,
+                    category: '생활비'
+                });
+            }
         });
     }
 
