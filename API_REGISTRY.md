@@ -40,5 +40,18 @@
 
 ---
 
+## 3. 한국사회보장정보원 지자체복지서비스 API
+전국 각 구청 및 지자체(시군구) 단위에서 자체적으로 시행하는 복지 혜택 데이터를 수집합니다.
+
+*   **API Key (1개)**: `9a318bb9e3744a79987a64668e6e67c3c8e4fd22b7c261aeddc03af627730a09`
+*   **제공처**: 공공데이터포털 / 한국사회보장정보원
+*   **엔드포인트(요청 주소)**: `http://apis.data.go.kr/B554287/LocalGovernmentWelfareInformations/LcgvWelfarelist`
+*   **수집 데이터 종류**:
+    *   **구청별 특화 사업**: 출산 장려금, 지역 화폐, 지역 청년 지원금, 고아 및 노인 지원 등
+*   **파이프라인 위치**: `data-engine/api_fetchers/local_welfare_fetcher.py`
+*   **저장 포맷**: `local_welfare_data.json`
+
+---
+
 ## 데이터 통합 과정 (Data Merging)
-위의 두 출처에서 비동기적으로 스크랩해온 공공데이터 리스트는 `data-engine/merge_data.py`를 거쳐 `unified_welfare_data.json` 이라는 하나의 규격화된 파일로 합쳐집니다. 이 후, 해당 데이터는 앱의 프론트엔드에서 필터링 가능하도록 Javascript (`generated_data.js`) 파일로 변환되어 서비스에 노출됩니다.
+위의 출처들(`mois_gov24`, `youth_center`, `local_welfare`)에서 수집된 데이터는 `data-engine/merge_data.py`를 통해 `unified_welfare_data.json`으로 병합되며, 최종적으로 `generated_data.js`로 변환되어 앱에 반영됩니다.

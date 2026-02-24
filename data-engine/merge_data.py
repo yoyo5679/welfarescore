@@ -9,7 +9,8 @@ def merge_all_data():
         # "seoul", "incheon", "gyeonggi", "jeolla", "chungcheong", "gyeongsang", "jeju", "gangwon",
         # "bokjiro", "seoul_youth", "district_crawled",
         "mois_gov24",
-        "youth_center"
+        "youth_center",
+        "local_welfare"
     ]
     
     all_benefits = []

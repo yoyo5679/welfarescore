@@ -17,6 +17,7 @@ const linkTarget = isMobile ? '_self' : '_blank';
 // ── 지역별 청년포털 & 복지포털 데이터 (V20) ──
 const REGIONAL_PORTALS = {
     'seoul': [
+        { name: '마포구 청년일자리센터 (청년숲)', tag: '마포구', desc: '마포구 청년들을 위한 취업 공채 면접 지원, 창업 공간 및 프로그램 제공', applyUrl: 'https://www.mapo.go.kr/site/main/content/mapo05050401', monthlyAmount: 0, icon: '🌳', relevance: 120 },
         { name: '서울청년포털 (청년몽땅정보통)', tag: '서울특별시', desc: '서울시 청년 정책 원스톱 포털. 주거·취업·교육·문화 분야 지원사업 한눈에 확인!', applyUrl: 'https://youth.seoul.go.kr/', monthlyAmount: 0, icon: '🏙️', relevance: 100 },
         { name: '서울시 청년수당', tag: '서울특별시', desc: '미취업 만 19~34세 서울 청년에게 최대 6개월간 월 50만원 지원', applyUrl: 'https://youth.seoul.go.kr/site/main/content/youth_pay', monthlyAmount: 500000, icon: '💰', relevance: 98 },
         { name: '서울형 강소기업 취업지원', tag: '서울특별시', desc: '중소기업 취업 청년 대상 인턴십·연계 정규직 채용 및 장려금 지원', applyUrl: 'https://youth.seoul.go.kr/', monthlyAmount: 300000, icon: '💼', relevance: 90 }
@@ -134,6 +135,7 @@ function selectOption(el, key) {
                 const btn = document.createElement('button');
                 btn.className = 'opt-btn';
                 btn.textContent = sub;
+                btn.dataset.val = sub;
                 btn.onclick = function () { selectOption(this, 'subRegion'); };
                 subOpts.appendChild(btn);
             });
@@ -285,7 +287,7 @@ function calcResult() {
         // 카테고리 필터링 (V11 Smart Filter)
         let isCategoryMatch = true;
         if (answers.category && answers.category !== '전체') {
-            if (item.category !== answers.category) isCategoryMatch = false;
+            if (item.category !== answers.category && !item.isLocal) isCategoryMatch = false;
         }
 
         if (item.condition(data) && isCategoryMatch) {
