@@ -432,6 +432,8 @@ function showResult() {
     document.getElementById('step-result').classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
+    renderUserTags(); // V24: 사용자 선택 키워드 표시
+
     history.pushState({ step: 'result' }, '', '#result');
 
     // 점수 대신 혜택 개수 애니메이션
@@ -946,4 +948,53 @@ function restart() {
 
     // 히스토리 초기화
     history.replaceState({ step: 1 }, '', '#step-1');
+}
+
+// ── V24: 사용자 선택 키워드(태그) 렌더링 ──
+function renderUserTags() {
+    const container = document.getElementById('userTagContainer');
+    if (!container) return;
+    container.innerHTML = '';
+
+    const tags = [];
+
+    // 1. 연령대
+    const ageBtn = document.querySelector('.opt-btn.selected[onclick*="age"]');
+    if (ageBtn) tags.push(ageBtn.innerText.trim());
+
+    // 2. 가구 상황
+    const householdBtn = document.querySelector('.opt-btn.selected[onclick*="household"]');
+    if (householdBtn) tags.push(householdBtn.innerText.trim());
+
+    // 3. 소득 수준 (짧게 가공)
+    const incomeBtn = document.querySelector('.opt-btn.selected[onclick*="income"]');
+    if (incomeBtn) {
+        let text = incomeBtn.innerText.trim();
+        if (text.includes('(')) text = text.split('(')[0].trim();
+        tags.push(text);
+    }
+
+    // 4. 관심 분야
+    const categoryBtn = document.querySelector('.opt-btn.selected[onclick*="category"]');
+    if (categoryBtn) tags.push(categoryBtn.innerText.trim());
+
+    // 5. 지역 (광역 + 시군구)
+    const regionBtn = document.querySelector('.opt-btn.selected[onclick*="region"]');
+    if (regionBtn) {
+        // 지역명 아이콘 제거 로직
+        let text = regionBtn.innerText.replace(/[^\uAC00-\uD7A3]/g, '').trim();
+        tags.push(text);
+    }
+
+    const subRegionBtn = document.querySelector('.opt-btn.selected[onclick*="subRegion"]');
+    if (subRegionBtn) tags.push(subRegionBtn.innerText.trim());
+
+    // 태그 생성 및 추가
+    tags.forEach((tagText, index) => {
+        const tag = document.createElement('span');
+        tag.className = 'user-tag';
+        tag.innerText = `# ${tagText}`;
+        tag.style.animationDelay = `${index * 0.1}s`;
+        container.appendChild(tag);
+    });
 }

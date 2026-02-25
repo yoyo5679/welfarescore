@@ -1,5 +1,19 @@
 const welfareData = [
     {
+        name: '기초연금 지급 및 신청',
+        description: '만 65세 이상 어르신들의 노후 생활 안정을 위해 매월 일정 금액(최대 약 33만원)을 지급하는 제도입니다.',
+        icon: '🧧', tag: '보건복지부',
+        hashtags: ["노후", "연금", "생활비"],
+        applyUrl: 'https://www.bokjiro.go.kr/ssis-tbu/twataa/wlfareInfo/moveTWATVbiAlwDtl.do?wlfareInfoId=WLF00000063',
+        apply_period: '상시',
+        howTo: ["읍면동 행정복지센터 방문", "복지로 온라인 신청"],
+        condition: (d) => d.age === '60대이상',
+        isLocal: false,
+        raw_category: '현금',
+        category: '생활비',
+        relevance: 1000, monthlyAmount: 334810
+    },
+    {
         name: '유아학비 (누리과정) 지원',
         description: '유치원에 다니는 3~5세 아동에게 유아학비, 방과후과정비 등 지원',
         icon: '💎', tag: '교육부',
