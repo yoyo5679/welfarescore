@@ -236,9 +236,9 @@ def generate_js():
         if '임산부' in target_text or '출산' in target_text:
             conditions.append("(d.target === '임산부')")
         if '다자녀' in target_text:
-             conditions.append("(d.household === '다자녀')")
+             conditions.append("(d.household.includes('다자녀'))")
         if '한부모' in target_text:
-             conditions.append("(d.household === '한부모')")
+             conditions.append("(d.household.includes('한부모'))")
 
         # Default for MOIS if still too loose
         if not conditions:

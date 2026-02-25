@@ -150,6 +150,34 @@ const SUB_REGIONS = {
 // 옵션 선택
 function selectOption(el, key) {
     const parent = el.closest('.options');
+
+    // 가구 상황(household) 다중 선택 처리 로직
+    if (key === 'household') {
+        el.classList.toggle('selected');
+
+        // 기타 버튼 클릭 시 다른 항목 해제
+        if (el.dataset.val === '기타' && el.classList.contains('selected')) {
+            parent.querySelectorAll('.opt-btn').forEach(b => {
+                if (b !== el) b.classList.remove('selected');
+            });
+        }
+        // 다른 버튼 클릭 시 기타 버튼 해제
+        else if (el.dataset.val !== '기타' && el.classList.contains('selected')) {
+            const othersBtn = parent.querySelector('.opt-btn[data-val="기타"]');
+            if (othersBtn) othersBtn.classList.remove('selected');
+        }
+
+        const selectedBtns = parent.querySelectorAll('.opt-btn.selected');
+        answers[key] = Array.from(selectedBtns).map(b => b.dataset.val);
+
+        // 선택 항목이 하나도 없을 경우 배열 비우기 및 비활성화 처리
+        const stepNum = el.closest('.step').id.replace('step-', '');
+        const btn = document.getElementById('next' + stepNum);
+        if (btn) btn.disabled = answers[key].length === 0;
+        return; // 다중 선택 탭은 여기서 종료
+    }
+
+    // 단일 선택 로직 (기존)
     parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
     el.classList.add('selected');
     answers[key] = el.dataset.val;
@@ -303,15 +331,22 @@ function calcResult() {
     else if (answers.income === '250-450만원') needScore += 5;
 
     // 가구 점수: 다자녀/한부모 우대
-    if (['다자녀', '한부모', '자녀있음'].includes(answers.household)) needScore += 10;
-    if (answers.household === '1인가구' || answers.household === '신혼부부') needScore += 5;
+    // answers.household가 다중 선택(Array)인지 확인 후 처리 (V15 멀티셀렉트)
+    const activeHouseholds = Array.isArray(answers.household) ? answers.household : [answers.household || '1인가구'];
+    if (activeHouseholds.some(h => ['다자녀', '한부모', '자녀있음'].includes(h))) needScore += 10;
+    if (activeHouseholds.includes('1인가구') || activeHouseholds.includes('신혼부부')) needScore += 5;
 
     // 데이터 준비
     const incomeMap = { '100만원미만': 50, '100-250만원': 200, '250-450만원': 350, '450만원이상': 700 };
     const incomeNum = incomeMap[answers.income] || 300;
-    const householdMap = { '1인가구': 1, '신혼부부': 2, '자녀있음': 3, '다자녀': 4, '한부모': 2, '기타': 2 };
-    const familyCount = householdMap[answers.household] || 1;
-    const data = { ...answers, incomeNum, familyCount };
+    const householdMap = { '1인가구': 1, '신혼부부': 2, '일반부부': 2, '자녀있음': 3, '다자녀': 4, '한부모': 2, '자립준비청년': 1, '청년': 1, '기타': 2 };
+    // 다중 선택 시 가장 큰 값을 기준으로 가구원 수 결정
+    let familyCount = 1;
+    activeHouseholds.forEach(h => {
+        if (householdMap[h] && householdMap[h] > familyCount) familyCount = householdMap[h];
+    });
+    // 호환성을 위해 condition 체크용 fake Data는 원본 answers를 넘김 (condition에서 includes로 처리)
+    const data = { ...answers, incomeNum, familyCount, household: activeHouseholds };
 
     // 3. 혜택 매칭 및 가산점
     let potentialScore = 0;
@@ -510,7 +545,8 @@ function showResult() {
     });
 
     // ── V20: 자립준비청년 선택 시 전용 혜택 카드 맞춤혜택 최상단 추가 ──
-    if (answers.household === '자립준비청년') {
+    // 다중 선택(Array) 대응
+    if (Array.isArray(answers.household) ? answers.household.includes('자립준비청년') : answers.household === '자립준비청년') {
         currentBenefits.custom.unshift({
             name: '자립준비청년 맞춤 지원사업 안내',
             tag: '아동권리보장원',
@@ -891,9 +927,11 @@ function chatSearch(query) {
     const householdMap = {
         '1인': '1인가구', '혼자': '1인가구', '독신': '1인가구',
         '신혼': '신혼부부', '결혼': '신혼부부',
+        '일반부부': '일반부부', '기혼': '일반부부', '부부': '일반부부',
         '자녀': '자녀있음', '아이': '자녀있음',
         '다자녀': '다자녀', '3명': '다자녀',
-        '한부모': '한부모', '미혼모': '한부모', '미혼부': '한부모'
+        '한부모': '한부모', '미혼모': '한부모', '미혼부': '한부모',
+        '청년': '청년', '자립준비': '자립준비청년'
     };
 
     let targetAge = null, targetCategory = null, targetHousehold = null;
@@ -909,7 +947,7 @@ function chatSearch(query) {
     const familyCount = 1;
     const fakeData = {
         age: targetAge || answers.age || '30대',
-        household: targetHousehold || answers.household || '1인가구',
+        household: targetHousehold ? [targetHousehold] : (Array.isArray(answers.household) ? answers.household : [answers.household || '1인가구']),
         income: answers.income || '100-250만원',
         category: targetCategory || '전체',
         region: answers.region || 'seoul',
@@ -977,9 +1015,9 @@ function renderUserTags() {
     const ageBtn = document.querySelector('.opt-btn.selected[onclick*="age"]');
     if (ageBtn) tags.push(ageBtn.innerText.trim());
 
-    // 2. 가구 상황
-    const householdBtn = document.querySelector('.opt-btn.selected[onclick*="household"]');
-    if (householdBtn) tags.push(householdBtn.innerText.trim());
+    // 2. 가구 상황 (다중 선택 처리)
+    const householdBtns = document.querySelectorAll('.opt-btn.selected[onclick*="household"]');
+    householdBtns.forEach(btn => tags.push(btn.innerText.trim()));
 
     // 3. 소득 수준 (짧게 가공)
     const incomeBtn = document.querySelector('.opt-btn.selected[onclick*="income"]');

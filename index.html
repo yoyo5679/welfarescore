@@ -129,13 +129,16 @@
         <div class="step" id="step-2">
             <div class="step-card">
                 <h2>🏡 현재 상황은 어떻게 되세요?</h2>
-                <p class="sub">지금 처한 상황에 따라 지원 혜택이 달라져요</p>
+                <p class="sub">지금 처한 상황에 따라 지원 혜택이 달라져요 (중복 선택 가능)</p>
                 <div class="options col2">
                     <button class="opt-btn" data-val="1인가구" onclick="selectOption(this, 'household')">
                         <span class="icon">🧍</span>1인 가구
                     </button>
                     <button class="opt-btn" data-val="신혼부부" onclick="selectOption(this, 'household')">
-                        <span class="icon">💍</span>신혼부부
+                        <span class="icon">💍</span>신혼부부(7년 이내)
+                    </button>
+                    <button class="opt-btn" data-val="일반부부" onclick="selectOption(this, 'household')">
+                        <span class="icon">👩‍❤️‍👨</span>부부(7년 이후)
                     </button>
                     <button class="opt-btn" data-val="자녀있음" onclick="selectOption(this, 'household')">
                         <span class="icon">👨‍👩‍👦</span>자녀 있음
@@ -149,8 +152,10 @@
                     <button class="opt-btn" data-val="자립준비청년" onclick="selectOption(this, 'household')">
                         <span class="icon">🌱</span>자립준비청년
                     </button>
-                    <button class="opt-btn" data-val="기타" onclick="selectOption(this, 'household')"
-                        style="grid-column: span 2;">
+                    <button class="opt-btn" data-val="청년" onclick="selectOption(this, 'household')">
+                        <span class="icon">🧑</span>청년
+                    </button>
+                    <button class="opt-btn" data-val="기타" onclick="selectOption(this, 'household')">
                         <span class="icon">🏘️</span>기타
                     </button>
                 </div>
