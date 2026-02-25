@@ -1559,3 +1559,110 @@ footer {
     border-radius: 50% !important;
     object-fit: cover !important;
 }
+
+/* ── 2026 복주머니 가이드 및 정부지원금 FAQ (SEO Content) ── */
+.seo-guide {
+    max-width: 480px;
+    margin: 40px auto 20px;
+    padding: 30px 20px;
+    background: #fdfdfd;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border);
+    color: #475569;
+    line-height: 1.6;
+    animation: fadeUp 0.6s ease;
+}
+
+.seo-guide .seo-header {
+    text-align: center;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px dashed var(--border);
+}
+
+.seo-guide .seo-header h3 {
+    font-size: 20px;
+    color: var(--primary);
+    margin: 0 0 8px;
+    font-weight: 900;
+}
+
+.seo-guide .seo-header p {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+}
+
+.seo-guide .seo-content h4 {
+    font-size: 17px;
+    color: #0f172a;
+    margin: 20px 0 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.seo-guide .seo-content p {
+    font-size: 14px;
+    margin-bottom: 16px;
+    text-align: justify;
+    word-break: keep-all;
+}
+
+.seo-guide .seo-content strong {
+    color: var(--primary);
+    font-weight: 700;
+}
+
+/* FAQ Box */
+.seo-faq {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 24px;
+}
+
+.seo-faq h4 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    color: var(--primary);
+    text-align: center;
+}
+
+.faq-item {
+    margin-bottom: 16px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 16px;
+}
+
+.faq-item:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.faq-item strong {
+    display: block;
+    font-size: 15px;
+    color: #1e293b;
+    margin-bottom: 6px;
+}
+
+.faq-item p {
+    font-size: 14px;
+    color: #64748b;
+    margin: 0;
+}
+
+.seo-footer-text {
+    margin-top: 24px !important;
+    text-align: center !important;
+    font-weight: 700;
+    color: var(--accent2) !important;
+    font-size: 15px !important;
+    background: #fef3c7;
+    padding: 12px;
+    border-radius: 8px;
+}
