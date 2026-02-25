@@ -319,7 +319,16 @@ function calcResult() {
         // 카테고리 필터링 (V11 Smart Filter)
         let isCategoryMatch = true;
         if (answers.category && answers.category !== '전체') {
-            if (item.category !== answers.category && !item.isLocal) isCategoryMatch = false;
+            if (answers.category === '청년') {
+                // '청년' 카테고리 선택 시: 이름/설명/태그에 '청년'이 포함되거나 youthCenter 데이터인 경우 매칭
+                const isYouthRelated = item.name.includes('청년') ||
+                    (item.description && item.description.includes('청년')) ||
+                    (item.tag && item.tag.includes('청년')) ||
+                    item.name.includes('[온통청년]');
+                if (!isYouthRelated && !item.isLocal) isCategoryMatch = false;
+            } else {
+                if (item.category !== answers.category && !item.isLocal) isCategoryMatch = false;
+            }
         }
 
         if (item.condition(data) && isCategoryMatch) {
@@ -472,7 +481,13 @@ function showResult() {
             const isSubRegionMatch = subRegionName && portal.tag.includes(subRegionName);
             const isGlobal = portal.tag === '전체' || portal.tag === '중앙정부';
 
-            if (isRegionMatch || isSubRegionMatch || isGlobal) {
+            // 카테고리 매칭 (V24): '청년' 카테고리일 경우 지역 혜택은 대부분 청년용이므로 패스
+            let isPortalCategoryMatch = true;
+            if (answers.category && answers.category !== '전체' && answers.category !== '청년') {
+                if (portal.category && portal.category !== answers.category) isPortalCategoryMatch = false;
+            }
+
+            if ((isRegionMatch || isSubRegionMatch || isGlobal) && isPortalCategoryMatch) {
                 currentBenefits.local.push({
                     ...portal,
                     isLocal: true,

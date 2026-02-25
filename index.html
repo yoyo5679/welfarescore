@@ -128,8 +128,8 @@
         <!-- ── STEP 2: 가구 상황 ── -->
         <div class="step" id="step-2">
             <div class="step-card">
-                <h2>🏡 가구 상황은 어떻게 되세요?</h2>
-                <p class="sub">가구 형태에 따라 지원 혜택이 달라져요</p>
+                <h2>🏡 현재 상황은 어떻게 되세요?</h2>
+                <p class="sub">지금 처한 상황에 따라 지원 혜택이 달라져요</p>
                 <div class="options col2">
                     <button class="opt-btn" data-val="1인가구" onclick="selectOption(this, 'household')">
                         <span class="icon">🧍</span>1인 가구
@@ -211,8 +211,10 @@
                     <button class="opt-btn" data-val="생활비" onclick="selectOption(this, 'category')">
                         <span class="icon">🛒</span>생활비 지원
                     </button>
-                    <button class="opt-btn" data-val="전체" onclick="selectOption(this, 'category')"
-                        style="grid-column: span 2;">
+                    <button class="opt-btn" data-val="청년" onclick="selectOption(this, 'category')">
+                        <span class="icon">👦</span>청년 전용/특화
+                    </button>
+                    <button class="opt-btn" data-val="전체" onclick="selectOption(this, 'category')">
                         <span class="icon">🌏</span>전체 보기
                     </button>
                 </div>
