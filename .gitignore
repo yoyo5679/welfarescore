@@ -1,1 +1,13 @@
 .vercel
+
+# 환경변수 (API 키 등 민감한 정보)
+.env
+.env.local
+.env.*.local
+
+# API 키가 포함된 문서 (로컬에서만 관리)
+API_REGISTRY.md
+
+# 임시/테스트 파일
+fix_conditions.py
+clean_script.py
