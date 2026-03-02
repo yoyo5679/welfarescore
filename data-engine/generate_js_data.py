@@ -1,11 +1,12 @@
 import json
-import json
 import os
 
 # Logger (Data Team Lead) says: "Converting raw data filter logic to live JS condition functions."
 
 def generate_js():
-    input_path = "/Users/hong-eunseong/Documents/안티그래비티/블로그/welfare-score-app/data-engine/unified_welfare_data.json"
+    # 현재 파일 위치를 기준으로 경로 설정
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    input_path = os.path.join(current_dir, "unified_welfare_data.json")
     
     with open(input_path, "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -316,9 +317,10 @@ def generate_js():
     js_code += "];"
 
     # Save to BOTH data-engine and ROOT directory for consistency
+    project_root = os.path.dirname(current_dir)
     output_paths = [
-        "/Users/hong-eunseong/Documents/안티그래비티/블로그/welfare-score-app/data-engine/generated_data.js",
-        "/Users/hong-eunseong/Documents/안티그래비티/블로그/welfare-score-app/generated_data.js"
+        os.path.join(current_dir, "generated_data.js"),
+        os.path.join(project_root, "generated_data.js")
     ]
     
     for path in output_paths:

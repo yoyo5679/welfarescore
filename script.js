@@ -613,8 +613,15 @@ function renderBenefits(category) {
         const blogKeyword = encodeURIComponent(b.name.replace(/[\[\]]/g, '').trim());
         const blogUrl = `https://10000nanzip.tistory.com/search/${blogKeyword}`;
 
+        const hashtagsHtml = (b.hashtags && b.hashtags.length > 0)
+            ? b.hashtags.map(h => `<span class="benefit-hashtag">#${h}</span>`).join('')
+            : '';
+
         card.innerHTML = `
-            <div class="agency-badge">🏛️ ${b.tag}</div>
+            <div class="benefit-card-header">
+                <div class="agency-badge">🏛️ ${b.tag}</div>
+                ${hashtagsHtml}
+            </div>
             <div class="benefit-title">${b.name}</div>
             <div class="benefit-desc">${b.desc || b.description}</div>
             <div class="benefit-meta">

@@ -713,7 +713,33 @@ header p {
     font-weight: 700;
     padding: 4px 10px;
     border-radius: 20px;
-    align-self: flex-start;
+    flex-shrink: 0;
+}
+
+/* ── 혜택 카드 헤더 (뱃지 + 해시태그 가로 정렬) ── */
+.benefit-card-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* 해시태그 스타일 */
+.benefit-hashtag {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    color: #6366f1;
+    background: #eef2ff;
+    border-radius: 20px;
+    padding: 4px 9px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    transition: background 0.15s;
+}
+
+.benefit-hashtag:hover {
+    background: #e0e7ff;
 }
 
 .benefit-title {
