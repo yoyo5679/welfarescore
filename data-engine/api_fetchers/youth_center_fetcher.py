@@ -4,13 +4,19 @@ import xml.etree.ElementTree as ET
 import json
 import os
 import time
+from dotenv import load_dotenv
 
-# API Configuration
+# API Configuration - .env 파일에서 읽기
+_root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+load_dotenv(os.path.join(_root_dir, '.env'))
 API_KEYS = [
-    "c3da64b8-48a4-4139-9fe5-5e78ebed242f",
-    "2fd78c36-4145-4003-9fe9-7e244dd93a70",
-    "fc05b268-6191-4d03-8623-a976ea0aab65"
+    os.getenv('YOUTH_CENTER_API_KEY_1', ''),
+    os.getenv('YOUTH_CENTER_API_KEY_2', ''),
+    os.getenv('YOUTH_CENTER_API_KEY_3', ''),
 ]
+API_KEYS = [k for k in API_KEYS if k]  # 빈 키 제거
+if not API_KEYS:
+    raise ValueError(".env 파일에 YOUTH_CENTER_API_KEY_1~3가 없습니다.")
 
 BASE_URL = "http://www.youthcenter.go.kr:8080/opi/youthPlcyList.do"
 

@@ -7,8 +7,14 @@ import xml.etree.ElementTree as ET
 import json
 import time
 import os
+from dotenv import load_dotenv
 
-API_KEY = '9a318bb9e3744a79987a64668e6e67c3c8e4fd22b7c261aeddc03af627730a09'
+# .env 파일에서 API Key 로드
+_root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+load_dotenv(os.path.join(_root_dir, '.env'))
+API_KEY = os.getenv('PUBLIC_DATA_API_KEY')
+if not API_KEY:
+    raise ValueError(".env 파일에 PUBLIC_DATA_API_KEY가 없습니다.")
 LIST_URL = 'http://apis.data.go.kr/B554287/NationalWelfareInformationsV001/NationalWelfarelistV001'
 NUM_ROWS = 500  # 최대 500개
 

@@ -4,11 +4,14 @@ import urllib.error
 import json
 import os
 import time
+from dotenv import load_dotenv
 
 # API Configuration
-# Note: Using the same API key as mois_fetcher.py for consistency if they share the same provider (odcloud.kr / portal)
-# The user already provided this key in Conversation d09e2661-d796-4400-b67b-157e1a1484fb
-API_KEY = "9a318bb9e3744a79987a64668e6e67c3c8e4fd22b7c261aeddc03af627730a09"
+_root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+load_dotenv(os.path.join(_root_dir, '.env'))
+API_KEY = os.getenv('PUBLIC_DATA_API_KEY')
+if not API_KEY:
+    raise ValueError(".env 파일에 PUBLIC_DATA_API_KEY가 없습니다.")
 
 # Local Government Welfare Information API (Korea Social Security Information Service)
 BASE_URL = "http://apis.data.go.kr/B554287/LocalGovernmentWelfareInformations/LcgvWelfarelist"
