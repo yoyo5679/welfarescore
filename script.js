@@ -14,122 +14,15 @@ const REGION_NAMES = {
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 const linkTarget = isMobile ? '_self' : '_blank';
 
-// ── 지역별 청년포털 & 복지포털 데이터 (V20) ──
-const REGIONAL_PORTALS = {
-    'national': [
-        { name: '2026년 중앙정부 청년 월세지원', tag: '중앙정부', desc: '무주택 청년 대상 월 최대 20만원 임차료 지원 (최대 24개월 상시 신청)', applyUrl: 'https://www.bokjiro.go.kr/', monthlyAmount: 200000, icon: '🏠', relevance: 120 },
-        { name: '국민취업지원제도 구직촉진수당 (인상)', tag: '중앙정부', desc: '2026년 월 60만원으로 인상된 구직 수당 및 맞춤형 취업 지원 서비스', applyUrl: 'https://www.kua.go.kr/', monthlyAmount: 600000, icon: '💼', relevance: 115 },
-        { name: '청년미래적금 (2026년 6월 출시)', tag: '중앙정부', desc: '3년 만기 시 약 2,200만원 목돈 마련 지원 (연 소득 6천만원 이하 청년)', applyUrl: 'https://www.kinfa.or.kr/', monthlyAmount: 0, icon: '💰', relevance: 110 }
-    ],
-    'seoul': [
-        // ── 25개 자치구별 특화 지원 정보 ──
-        { name: '[종로구] 청년 숲 마켓 판매자 모집', tag: '종로구', desc: '청년 수공예가 및 창업가들의 판로 지원을 위한 플리마켓 참여 기회 제공', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/list.do?key=2309130006', monthlyAmount: 0, icon: '🌿', relevance: 110 },
-        { name: '[중구] 을지유니크팩토리 청년성장프로젝트', tag: '중구', desc: '차(茶)와 함께하는 나를 마주하는 시간, 청년 심리 회복 및 성장 지원 프로그램', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67300&key=2309130006', monthlyAmount: 0, icon: '🍵', relevance: 115 },
-        { name: '[용산구] 청년 국가자격증 응시료 지원', tag: '용산구', desc: '어학 및 국가기술자격증 시험 응시료 실비 지원 (1인당 연 최대 10만원)', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67159&key=2309130006', monthlyAmount: 0, icon: '📝', relevance: 120 },
-        { name: '[성동구] 성동형 청년월세 지원사업', tag: '성동구', desc: '정부 지원 사각지대의 청년 1인가구에게 월 20만원, 최대 10개월간 월세 지원', applyUrl: 'https://www.sd.go.kr/', monthlyAmount: 200000, icon: '🏠', relevance: 125 },
-        { name: '[광진구] 자립준비청년 맞춤형 패키지 지원', tag: '광진구', desc: '자립준비청년들의 안정적인 사회 정착을 위한 생활 생활 물품 및 지원금 패키지', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67720&key=2309130006', monthlyAmount: 0, icon: '🎁', relevance: 110 },
-        { name: '[동대문구] 구립체육문화시설 프로그램 지원', tag: '동대문구', desc: '청년들의 건강한 여가 생활을 위한 체육 및 문화 강좌 수강료 지원 및 우선 접수', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67619&key=2309130006', monthlyAmount: 0, icon: '🎾', relevance: 105 },
-        { name: '[중랑구] 슬기로운 중랑생활 이벤트', tag: '중랑구', desc: '제로웨이스트 실천 및 쓰레기 줄이기 참여 청년 대상 이벤트 및 경품 증정', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67669&key=2309130006', monthlyAmount: 0, icon: '♻️', relevance: 100 },
-        { name: '[성북구] 청년 커뮤니티 "와글와글 성북마을"', tag: '성북구', desc: '청년 소모임 활동비 지원 및 지역 네트워크 형성 프로그램', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67756&key=2309130006', monthlyAmount: 0, icon: '👥', relevance: 115 },
-        { name: '[강북구] 청년도전지원사업 참여자 모집', tag: '강북구', desc: '구직 단념 청년들의 사회 참여 및 취업 역량 강화를 위한 맞춤형 상담 및 교육', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67119&key=2309130006', monthlyAmount: 500000, icon: '🪜', relevance: 120 },
-        { name: '[도봉구] 성인독서동아리 "달밤" 모집', tag: '도봉구', desc: '도봉문화정보도서관에서 운영하는 야간 독서 모임 및 독서 문화 활동 지원', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/list.do?key=2309130006', monthlyAmount: 0, icon: '🌙', relevance: 105 },
-        { name: '[노원구] 인상파 특별 전시 할인 혜택', tag: '노원구', desc: '노원문화재단 기획 전시 "인상파, 찬란한 순간들" 청년 특별 할인 지원', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67753&key=2309130006', monthlyAmount: 0, icon: '🎨', relevance: 110 },
-        { name: '[은평구] 청년 일자리사업 (인건비 지원)', tag: '은평구', desc: '은평구 내 기업과 청년 연계 및 기업에 채용 지원금(인건비 80%) 지원', applyUrl: 'https://www.ep.go.kr/www/selectEminwonView.do?notAncmtMgtNo=48183&key=748', monthlyAmount: 0, icon: '💼', relevance: 125 },
-        { name: '[서대문구] 고혈압 당뇨 관리 공부방', tag: '서대문구', desc: '청년 건강 관리를 위한 만성질환 예방 교육 및 식단 상담 서비스', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/list.do?key=2309130006', monthlyAmount: 0, icon: '🍎', relevance: 100 },
-        { name: '[마포구] 청년 일자리 매칭 데이', tag: '마포구', desc: '마포구 우수 기업과 청년 구직자의 직접 면접 및 채용 연계 행사', applyUrl: 'https://www.mapo.go.kr/site/main/content/mapo05050401', monthlyAmount: 0, icon: '🤝', relevance: 120 },
-        { name: '[양천구] 청년점포 & 청년창업가 모집', tag: '양천구', desc: '전통시장 내 청년 점포 입점 지원 및 창업 초기 자금 지원 프로그램', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67750&key=2309130006', monthlyAmount: 0, icon: '🏪', relevance: 120 },
-        { name: '[강서구] 곰달래도서관 개관기념 행사', tag: '강서구', desc: '강서구 청년 및 주민을 위한 인문학 강연, 공연 등 문화 행사 안내', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67670&key=2309130006', monthlyAmount: 0, icon: '📚', relevance: 105 },
-        { name: '[구로구] 에너지 절약 에코마일리지', tag: '구로구', desc: '에너지 사용량 절감 시 마일리지를 적립하여 온누리상품권 등으로 교환 지원', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67364&key=2309130006', monthlyAmount: 0, icon: '🔋', relevance: 100 },
-        { name: '[금천구] 전세피해 임차인 법률 지원', tag: '금천구', desc: '전세 사기 등 피해를 입은 청년 임차인을 위한 전문 법률 상담 및 대응 지원', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67736&key=2309130006', monthlyAmount: 0, icon: '⚖️', relevance: 115 },
-        { name: '[영등포구] 클라이밍 & 러닝 참여자 모집', tag: '영등포구', desc: '청년들의 건강한 신체 활동을 위한 클라이밍 및 러닝 동호회 활동 지원', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67640&key=2309130006', monthlyAmount: 0, icon: '🧗', relevance: 110 },
-        { name: '[동작구] 동작 청년 카페 운영 지원', tag: '동작구', desc: '청년 창업가 대상 동작구 내 카페 공간 제공 및 운영 컨설팅 지원', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/list.do?key=2309130006', monthlyAmount: 0, icon: '☕', relevance: 115 },
-        { name: '[관악구] 청년 네트워크 위원 모집', tag: '관악구', desc: '청년 정책 수립 과정에 직접 참여하는 관악구 청년 거버넌스 위원 지원', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/list.do?key=2309130006', monthlyAmount: 0, icon: '📢', relevance: 110 },
-        { name: '[서초구] 프로젝트 리더 선정 지원', tag: '서초구', desc: '서초구 청년들이 직접 지역 사회에 필요한 프로젝트를 기획하고 실행할 리더 모집', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/list.do?key=2309130006', monthlyAmount: 0, icon: '👔', relevance: 115 },
-        { name: '[강남구] 사회복지 공모사업 지원', tag: '강남구', desc: '강남구 내 복지 사각지대 해소를 위한 참신한 사회복지 사업 아이디어 공모 및 지원', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/list.do?key=2309130006', monthlyAmount: 0, icon: '🏛️', relevance: 110 },
-        { name: '[송파구] AI 면접 무료 체험 신청', tag: '송파구', desc: '취업 준비 청년을 위한 AI 역량 검사 및 면접 체험 시스템 무료 제공', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/view.do?sprtInfoId=67251&key=2309130006', monthlyAmount: 0, icon: '🤖', relevance: 120 },
-        { name: '[강동구] 스텝업 프로젝트 참여자 모집', tag: '강동구', desc: '강동구 구직 청년들의 진로 탐색 및 실무 역량 강화를 위한 스텝업 프로그램', applyUrl: 'https://youth.seoul.go.kr/infoData/sprtInfo/list.do?key=2309130006', monthlyAmount: 500000, icon: '🪜', relevance: 115 },
+// ── 지역별 포털 데이터 (복지로 API 연동 후 자동 채워질 예정) ──
+const REGIONAL_PORTALS = {};
 
-        // ── 서울시 공통 포털 ──
-        { name: '서울청년포털 (청년몽땅정보통)', tag: '서울특별시', desc: '서울시 청년 정책 원스톱 포털. 주거·취업·교육·문화 분야 지원사업 한눈에 확인!', applyUrl: 'https://youth.seoul.go.kr/', monthlyAmount: 0, icon: '🏙️', relevance: 100 },
-        { name: '서울시 청년수당', tag: '서울특별시', desc: '미취업 만 19~34세 서울 청년에게 최대 6개월간 월 50만원 지원', applyUrl: 'https://youth.seoul.go.kr/site/main/content/youth_pay', monthlyAmount: 500000, icon: '💰', relevance: 98 },
-        { name: '서울형 강소기업 취업지원', tag: '서울특별시', desc: '중소기업 취업 청년 대상 인턴십·연계 정규직 채용 및 장려금 지원', applyUrl: 'https://youth.seoul.go.kr/', monthlyAmount: 300000, icon: '💼', relevance: 90 }
-    ],
-    'gyeonggi': [
-        { name: '경기도 청년기본소득 (2026)', tag: '경기도', desc: '만 24세 경기 청년에게 연 100만원 지원 (거주지 학원비 사용 가능)', applyUrl: 'https://www.jobaba.net/', monthlyAmount: 83333, icon: '💳', relevance: 125 },
-        { name: '경기청년 메디케어 플러스 (신설)', tag: '경기도', desc: '미취업·저소득 청년 대상 건강검진 및 예방접종비 최대 20만원 지원', applyUrl: 'https://www.jobaba.net/', monthlyAmount: 0, icon: '🏥', relevance: 110 },
-        { name: '경기도 청년 갭이어 프로그램', tag: '경기도', desc: '진로 탐색 프로젝트 지원금(최대 500만원) 및 역량 강화 프로그램 지원', applyUrl: 'https://www.jobaba.net/', monthlyAmount: 200000, icon: '🌱', relevance: 88 }
-    ],
-    'incheon': [
-        { name: '인천광역시 청년포털', tag: '인천광역시', desc: '인천 청년 맞춤형 지원정책 통합포털. 주거·일자리·창업 지원 안내', applyUrl: 'https://youth.incheon.go.kr/', monthlyAmount: 0, icon: '✈️', relevance: 100 },
-        { name: '인천 청년도약장려금', tag: '인천광역시', desc: '만 18~34세 인천 거주 미취업 청년 대상 구직활동 지원금 지급', applyUrl: 'https://youth.incheon.go.kr/', monthlyAmount: 500000, icon: '💰', relevance: 95 }
-    ],
-    'busan': [
-        { name: '부산 청년모두가(家) 주거비 지원', tag: '부산광역시', desc: '공공임대주택 거주 청년 및 신혼부부 대상 월 임대료 지원 (최대 6-7년)', applyUrl: 'https://youth.busan.go.kr/', monthlyAmount: 150000, icon: '🏠', relevance: 120 },
-        { name: '부산 청년 머물자리론 (확대)', tag: '부산광역시', desc: '임차보증금 최대 1억원 대출 및 이자 지원 (심사 기간 5일로 단축)', applyUrl: 'https://youth.busan.go.kr/', monthlyAmount: 0, icon: '🏦', relevance: 115 },
-        { name: '부산청년플랫폼 (BYP)', tag: '부산광역시', desc: '부산 청년 정책·일자리·문화·주거 원스톱 지원 플랫폼', applyUrl: 'https://youth.busan.go.kr/', monthlyAmount: 0, icon: '🌊', relevance: 100 }
-    ],
-    'daegu': [
-        { name: '대구청년센터 (청년드림)', tag: '대구광역시', desc: '대구 청년을 위한 일자리·창업·주거·문화 복합지원 플랫폼', applyUrl: 'https://www.daegu.go.kr/youth/', monthlyAmount: 0, icon: '🍎', relevance: 100 },
-        { name: '대구형 청년 일자리 사업', tag: '대구광역시', desc: '대구 지역 중소기업 취업 청년 대상 임금 보전 및 재직장려금 지원', applyUrl: 'https://www.daegu.go.kr/youth/', monthlyAmount: 200000, icon: '💼', relevance: 92 }
-    ],
-    'gwangju': [
-        { name: '광주광역시 청년센터', tag: '광주광역시', desc: '광주 청년 복지정책 종합안내. 주거·취업·창업·문화 지원 정보 제공', applyUrl: 'https://www.gwangju.go.kr/youth/', monthlyAmount: 0, icon: '🎨', relevance: 100 },
-        { name: '광주청년드림통장', tag: '광주광역시', desc: '근로·사업소득이 있는 청년이 저축하면 시에서 매칭 적립해주는 청년지원 사업', applyUrl: 'https://www.gwangju.go.kr/youth/', monthlyAmount: 200000, icon: '💳', relevance: 95 }
-    ],
-    'daejeon': [
-        { name: '대전광역시 청년포털', tag: '대전광역시', desc: '대전 청년 지원정책. 일자리·주거·창업·문화 맞춤 지원 안내', applyUrl: 'https://www.daejeon.go.kr/youth/', monthlyAmount: 0, icon: '🔬', relevance: 100 },
-        { name: '대전 청년 구직활동지원금', tag: '대전광역시', desc: '취업을 준비하는 대전 청년에게 구직활동 비용 지원', applyUrl: 'https://www.daejeon.go.kr/youth/', monthlyAmount: 300000, icon: '💰', relevance: 90 }
-    ],
-    'ulsan': [
-        { name: '울산청년센터', tag: '울산광역시', desc: '울산 청년 지원정책 및 취업·창업·주거 정보 안내 센터', applyUrl: 'https://www.ulsan.go.kr/youth/', monthlyAmount: 0, icon: '🐋', relevance: 100 },
-        { name: '울산 청년 취업장려금', tag: '울산광역시', desc: '울산 지역 기업 취업 청년 대상 정착금 및 장려금 지원', applyUrl: 'https://www.ulsan.go.kr/youth/', monthlyAmount: 200000, icon: '💼', relevance: 90 }
-    ],
-    'sejong': [
-        { name: '세종시 청년지원센터', tag: '세종특별자치시', desc: '세종시 청년 정책·일자리·주거 지원 통합 안내', applyUrl: 'https://www.sejong.go.kr/youth/', monthlyAmount: 0, icon: '🏢', relevance: 100 },
-        { name: '세종시 청년 월세지원', tag: '세종특별자치시', desc: '세종시 거주 무주택 청년 대상 월세 일부 지원', applyUrl: 'https://www.sejong.go.kr/youth/', monthlyAmount: 200000, icon: '🏠', relevance: 88 }
-    ],
-    'gangwon': [
-        { name: '강원도 청년센터', tag: '강원특별자치도', desc: '강원 청년 창업·취업·귀촌 지원 종합 정보 포털', applyUrl: 'https://www.gw.go.kr/youth/', monthlyAmount: 0, icon: '⛷️', relevance: 100 },
-        { name: '강원 청년 창업지원 (강소연)', tag: '강원특별자치도', desc: '강원 청년 창업가 대상 초기 창업자금 및 멘토링 지원', applyUrl: 'https://www.gw.go.kr/youth/', monthlyAmount: 300000, icon: '🚀', relevance: 92 }
-    ],
-    'chungbuk': [
-        { name: '충청북도 청년지원센터', tag: '충청북도', desc: '충북 청년 취업·창업·주거·복지 지원 정책 안내', applyUrl: 'https://www.cb.go.kr/youth/', monthlyAmount: 0, icon: '🏞️', relevance: 100 },
-        { name: '충북 청년 취업지원', tag: '충청북도', desc: '충북 지역 기업 취업 청년 대상 정착장려금 및 인턴십 지원', applyUrl: 'https://www.cb.go.kr/youth/', monthlyAmount: 200000, icon: '💼', relevance: 88 }
-    ],
-    'chungnam': [
-        { name: '충청남도 청년센터', tag: '충청남도', desc: '충남 청년 맞춤형 정책. 일자리·주거·복지·교육 지원 안내', applyUrl: 'https://www.chungnam.go.kr/youth/', monthlyAmount: 0, icon: '🌅', relevance: 100 },
-        { name: '충남 청년 행복카드', tag: '충청남도', desc: '충남 거주 청년 대상 문화·여가·교통 할인 혜택 제공 카드', applyUrl: 'https://www.chungnam.go.kr/youth/', monthlyAmount: 100000, icon: '🎴', relevance: 88 }
-    ],
-    'jeonbuk': [
-        { name: '전북특별자치도 청년센터', tag: '전북특별자치도', desc: '전북 청년 지원정책 포털. 주거·일자리·창업 등 맞춤 지원 안내', applyUrl: 'https://www.jb.go.kr/youth/', monthlyAmount: 0, icon: '🍚', relevance: 100 },
-        { name: '전주시 청년지원 프로그램', tag: '전주시', desc: '전주 청년을 위한 취업·창업·주거·문화 특화 지원 사업', applyUrl: 'https://www.jeonju.go.kr/youth/', monthlyAmount: 0, icon: '🏯', relevance: 98 },
-        { name: '전북 청년 희망공제 (적금 매칭)', tag: '전북특별자치도', desc: '전북 중소기업 재직 청년이 저축하면 기업·도가 매칭 적립해주는 목돈 마련 사업', applyUrl: 'https://www.jb.go.kr/youth/', monthlyAmount: 240000, icon: '💰', relevance: 96 },
-        { name: '전북 청년 월세 특별지원', tag: '전북특별자치도', desc: '무주택 청년 1인 가구 대상 월세 지원 (최대 월 20만원, 12개월)', applyUrl: 'https://www.jb.go.kr/youth/', monthlyAmount: 200000, icon: '🏠', relevance: 93 }
-    ],
-    'jeonnam': [
-        { name: '전라남도 청년센터', tag: '전라남도', desc: '전남 청년 정착·취업·창업·귀농귀촌 종합 지원 포털', applyUrl: 'https://www.jeonnam.go.kr/youth/', monthlyAmount: 0, icon: '🥘', relevance: 100 },
-        { name: '전남 청년 농어촌 정착지원금', tag: '전라남도', desc: '전남 농어촌 정착 청년 대상 5년간 매월 최대 100만원 지원', applyUrl: 'https://www.jeonnam.go.kr/youth/', monthlyAmount: 1000000, icon: '🌾', relevance: 95 }
-    ],
-    'gyeongbuk': [
-        { name: '경상북도 청년정책포털 (경북청년)', tag: '경상북도', desc: '경북 청년 취업·창업·주거·귀농 지원 정책 통합 안내', applyUrl: 'https://youth.gyeongbuk.go.kr/', monthlyAmount: 0, icon: '🏰', relevance: 100 },
-        { name: '경북 청년 내일채움공제 플러스', tag: '경상북도', desc: '경북 중소기업 청년 재직자 목돈 마련 지원 (기업·도 매칭)', applyUrl: 'https://youth.gyeongbuk.go.kr/', monthlyAmount: 300000, icon: '💰', relevance: 95 }
-    ],
-    'gyeongnam': [
-        { name: '경상남도 청년센터', tag: '경상남도', desc: '경남 청년 지원정책. 취업·창업·주거 분야 맞춤 안내 포털', applyUrl: 'https://www.gyeongnam.go.kr/youth/', monthlyAmount: 0, icon: '⚓', relevance: 100 },
-        { name: '경남 청년 구직활동지원금', tag: '경상남도', desc: '경남 거주 미취업 청년 대상 구직활동비 월 최대 30만원 지원', applyUrl: 'https://www.gyeongnam.go.kr/youth/', monthlyAmount: 300000, icon: '💼', relevance: 92 }
-    ],
-    'jeju': [
-        { name: '제주청년센터 (제주청년)', tag: '제주특별자치도', desc: '제주 청년 경제·주거·문화·교육 지원 종합 포털', applyUrl: 'https://youth.jeju.go.kr/', monthlyAmount: 0, icon: '🏝️', relevance: 100 },
-        { name: '제주 청년 이주지원금', tag: '제주특별자치도', desc: '제주 이주 청년에게 정착 지원금 및 주거비 일부 지원', applyUrl: 'https://youth.jeju.go.kr/', monthlyAmount: 200000, icon: '✈️', relevance: 92 },
-        { name: '제주 청년 창업지원 (탐나는 청년)', tag: '제주특별자치도', desc: '제주 청년 창업가 대상 창업자금·교육·멘토링·공간 지원', applyUrl: 'https://youth.jeju.go.kr/', monthlyAmount: 300000, icon: '🚀', relevance: 90 }
-    ]
-};
-
-// 시군구 데이터 (V11)
+// 시군구 데이터
 const SUB_REGIONS = {
     'seoul': ['강남구', '강동구', '강북구', '강서구', '관악구', '광진구', '구로구', '금천구', '노원구', '도봉구', '동대문구', '동작구', '마포구', '서대문구', '서초구', '성동구', '성북구', '송파구', '양천구', '영등포구', '용산구', '은평구', '종로구', '중구', '중랑구'],
-    'gyeonggi': ['수원시', '고양시', '용인시', '성남시', '부천시', '화성시', '안산시', '남양주시', '안양시', '평택시', '시흥시', '파주시', '의정부시', '김포시', '광주시', '광명시', '군포시', '하남시', '오산시', '양주시', '이천시', '구리시', '안성시', '포천시', '의왕시', '여주시', '양평군', '동두천시', '과천시', '가평군', '연천군'],
+    'gyeonggi': ['수원시', '고양시', '용인시', '성남시', '부천시', '화성시', '안산시', '남양주시', '안양시', '평택시', '시흥시', '파주시', '의정부시', '김포시', '광주시', '광명시', '군포시', '하남시', '오산시', '양주시', '이천시', '구리시', '안성시', '의왕시', '여주시', '양평군', '동두천시', '과천시', '가평군', '연천군'],
     'busan': ['강서구', '금정구', '기장군', '남구', '동구', '동래구', '부산진구', '북구', '사상구', '사하구', '서구', '수영구', '연제구', '영도구', '중구', '해운대구'],
+
     'incheon': ['강화군', '계양구', '남동구', '동구', '미추홀구', '부평구', '서구', '연수구', '옹진군', '중구'],
     'daegu': ['군위군', '남구', '달서구', '달성군', '동구', '북구', '서구', '수성구', '중구'],
     'gwangju': ['광산구', '남구', '동구', '북구', '서구'],
@@ -148,86 +41,83 @@ const SUB_REGIONS = {
 
 // welfareData is now provided by generated_data.js
 // 옵션 선택
-function selectOption(el, key) {
+function selectOption(el, key, isMulti = false) {
     const parent = el.closest('.options');
 
-    // 가구 상황(household) 다중 선택 처리 로직
-    if (key === 'household') {
-        el.classList.toggle('selected');
-
-        // 기타 버튼 클릭 시 다른 항목 해제
-        if (el.dataset.val === '기타' && el.classList.contains('selected')) {
-            parent.querySelectorAll('.opt-btn').forEach(b => {
-                if (b !== el) b.classList.remove('selected');
-            });
-        }
-        // 다른 버튼 클릭 시 기타 버튼 해제
-        else if (el.dataset.val !== '기타' && el.classList.contains('selected')) {
-            const othersBtn = parent.querySelector('.opt-btn[data-val="기타"]');
-            if (othersBtn) othersBtn.classList.remove('selected');
+    if (isMulti) {
+        // "해당없음" 또는 "전체" 같은 배타적 옵션 처리
+        if (el.dataset.val === '해당없음' || el.dataset.val === '전체') {
+            parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+            el.classList.add('selected');
+        } else {
+            // 다른 옵션 선택시 배타적 옵션 해제
+            const exclusiveBtn = parent.querySelector('.opt-btn[data-val="해당없음"], .opt-btn[data-val="전체"]');
+            if (exclusiveBtn && exclusiveBtn.classList.contains('selected')) {
+                exclusiveBtn.classList.remove('selected');
+            }
+            el.classList.toggle('selected');
         }
 
-        const selectedBtns = parent.querySelectorAll('.opt-btn.selected');
-        answers[key] = Array.from(selectedBtns).map(b => b.dataset.val);
+        // 선택된 값 다중 수집
+        const selectedVals = Array.from(parent.querySelectorAll('.opt-btn.selected')).map(b => b.dataset.val);
+        answers[key] = selectedVals;
 
-        // 선택 항목이 하나도 없을 경우 배열 비우기 및 비활성화 처리
         const stepNum = el.closest('.step').id.replace('step-', '');
         const btn = document.getElementById('next' + stepNum);
-        if (btn) btn.disabled = answers[key].length === 0;
-        return; // 다중 선택 탭은 여기서 종료
-    }
+        if (btn) btn.disabled = selectedVals.length === 0;
 
-    // 단일 선택 로직 (기존)
-    parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
-    el.classList.add('selected');
-    answers[key] = el.dataset.val;
+    } else {
+        parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+        el.classList.add('selected');
+        answers[key] = el.dataset.val;
 
-    // 지역 선택 시 시군구 인터랙션 (V11)
-    if (key === 'region') {
-        const subArea = document.getElementById('subRegionArea');
-        const subOpts = document.getElementById('subRegionOptions');
-        const regionKey = el.dataset.val;
+        // 지역 선택 시 시군구 인터랙션 (V11)
+        if (key === 'region') {
+            const subArea = document.getElementById('subRegionArea');
+            const subOpts = document.getElementById('subRegionOptions');
+            const regionKey = el.dataset.val;
 
-        // 시군구 데이터가 있으면 렌더링
-        if (SUB_REGIONS[regionKey] && SUB_REGIONS[regionKey].length > 0) {
-            subOpts.innerHTML = ''; // 초기화
-            SUB_REGIONS[regionKey].forEach(sub => {
-                const btn = document.createElement('button');
-                btn.className = 'opt-btn';
-                btn.textContent = sub;
-                btn.dataset.val = sub;
-                btn.onclick = function () { selectOption(this, 'subRegion'); };
-                subOpts.appendChild(btn);
-            });
-            subArea.style.display = 'block';
+            // 시군구 데이터가 있으면 렌더링
+            if (SUB_REGIONS[regionKey] && SUB_REGIONS[regionKey].length > 0) {
+                subOpts.innerHTML = ''; // 초기화
+                SUB_REGIONS[regionKey].forEach(sub => {
+                    const btn = document.createElement('button');
+                    btn.className = 'opt-btn';
+                    btn.textContent = sub;
+                    btn.dataset.val = sub;
+                    btn.onclick = function () { selectOption(this, 'subRegion'); };
+                    subOpts.appendChild(btn);
+                });
+                subArea.style.display = 'block';
 
-            // 도 선택 시 시/군/구 목록으로 자동 스크롤 (V17)
-            subArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                // 도 선택 시 시/군/구 목록으로 자동 스크롤 (V17)
+                subArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-            // 다음 버튼 비활성화 (시군구 선택 대기)
-            const stepNum = el.closest('.step').id.replace('step-', '');
-            const btn = document.getElementById('next' + stepNum);
-            if (btn) btn.disabled = true;
+                // 다음 버튼 비활성화 (시군구 선택 대기)
+                const stepNum = el.closest('.step').id.replace('step-', '');
+                const btn = document.getElementById('next' + stepNum);
+                if (btn) btn.disabled = true;
 
-            // 세종 같은 단일 항목은 자동 선택 처리 (User Friendly)
-            if (SUB_REGIONS[regionKey].length === 1) {
-                subOpts.firstChild.click();
+                // 세종 같은 단일 항목은 자동 선택 처리 (User Friendly)
+                if (SUB_REGIONS[regionKey].length === 1) {
+                    subOpts.firstChild.click();
+                }
+                return; // 시군구 선택 후 버튼 활성화를 위해 리턴
+            } else {
+                // 시군구 데이터 없으면 숨김
+                subArea.style.display = 'none';
             }
-            return; // 시군구 선택 후 버튼 활성화를 위해 리턴
-        } else {
-            // 시군구 데이터 없으면 숨김
-            subArea.style.display = 'none';
         }
-    }
 
-    // 시군구 선택 시 스크롤 부드럽게
-    if (key === 'subRegion') {
-        // 시군구 선택됨 -> 다음 버튼 활성화 로직으로 이동
-    }
+        // 시군구 선택 시 스크롤 부드럽게
+        if (key === 'subRegion') {
+            // 시군구 선택됨 -> 다음 버튼 활성화 로직으로 이동
+        }
 
-    const stepNum = el.closest('.step').id.replace('step-', '');
-    const btn = document.getElementById('next' + stepNum);
-    if (btn) btn.disabled = false;
+        const stepNum = el.closest('.step').id.replace('step-', '');
+        const btn = document.getElementById('next' + stepNum);
+        if (btn) btn.disabled = false;
+    }
 }
 
 // 다음 스텝
@@ -259,18 +149,31 @@ function prevStep(num) {
 
 // 브라우저 뒤로가기 감지 (V9)
 window.onpopstate = function (event) {
-    const step = event.state ? event.state.step : 1;
+    const step = event.state ? event.state.step : 'intro';
     const activeStep = document.querySelector('.step.active');
     if (activeStep) activeStep.classList.remove('active');
+
+    const progressWrap = document.getElementById('progressWrap');
+    const topAd = document.getElementById('topAdZone');
 
     // 결과 화면에서 뒤로가기 시 5단계로
     if (step === 'result') {
         document.getElementById('step-result').classList.add('active');
+        if (progressWrap) progressWrap.style.display = 'block';
+        if (topAd) topAd.style.display = 'block';
     } else if (step === 'loading') {
         document.getElementById('step-loading').classList.add('active');
+        if (progressWrap) progressWrap.style.display = 'block';
+        if (topAd) topAd.style.display = 'none';
+    } else if (step === 'intro') {
+        document.getElementById('step-intro').classList.add('active');
+        if (progressWrap) progressWrap.style.display = 'none';
+        if (topAd) topAd.style.display = 'block';
     } else {
         const target = document.getElementById('step-' + step);
         if (target) target.classList.add('active');
+        if (progressWrap) progressWrap.style.display = 'block';
+        if (topAd) topAd.style.display = 'none';
         updateProgress(step - 1);
     }
 };
@@ -285,7 +188,7 @@ window.scrollTo(0, 0);
 setTimeout(() => window.scrollTo(0, 0), 0);
 setTimeout(() => window.scrollTo(0, 0), 100);
 
-history.replaceState({ step: 1 }, '', '#step-1');
+history.replaceState({ step: 'intro' }, '', '#intro');
 
 // 진행바 업데이트
 function updateProgress(completed) {
@@ -323,51 +226,63 @@ function calcResult() {
     // 1. 기본 점수 (30~50점 랜덤) - 변별력 확보
     let baseScore = Math.floor(Math.random() * 21) + 30;
 
-    // 2. 소득/가구별 필요도 점수 (복지 시급성)
+    // ── 다중 선택 배열 정규화 ──
+    // answers.lifeCycle, household, category 는 항상 배열로 처리
+    const lc = Array.isArray(answers.lifeCycle) ? answers.lifeCycle : (answers.lifeCycle ? [answers.lifeCycle] : []);
+    const hh = Array.isArray(answers.household) ? answers.household : (answers.household ? [answers.household] : []);
+    const cats = Array.isArray(answers.category) ? answers.category : (answers.category ? [answers.category] : []);
+
+    // 2. 생애주기/가구별 필요도 점수 (복지 시급성)
     let needScore = 0;
-    // 소득 점수: 낮을수록 높음
-    if (answers.income === '100만원미만') needScore += 30;
-    else if (answers.income === '100-250만원') needScore += 15;
-    else if (answers.income === '250-450만원') needScore += 5;
 
-    // 가구 점수: 다자녀/한부모/장애인 우대
-    // answers.household가 다중 선택(Array)인지 확인 후 처리 (V15 멀티셀렉트)
-    const activeHouseholds = Array.isArray(answers.household) ? answers.household : [answers.household || '1인가구'];
-    if (activeHouseholds.some(h => ['다자녀', '한부모', '자녀있음', '장애인'].includes(h))) needScore += 10;
-    if (activeHouseholds.includes('1인가구') || activeHouseholds.includes('신혼부부')) needScore += 5;
-    if (activeHouseholds.some(h => ['다문화가족', '보훈대상자'].includes(h))) needScore += 8;
+    // 생애주기 점수
+    if (lc.some(x => ['영유아', '노년', '임신출산'].includes(x))) needScore += 15;
+    else if (lc.length > 0) needScore += 5;
 
-    // 데이터 준비
-    const incomeMap = { '100만원미만': 50, '100-250만원': 200, '250-450만원': 350, '450만원이상': 700 };
-    const incomeNum = incomeMap[answers.income] || 300;
-    const householdMap = { '1인가구': 1, '신혼부부': 2, '일반부부': 2, '자녀있음': 3, '다자녀': 4, '한부모': 2, '자립준비청년': 1, '청년': 1, '장애인': 2, '다문화가족': 2, '보훈대상자': 2, '기타': 2 };
-    // 다중 선택 시 가장 큰 값을 기준으로 가구원 수 결정
+    // 가구 점수: 취약계층 우대
+    if (hh.some(x => ['저소득', '장애인', '한부모조손'].includes(x))) needScore += 25;
+    if (hh.some(x => ['다자녀', '보훈대상자'].includes(x))) needScore += 10;
+
+    // 데이터 준비 — lc, hh, cats 도 함께 전달하여 condition 함수에서 사용 가능하게
+    let incomeNum = 300; // 기본
+    if (hh.includes('저소득')) incomeNum = 50;
+
     let familyCount = 1;
-    activeHouseholds.forEach(h => {
-        if (householdMap[h] && householdMap[h] > familyCount) familyCount = householdMap[h];
-    });
-    // 호환성을 위해 condition 체크용 fake Data는 원본 answers를 넘김 (condition에서 includes로 처리)
-    const data = { ...answers, incomeNum, familyCount, household: activeHouseholds };
+    if (hh.includes('다자녀')) familyCount = 4;
+    else if (hh.includes('한부모조손')) familyCount = 2;
+
+    const data = { ...answers, incomeNum, familyCount, lc, hh, cats };
 
     // 3. 혜택 매칭 및 가산점
     let potentialScore = 0;
     welfareData.forEach(item => {
-        // 카테고리 필터링 (V11 Smart Filter)
+        // 카테고리 필터링 (다중 선택 매칭)
         let isCategoryMatch = true;
-        if (answers.category && answers.category !== '전체') {
-            if (answers.category === '청년') {
-                // '청년' 카테고리 선택 시: 이름/설명/태그에 '청년'이 포함되거나 youthCenter 데이터인 경우 매칭
-                const isYouthRelated = item.name.includes('청년') ||
-                    (item.description && item.description.includes('청년')) ||
-                    (item.tag && item.tag.includes('청년')) ||
-                    item.name.includes('[온통청년]');
-                if (!isYouthRelated && !item.isLocal) isCategoryMatch = false;
-            } else {
-                if (item.category !== answers.category && !item.isLocal) isCategoryMatch = false;
-            }
+        if (cats.length > 0 && !cats.includes('전체')) {
+            if (!cats.includes(item.category) && !item.isLocal) isCategoryMatch = false;
         }
 
         if (item.condition(data) && isCategoryMatch) {
+            // 태그 추출 및 매칭 (교집합 활용)
+            let itemTags = [item.category];
+            const condStr = item.condition.toString();
+            const keywords = ['청년', '영유아', '아동', '청소년', '중장년', '노년', '임신출산', '저소득', '다자녀', '한부모조손', '장애인'];
+            keywords.forEach(kw => {
+                if (condStr.includes(kw)) itemTags.push(kw);
+            });
+            if (condStr.includes('age === "20대"')) itemTags.push('20대');
+            if (condStr.includes('age === "30대"')) itemTags.push('30대');
+            if (condStr.includes('incomeNum <= 100') || condStr.includes('incomeNum <= 250')) itemTags.push('저소득');
+
+            // 사용자의 선택항목과 교집합
+            const userSelections = [answers.age, ...(data.lc || []), ...(data.hh || []), ...(data.cats || [])];
+            item.matchedTags = [...new Set(itemTags)].filter(tag => userSelections.includes(tag));
+
+            // 만약 태그가 아무것도 매칭되지 않았다면 최소한 카테고리는 표시
+            if (item.matchedTags.length === 0 && item.category && item.category !== '전체') {
+                item.matchedTags.push(item.category);
+            }
+
             matched.push(item);
             totalAmount += (item.monthlyAmount || 0);
 
@@ -381,8 +296,8 @@ function calcResult() {
     // 4. 최종 점수 계산 및 테마 적용
     let finalScore = baseScore + needScore + potentialScore;
 
-    // 감점 요인 (고소득 + 생활비 지원 요청 시)
-    if (answers.income === '450만원이상' && answers.category === '생활비') finalScore -= 10;
+    // 감점 요인 (저소득 아님 + 생활지원 요청 시)
+    if (!hh.includes('저소득') && cats.includes('생활지원')) finalScore -= 5;
 
     // 만점 방지 및 보정
     finalScore = Math.min(Math.max(finalScore, 45), 99); // 최소 45, 최대 99
@@ -392,6 +307,10 @@ function calcResult() {
         let scoreA = a.relevance || 0;
         let scoreB = b.relevance || 0;
 
+        // 0. 매칭된 해시태그 개수에 따른 가산점 (이용자가 선택한 카테고리가 많은 순으로 최우선 정렬)
+        scoreA += (a.matchedTags ? a.matchedTags.length : 0) * 10000;
+        scoreB += (b.matchedTags ? b.matchedTags.length : 0) * 10000;
+
         // 1. 온통청년(Youth Center) 데이터 가산점 (가장 공신력 있고 혜택이 큼)
         if (a.name.includes('[온통청년]')) scoreA += 2000;
         if (b.name.includes('[온통청년]')) scoreB += 2000;
@@ -400,14 +319,24 @@ function calcResult() {
         if (a.name.includes('내일채움공제')) scoreA += 5000;
         if (b.name.includes('내일채움공제')) scoreB += 5000;
 
+        // 2.5. 저소득층 우대 (기초생활수급 등 우선 노출)
+        if (hh.includes('저소득')) {
+            const lowIncomeKeywords = ['기초생활', '생계급여', '주거급여', '의료급여', '차상위', '수급자', '저소득'];
+            const isLowIncomeA = lowIncomeKeywords.some(kw => (a.name || '').includes(kw) || (a.tag || '').includes(kw) || (a.desc || '').includes(kw));
+            const isLowIncomeB = lowIncomeKeywords.some(kw => (b.name || '').includes(kw) || (b.tag || '').includes(kw) || (b.desc || '').includes(kw));
+
+            if (isLowIncomeA) scoreA += 8000;
+            if (isLowIncomeB) scoreB += 8000;
+        }
+
         // 3. 지역별 정렬 로직 (기존 유지)
         const regionBtn = document.querySelector(`.opt-btn.selected[onclick*="region"]`);
         if (regionBtn) {
             const regionName = regionBtn.innerText.replace(/[^\uAC00-\uD7A3]/g, '').trim();
-            if (answers.region === 'jeonbuk' && (a.tag.includes('전북') || a.tag.includes('전주'))) scoreA += 1000;
-            if (answers.region === 'jeonbuk' && (b.tag.includes('전북') || b.tag.includes('전주'))) scoreB += 1000;
-            if (a.tag.includes(regionName)) scoreA += 800;
-            if (b.tag.includes(regionName)) scoreB += 800;
+            if (answers.region === 'jeonbuk' && ((a.tag || '').includes('전북') || (a.tag || '').includes('전주'))) scoreA += 1000;
+            if (answers.region === 'jeonbuk' && ((b.tag || '').includes('전북') || (b.tag || '').includes('전주'))) scoreB += 1000;
+            if ((a.tag || '').includes(regionName)) scoreA += 800;
+            if ((b.tag || '').includes(regionName)) scoreB += 800;
         }
         return scoreB - scoreA;
     });
@@ -477,12 +406,14 @@ function showResult() {
     document.getElementById('step-result').classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    renderUserTags(); // V24: 사용자 선택 키워드 표시
-
     history.pushState({ step: 'result' }, '', '#result');
 
     // 점수 대신 혜택 개수 애니메이션
     animateNumber('resultBenefitCount', benefits.length, 1500);
+
+    // 광고 다시 켜기 (광고 정책 준수)
+    const topAd = document.getElementById('topAdZone');
+    if (topAd) topAd.style.display = 'block';
 
     // 메시지 업데이트
     let title = '복주머니가 혜택으로 가득 찼어요! 🧧';
@@ -491,6 +422,28 @@ function showResult() {
     else if (score < 90) title = '와! 복주머니가 묵직할 정도로 혜택이 많아요!';
 
     document.getElementById('resultTitle').textContent = title;
+
+    // 사용자 선택 태그 렌더링
+    const selectedOptions = [
+        answers.age,
+        ...(Array.isArray(answers.lifeCycle) ? answers.lifeCycle : (answers.lifeCycle ? [answers.lifeCycle] : [])),
+        ...(Array.isArray(answers.household) ? answers.household : (answers.household ? [answers.household] : [])),
+        ...(Array.isArray(answers.category) ? answers.category : (answers.category ? [answers.category] : [])),
+        answers.region ? (REGION_NAMES[answers.region] || answers.region) : null,
+        answers.subRegion
+    ];
+
+    // 유효한 값 필터링 및 중복 제거
+    const uniqueTags = [...new Set(selectedOptions.filter(val => val && val !== '해당없음' && val !== '전체'))];
+
+    const userTagsContainer = document.getElementById('resultUserTags');
+    if (userTagsContainer) {
+        if (uniqueTags.length > 0) {
+            userTagsContainer.innerHTML = uniqueTags.map(t => `<span class="hashtag-badge" style="background:var(--primary-light, #e0e7ff); color:var(--primary, #4f46e5); padding:4px 10px; border-radius:12px; font-size:13px; font-weight:700;">#${t}</span>`).join('');
+        } else {
+            userTagsContainer.innerHTML = '';
+        }
+    }
 
     // 혜택 분류
     currentBenefits = { custom: [], local: [], agency: [] };
@@ -501,35 +454,14 @@ function showResult() {
     const subRegionName = subRegionBtn ? subRegionBtn.innerText : '';
     const selectedRegion = answers.region || '';
 
-    // ── V23: 중앙정부 & 지역별 청년포털 데이터 자동 주입 ──
-    // 1. 중앙정부 정책 (항상 포함)
-    if (REGIONAL_PORTALS['national']) {
-        REGIONAL_PORTALS['national'].forEach(portal => {
-            currentBenefits.local.push({ ...portal, isLocal: true, category: '생활비' });
-        });
-    }
-
-    // 2. 선택 지역 정책
+    // ── V20: 지역별 청년포털 데이터 자동 주입 ──
     if (selectedRegion && REGIONAL_PORTALS[selectedRegion]) {
         REGIONAL_PORTALS[selectedRegion].forEach(portal => {
-            // 필터링 로직 (V22): 태그가 광역지역명과 일치하거나, 선택된 시군구명과 일치하는 경우만 노출
-            const isRegionMatch = portal.tag === regionName;
-            const isSubRegionMatch = subRegionName && portal.tag.includes(subRegionName);
-            const isGlobal = portal.tag === '전체' || portal.tag === '중앙정부';
-
-            // 카테고리 매칭 (V24): '청년' 카테고리일 경우 지역 혜택은 대부분 청년용이므로 패스
-            let isPortalCategoryMatch = true;
-            if (answers.category && answers.category !== '전체' && answers.category !== '청년') {
-                if (portal.category && portal.category !== answers.category) isPortalCategoryMatch = false;
-            }
-
-            if ((isRegionMatch || isSubRegionMatch || isGlobal) && isPortalCategoryMatch) {
-                currentBenefits.local.push({
-                    ...portal,
-                    isLocal: true,
-                    category: '생활비'
-                });
-            }
+            currentBenefits.local.push({
+                ...portal,
+                isLocal: true,
+                category: '생활지원' // Changed from 생활비
+            });
         });
     }
 
@@ -545,9 +477,42 @@ function showResult() {
         }
     });
 
+    // ── V20: 자립준비청년 선택 시 전용 혜택 카드 맞춤혜택 최상단 추가 ──
+    if (answers.household === '자립준비청년') {
+        currentBenefits.custom.unshift({
+            name: '자립준비청년 맞춤 지원사업 안내',
+            tag: '아동권리보장원',
+            desc: '보호종료 후 자립을 준비하는 청년을 위한 주거·취업·생활·심리 맞춤 지원사업 통합 포털. 나에게 맞는 지원을 한눈에 확인하세요.',
+            applyUrl: 'https://jaripon.ncrc.or.kr/home/kor/support/projectMng/index.do',
+            monthlyAmount: 0,
+            icon: '🌱',
+            relevance: 9999
+        });
+        currentBenefits.custom.unshift({
+            name: '자립준비청년 자립수당 (월 40만원)',
+            tag: '아동권리보장원',
+            desc: '보호종료 후 5년 이내 자립준비청년에게 자립활동비로 매월 40만원 지급. 만 24세 이하 대상.',
+            applyUrl: 'https://jaripon.ncrc.or.kr/home/kor/support/projectMng/index.do',
+            monthlyAmount: 400000,
+            icon: '💰',
+            relevance: 9998
+        });
+    }
 
-    // 지역별 정렬 최적화 (relevance 높은 것 상단)
-    currentBenefits.local.sort((a, b) => (b.relevance || 0) - (a.relevance || 0));
+    // 지역별 정렬 최적화 (해시태그 매칭 및 relevance 높은 것 상단)
+    currentBenefits.local.sort((a, b) => {
+        let scoreA = (a.relevance || 0) + ((a.matchedTags ? a.matchedTags.length : 0) * 10000);
+        let scoreB = (b.relevance || 0) + ((b.matchedTags ? b.matchedTags.length : 0) * 10000);
+
+        let hh = answers.household || '';
+        if (hh.includes('저소득')) {
+            const lowIncomeKeywords = ['기초생활', '생계급여', '주거급여', '의료급여', '차상위', '수급자', '저소득'];
+            if (lowIncomeKeywords.some(kw => (a.name || '').includes(kw) || (a.tag || '').includes(kw) || (a.desc || '').includes(kw))) scoreA += 8000;
+            if (lowIncomeKeywords.some(kw => (b.name || '').includes(kw) || (b.tag || '').includes(kw) || (b.desc || '').includes(kw))) scoreB += 8000;
+        }
+
+        return scoreB - scoreA;
+    });
 
     // 지역지원 탭 버튼에 배지 표시
     const localTabBtn = document.querySelector('.tab-btn[onclick*="local"]');
@@ -562,15 +527,40 @@ function showResult() {
 // 혜택 리스트 렌더링
 function renderBenefits(category) {
     const list = document.getElementById('benefitList');
-    const mapWrapper = document.getElementById('mapWrapper');
+    const aiNewsletterWrapper = document.getElementById('aiNewsletterWrapper');
     list.innerHTML = '';
 
-    // 지도 표시 제어
+    // AI 뉴스레터 표시 제어 (기존 지도 대체)
     if (category === 'agency') {
-        mapWrapper.style.display = 'block';
-        initMap(); // 지도 초기화
+        const aiNewsletterWrapper = document.getElementById('aiNewsletterWrapper');
+        if (aiNewsletterWrapper) aiNewsletterWrapper.style.display = 'block';
+        
+        const aiGrid = document.getElementById('aiNewsletterGrid');
+        if (aiGrid && aiGrid.innerHTML.trim() === '') {
+            const allNewsletters = [{"id": "nsModal1", "title": "2026년도 정부 지원 복지 동향 핵심 요약", "desc": "2026년 정부 복지 예산은 역대 최대 규모인 137조 원으로 편성되며 다양한 계층을 위한 맞춤형 복지 정책이 대폭 확대되었습니다. 특히 이번 개편안에서는 그동안 사각지대에 놓여있던\n                    청년, 1인 가구, 고립·은둔형 취약계층, 그리고 다자녀 가구를 위한 핀셋 지원이 강화된 것이 핵심입니다."}, {"id": "nsModal2", "title": "청년 대상: 도약과 자립을 위한 든든한 맞춤 지원금", "desc": "취업 한파와 고물가 속에서 미래를 준비하는 청년들을 위해 2026년 정부와 지자체의 청년 지원 정책이 더욱 풍성해졌습니다. 단순 생활비 보조를 너머, 청년들이 스스로 자립형 자산을\n                    형성하고 안정적인 직장 생활을 이어갈 수 있도록 맞춤형 재무 설계를 돕는 것이 2026년 청년 복지의 주된 테마입니다."}, {"id": "nsModal3", "title": "청년 주거혁명: 월세 부담 낮추고 전세사기 철벽방어", "desc": "청년 1인 가구의 팍팍한 삶의 질을 떨어뜨리는 가장 핵심 요인은 단연 '주거비 부담'입니다. 매월 빠져나가는 높은 월세와 보증금 대출 이자 때문에 저축액을 늘리지 못하는 청년 세대의\n                    고충을 해결하기 위해, 2026년 주거 지원 정책은 현금성 직접 지원과 금리 인하라는 두 마리 토끼를 모두 잡는 방향으로 진화했습니다."}, {"id": "nsModal4", "title": "신혼부부 내집마련: 대출 특례와 주거 희망사다리 안내", "desc": "초저출생 위기가 국가적 핵심 현안으로 대두되면서, 2026년 신혼부부 및 출산 예정 가구를 향한 주거 복지는 가히 '역대급' 혜택을 자랑합니다. 결혼과 출산이 경제적으로 페널티가\n                    되는 현상을 막기 위해, 정부는 파격적인 금리 혜택과 우선 분양 물량을 집중적으로 배정하여 부부들의 내 집 마련 꿈을 단축시켜 주고 있습니다."}, {"id": "nsModal5", "title": "중장년의 2막: 평생교육과 재취업을 위한 든든한 안전망", "desc": "대한민국의 허리를 든든하게 받치고 있는 4050 중장년 세대. 조기 퇴직의 불안감, 급변하는 AI와 디지털 산업 혁명으로 인한 직무 전환의 필요성 등 다중고를 겪고 있는\n                    40대~50대를 위해 국가에서는 제2의 인생 도약을 돕는 전방위적 생애 설계 프로그램과 재취업 지원, 그리고 건강 관리 및 생활 복지 지원 제도를 전폭적으로 가동하고 있습니다."}, {"id": "nsModal6", "title": "어르신 행복노후: 기초연금 확대 및 맞춤형 노인 일자리", "desc": "초고령사회 문턱에 진입한 2026년, 정부의 가장 핵심적인 과제는 어르신들이 질병이나 가난으로 고통받지 않고 건강하고 존엄하게 여생을 보낼 수 있도록 보장하는 것입니다. 이에 따라\n                    직접적인 소득을 올려드리는 현금성 복지를 빈틈없이 강화하는 한편, 활기찬 노후와 사회적 소속감을 선사하는 맞춤형 일자리 및 요양 인프라 확충에 천문학적인 예산을 집중 투입했습니다."}, {"id": "nsModal27", "title": "국민연금 조기 수령 가이드: 손해일까 이득일까?", "desc": "은퇴 후 소득 크레바스를 극복하기 위해 국민연금을 앞당겨 받는 조기노령연금 제도를 상세히 파헤칩니다. 감액률과 수급 시기별 손익 분기점, 그리고 2026년 개편된 연계 혜택을 비교 분석해 드립니다."}, {"id": "nsModal28", "title": "전세사기 피해자 주거 안정 집중 지원책", "desc": "전세사기로 고통받는 세입자들을 위해 정부가 마련한 긴급 주거 지원과 맞춤형 금융 구제책입니다. 피해 구제 신청 방법부터 최저 연 1.2% 금리의 대환대출, 그리고 심리 상담 지원까지 모든 것을 담았습니다."}, {"id": "nsModal29", "title": "농산어촌 유학 프로그램: 아이도 살리고 지역도 살리고", "desc": "도심의 아이들이 자연 속에서 교육받을 수 있도록 지원하는 농촌 유학 프로그램! 매월 지원되는 체재비용, 학부모 주거 지원, 그리고 특화된 생태 교육의 혜택을 통해 가족의 새로운 라이프스타일을 제안합니다."}, {"id": "nsModal30", "title": "맞춤형 복지 멤버십: 나 몰래 쌓이는 혜택 알림", "desc": "복지로 시스템의 '맞춤형 급여 안내(복지 멤버십)' 서비스! 한 번만 가입해 두면 나이, 가구 구성, 소득 변동에 따라 내가 받을 수 있는 정부 혜택을 문자로 알아서 척척 알려주는 필수 신청 서비스입니다."}, {"id": "nsModal31", "title": "워킹맘·워킹대디 전성시대: 육아기 근로시간 단축 제도", "desc": "일과 육아의 양립을 돕는 '육아기 근로시간 단축' 제도의 지원 대상과 기간이 대폭 확대되었습니다. 단축된 근로시간에 대한 급여 보전과, 눈치 보지 않고 제도를 사용할 수 있는 정부 지원 장려금을 소개합니다."}, {"id": "nsModal32", "title": "귀농·귀촌 희망자 필독! 영농 정착금과 주택 수리비", "desc": "도시를 떠나 새로운 삶을 꿈꾸는 예비 농업인들을 위한 귀농·귀촌 종합 지원책! 최장 3년간 매월 최대 110만 원을 지급하는 청년농 영농정착지원금과 시골집 수리비 반값 지원 혜택을 제대로 활용하세요."}, {"id": "nsModal33", "title": "백내장·임플란트 건강보험 확대 혜택 총정리", "desc": "중장년층과 어르신들의 시력 및 치아 건강을 위해 임플란트 치아 개수 확대 및 백내장 수술비 지원 등 다빈도 수술에 대한 건강보험 보장성이 강화되었습니다. 달라진 보장 범위와 청구 꿀팁을 확인하세요."}, {"id": "nsModal34", "title": "디지털 정보격차 해소: 통신비 감면과 무료 스마트폰", "desc": "디지털 소외 계층인 고령자와 기초생활수급자를 위해 정부가 월 최대 통신비 감면 혜택을 제공하며, 지자체별로 시행 중인 '사랑의 중고 스마트폰 보급 지원' 및 디지털 배움터 무료 교육을 안내합니다."}, {"id": "nsModal35", "title": "고립·은둔 청년 발굴 및 사회 복귀 원스톱 지원", "desc": "방 밖으로 나오기 힘든 청년들을 위한 정부의 따뜻한 손길! 현장 방문 상담부터 맞춤형 심리 치료, 그리고 대인 관계 형성 및 취업 연계까지 돕는 '청년도전지원사업'의 디테일한 혜택을 살펴봅니다."}, {"id": "nsModal36", "title": "치매 국가책임제 2.0: 치매 안심센터와 요양비 지원", "desc": "치매 환자와 그 가족의 고통을 덜어주기 위해 치매 검진 비용 지원, 약제비 보조, 그리고 치매 전담형 장기요양기관 확충 등 더욱 촘촘해진 '치매국가책임제'의 2026년 최신 혜택을 꼼꼼히 짚어드립니다."}, {"id": "nsModal37", "title": "소상공인 폐업 점포 철거비 및 재도전 장려금", "desc": "안타깝게 폐업을 결심한 소상공인들의 부담을 줄여주기 위해 평당 철거비 지원 한도가 상향되었고, 취업이나 재창업 시 지급되는 재도전 특별 장려금 요건이 완화되었습니다. 안전한 퇴로와 새로운 시작을 위한 정보를 담았습니다."}, {"id": "nsModal38", "title": "초중고 교육급여 및 입학준비금 100% 활용", "desc": "저소득층 자녀의 교육 격차 해소를 위해 교육급여 단가가 대폭 인상되었으며, 지자체별로 초중고 신입생에게 교복 밎 체육복, 스마트기기 등 입학준비금을 지급하는 알짜 혜택을 꼭 챙기시길 바랍니다."}, {"id": "nsModal39", "title": "근로장려금 & 자녀장려금: 2026 지급액 상향 안내", "desc": "저소득 근로 가구의 든든한 보너스, 근로장려금과 자녀장려금! 재산 요건이 완화되고 최대 지급액이 상향 조정되어 더 많은 가구가 목돈을 만질 수 있게 되었습니다. 정기 신청과 반기 신청의 차이점도 명확히 알려드립니다."}, {"id": "nsModal40", "title": "청년 면접 정장 대여 및 자격증 응시료 지원", "desc": "취업 준비 비용에 허리가 휘는 청년들을 위해 전국 지자체에서 운영 중인 정장 무료 대여 서비스(취업 날개, 드림 옷장 등)와 어학 및 각종 국가 자격증 응시료 환급 제도를 모았습니다."}, {"id": "nsModal41", "title": "임산부 친환경 농산물 꾸러미 지원 시스템", "desc": "임산부의 건강과 친환경 농가의 판로 확보를 동시에! 월 일정 금액만 부담하면 유기농 농산물과 신선 1등급 고기를 집 앞까지 배송해 주는 임산부 친환경 꾸러미 사업의 신청 방법과 지역별 혜택을 다뤘습니다."}, {"id": "nsModal42", "title": "다문화 가족 및 외국인 근로자 정착 지원", "desc": "한국 사회에 원활히 적응하도록 돕는 다문화 가족 방문 교육, 이중언어 가족환경 조성, 외국인 근로자 무료 진료소 및 체류 자격별 맞춤 지원 서비스 등 글로벌 시대에 걸맞은 맞춤형 복지 제도를 안내합니다."}, {"id": "nsModal43", "title": "여성새로일하기센터 100% 활용한 경력 단절 극복", "desc": "여성새로일하기센터(새일센터)를 통해 제공되는 맞춤형 직업 교육, 인턴십 연계, 그리고 면접 코칭! 육아로 인해 경력이 단절되었던 여성들이 다시 당당하게 사회로 나갈 수 있는 첫걸음을 적극적으로 지원합니다."}, {"id": "nsModal44", "title": "군 복무 중 부상: 국가유공자 및 보훈 보상 체계", "desc": "군 복무 중 입은 부상이나 질병에 대해 국가가 끝까지 책임집니다! 상이등급 상향 판정 기준안, 위탁 병원 진료비 전액 감면, 그리고 취업 시 가산점 등 2026년 개선된 보훈 보상 제도를 정리했습니다."}, {"id": "nsModal45", "title": "햇살론 & 최저신용자 특례보증: 빚의 늪에서 탈출하기", "desc": "불법 사금융에 노출되기 쉬운 저신용·저소득자를 위한 구명줄! 서민금융진흥원의 햇살론 유스, 뱅크, 그리고 최저신용자 특례보증 대출 상품의 금리 및 연체 기록 말소(신용 사면) 혜택을 상세히 설명합니다."}, {"id": "nsModal46", "title": "지방 소멸 대응: 인구 감소 지역 청년 이주 정착금", "desc": "지방 소멸을 막기 위해 89개 인구 감소 지역으로 이주하는 청년 및 신혼부부에게 파격적인 정착 지원금이 지급됩니다. 주택 수리비, 취창업 자금, 심지어 매월 지급되는 생활비 보조 혜택 등 쏠쏠한 로컬 라이프를 소개합니다."}, {"id": "nsModal47", "title": "가족돌봄청년 (영케어러)을 위한 생계 돌봄 수당", "desc": "아픈 가족을 돌보느라 학업과 취업을 포기해야 했던 가족돌봄청년 (영케어러) 발굴 및 지원 체계가 신설되었습니다. 매월 돌봄 수당 지원은 물론 가사 지원 서비스 바우처 혜택으로 청년들의 무거운 어깨를 덜어줍니다."}, {"id": "nsModal48", "title": "난임 부부 시술비 및 냉동난자 지원 확대", "desc": "초저출생 시대, 아이를 간절히 원하는 난임 부부를 위해 정부가 소득 기준을 전면 폐지하고 체외수정 및 인공수정 시술비 지원 횟수를 확대했습니다. 또한 최근 트렌드인 미혼 여성의 가임력 보존을 위한 냉동난자 보조금도 확인하세요."}, {"id": "nsModal49", "title": "국립자연휴양림 및 템플스테이 취약계층 쿠폰", "desc": "경제적 이유로 휴가 한 번 가기 힘든 분들을 위해 산림복지바우처와 문화누리카드가 지원됩니다. 국립자연휴양림 반값 할인, 사찰 숙박 바우처(템플스테이) 등 산림과 문화를 누리며 힐링할 수 있는 혜택을 모았습니다."}, {"id": "nsModal50", "title": "층간소음 갈등 해결사: 방음 시공비 및 상담 지원", "desc": "이웃 간의 얼굴을 붉히는 층간소음 문제! 환경부 층간소음 이웃사이센터의 갈등 중재 서비스와 더불어, 취약 계층을 위한 바닥 소음 저감 매트 설치비 및 방음 시공비 지원 등 평화로운 실내 생활을 위한 제도를 소개합니다."}, {"id": "nsModal7", "title": "초보 사장님 필독! 소상공인 새출발 희망 자금", "desc": "매출 급감과 고금리로 고통받는 자영업자를 위한 2026년 소상공인 특화 지원금과 전기/배달비 감면 혜택을 총망라했습니다. 폐업 위기 극복부터 재창업 성공까지 정부가 밀어주는 핵심 제도를\n                확인하세요."}, {"id": "nsModal8", "title": "다둥이 맘빠의 구원투수: 2026 다자녀 혜택 완벽 가이드", "desc": "아이 키우기 좋은 세상을 위해 2026년부터 2자녀 이상만 되어도 다자녀 혜택을 전면 적용받습니다. 자동차세 감면부터 아이돌봄 지원금, 그리고 국가장학금 꿀팁까지 부모님의 부담을 덜어줄\n                정보를 담았습니다."}, {"id": "nsModal9", "title": "월세족 필독: 청년 월세 지원 & 전세보증금 반환보증", "desc": "다달이 나가는 월세가 아까운 무주택 청년들을 위한 청년 월세 특별지원과, 전세사기로부터 내 보증금을 지킬 수 있는 HUG 보증료 전액 지원 등 2030 세대의 주거 안정을 위한 필수 혜택을\n                소개합니다."}, {"id": "nsModal10", "title": "숨은 요금 찾기: 통신비 환급과 에너지 바우처", "desc": "매달 내는 통신비 안에 내가 몰랐던 환급금이 숨어있다는 사실 알고 계셨나요? 취약계층 에너지 바우처 확대 및 알뜰폰 전환 꿀팁 등 당장 실생활에서 돈을 10만 원 이상 아낄 수 있는 정책을\n                모았습니다."}, {"id": "nsModal11", "title": "은퇴 후가 진짜 인생! 신중년 경력형 우대 일자리", "desc": "은퇴를 앞두거나 이미 퇴직하신 5060 액티브 시니어를 위해 정부에서 새롭게 마련한 경력 우대형 일자리와 직업 훈련 시스템을 안내합니다. 재취업의 기회를 잡고 제2의 월급을 만들어 보세요."}, {"id": "nsModal12", "title": "한부모 가족을 위한 따뜻한 동행: 양육비와 자립 지원", "desc": "혼자서 아이를 키우며 고군분투하는 한부모 가족을 위해 아동양육비 지원 단가가 크게 올랐습니다. 생계비 보조뿐만 아니라 돌봄 서비스 우선 제공, 아이돌보미 혜택 등 든든한 바람막이가 되어줄\n                제도를 확인하세요."}, {"id": "nsModal13", "title": "카드 포인트가 현금으로? 숨은 돈 1분 만에 찾기", "desc": "정부 지원금은 아니지만 누구나 받을 수 있는 숨은 돈! 여러 카드사에 흩어진 포인트, 잊고 있던 휴면 예금과 자동차 환급금까지 스마트폰 하나로 1분 만에 조회하고 내 계좌로 바로 쏙\n                입금받는 방법을 정리했습니다."}, {"id": "nsModal14", "title": "K-패스 완전 정복: 대중교통비 매월 최대 53% 환급", "desc": "매일 출퇴근하는 직장인과 학생들의 교통비를 절반으로 줄여줄 'K-패스' 혜택이 대폭 상향되었습니다. 알뜰교통카드의 복잡한 조건을 없애고 그냥 썼을 뿐인데 매월 현금으로 캐시백 되는 마법을\n                확인하세요."}, {"id": "nsModal15", "title": "병원비 걱정 뚝! 재난적 의료비 & 본인부담상한제", "desc": "갑작스러운 큰 질병으로 인한 의료비 부담, 이제 정부가 막아줍니다! 저소득층은 물론 중산층까지 혜택이 확대된 재난적 의료비 지원 제도와 1년간 지불한 병원비 일부를 돌려받는 본인부담상한제를\n                알아두세요."}, {"id": "nsModal16", "title": "농어업인을 위한 직불금 2.0: 든든한 농가 소득 안전망", "desc": "농어촌의 고령화와 인구 감소 극복을 위해 2026년부터 개편된 기본형 공익직불금 및 청년 농업인 영농 정착 지원금을 소개합니다. 스마트팜 지원부터 농기계 임대 혜택까지, 농어업인이라면 절대\n                놓쳐선 안 될 정보입니다."}, {"id": "nsModal17", "title": "국군 장병 화이팅! 장병내일준비적금 & 제대 군인 혜택", "desc": "군 복무 기간 동안 매월 적금을 부으면 정부가 이자와 매칭 지원금을 더해 전역 시 약 2천만 원의 목돈을 쥘 수 있는 장병내일준비적금! 나라를 지켜준 군인과 예비군을 위한 다양한 교육 및\n                취업 지원 혜택을 알아보세요."}, {"id": "nsModal18", "title": "장애인 자립을 위한 2026 복지 패러다임 전환", "desc": "장애인 연금 수급액 상향과 더불어 장애인 활동 지원 서비스 등급이 대폭 개편되었습니다. 맞춤형 일자리 제공과 이동권 보장을 위한 특별교통수단 확충 등, 장애인의 진정한 자립을 위한 정부의\n                다각적인 지원책을 안내합니다."}, {"id": "nsModal19", "title": "전청서 꿀팁! 청년도약계좌 & 청년주택드림청약통장", "desc": "청년들의 내 집 마련과 자산 형성을 동시에 돕는 최강의 조합! 최고 연 6%대 이자와 정부 기여금이 더해진 청년도약계좌, 그리고 주택 청약 시 파격적인 금리 혜택을 제공하는\n                청년주택드림청약통장 활용법을 마스터하세요."}, {"id": "nsModal20", "title": "보육 대란 끝! 늘봄학교 전국 확대 및 양육수당", "desc": "초등학생 자녀를 둔 맞벌이 부부의 구세주 '늘봄학교'가 전국 100% 도입 완성되었습니다. 오전 7시부터 저녁 8시까지 안심하고 아이를 맡길 수 있는 촘촘한 돌봄 체계와 올해 더 늘어난\n                부모 급여 혜택을 챙겨보세요."}, {"id": "nsModal21", "title": "내일배움카드 200% 활용법: 코딩부터 뷰티까지 무료로", "desc": "전 국민의 평생교육을 책임지는 국민내일배움카드! 훈련비 지원 한도가 500만 원까지 상향되었고, 특히 디지털 핵심 실무 인재를 양성하는 K-디지털 트레이닝 과정은 전액 무료입니다. 내게\n                필요한 강의 찾기 꿀팁을 대공개합니다."}, {"id": "nsModal22", "title": "주거 급여 & 생계 급여: 2026년 기준 중위소득 대폭 인상", "desc": "기초생활보장제도의 핵심인 생계급여와 주거급여의 선정 기준선이 역대 최대 폭으로 인상되어 더 많은 분들이 수급 혜택을 누리게 되었습니다. 수급 자격 요건 완화와 자동차 재산 산정 기준 개편\n                등 가장 중요한 변화를 요약했습니다."}, {"id": "nsModal23", "title": "예술인 및 프리랜서 전폭 지원: 창작 준비금 & 고용보험", "desc": "근로기준법의 사각지대에 있던 예술인과 프리랜서 플랫폼 노동자들을 위한 고용보험 적용 범위가 크게 확대되었습니다. 생계 걱정 없이 창작 활동에 전념할 수 있도록 돕는 창작 준비금 지원 사업과\n                불공정 계약 방지책을 확인하세요."}, {"id": "nsModal24", "title": "친환경 전기차/수소차 보조금 A to Z", "desc": "미래 세대를 위한 필수 선택, 친환경 자동차! 2026년 전기차와 수소차 보조금 지급 기준이 새롭게 개편되었습니다. 국가 보조금에 지자체 추가 보조금까지 합쳐 차량 구매 비용을 수천만 원\n                아끼는 지역별 꿀팁을 정리했습니다."}, {"id": "nsModal25", "title": "반려동물 가구 희소식! 펫 보험 & 의료비 지원 제도", "desc": "반려동물 양육 인구 1,500만 시대! 부담스러운 동물 병원 진료비 부담을 덜어주기 위해 취약계층을 대상으로 반려동물 의료비 지원 사업이 확대 시행됩니다. 또한 정부가 장려하는 유기견 입양\n                지원금과 펫 보험 혜택을 알아보세요."}, {"id": "nsModal26", "title": "자립준비청년 (보호종료아동) 맞춤형 홀로서기 가이드", "desc": "아동 양육 시설에서 퇴소하여 홀로 세상을 마주해야 하는 자립준비청년들을 위해 자립정착금과 매월 지급되는 자립수당이 인상되었습니다. 주거, 학업, 취업에 이르는 통합 지원 체계와 심리 상담\n                혜택까지, 따뜻한 응원의 정보를 담았습니다."}];
+            
+            // Pick 5 random newsletters
+            const shuffled = allNewsletters.sort(() => 0.5 - Math.random());
+            const selected = shuffled.slice(0, 5);
+            
+            let html = '';
+            selected.forEach(nl => {
+                html += `
+                    <div style="background:#f8fafc; border-radius:12px; padding:16px; border:1px solid #e2e8f0; cursor:pointer; transition:all 0.2s;"
+                        onmouseover="this.style.borderColor='var(--primary)'; this.style.transform='translateY(-2px)';"
+                        onmouseout="this.style.borderColor='#e2e8f0'; this.style.transform='none';"
+                        onclick="openModal('${nl.id}')">
+                        <span style="display:inline-block; font-size:11px; font-weight:800; color:#ef4444; background:#fee2e2; padding:3px 8px; border-radius:4px; margin-bottom:8px;">추천 ⭐️</span>
+                        <h4 style="font-size:15px; font-weight:700; color:#1e293b; margin-bottom:6px;">${nl.title}</h4>
+                        <p style="font-size:13px; color:#475569; margin:0; line-height:1.5;">${nl.desc.length > 50 ? nl.desc.substring(0, 50) + '...' : nl.desc}</p>
+                        <div style="margin-top:10px; font-size:13px; font-weight:700; color:var(--primary);">자세히 보기 ➔</div>
+                    </div>
+                `;
+            });
+            aiGrid.innerHTML = html;
+        }
     } else {
-        mapWrapper.style.display = 'none';
+        if (aiNewsletterWrapper) aiNewsletterWrapper.style.display = 'none';
     }
 
     const items = currentBenefits[category];
@@ -588,19 +578,19 @@ function renderBenefits(category) {
         // 금액 표시 포맷
         const amountText = b.monthlyAmount ? `최대 ${Math.round(b.monthlyAmount).toLocaleString()}원` : '혜택 확인 필요';
 
+        // 해시태그 렌더링
+        let tagsHtml = '';
+        if (b.matchedTags && b.matchedTags.length > 0) {
+            tagsHtml = `<div class="hashtags">` + b.matchedTags.map(t => `<span class="hashtag-badge">#${t}</span>`).join('') + `</div>`;
+        }
+
         // 블로그 검색 URL: 혜택명 키워드로 자동 연결
         const blogKeyword = encodeURIComponent(b.name.replace(/[\[\]]/g, '').trim());
         const blogUrl = `https://10000nanzip.tistory.com/search/${blogKeyword}`;
 
-        const hashtagsHtml = (b.hashtags && b.hashtags.length > 0)
-            ? b.hashtags.map(h => `<span class="benefit-hashtag">#${h}</span>`).join('')
-            : '';
-
         card.innerHTML = `
-            <div class="benefit-card-header">
-                <div class="agency-badge">🏛️ ${b.tag}</div>
-                ${hashtagsHtml}
-            </div>
+            <div class="agency-badge">🏛️ ${b.tag || '중앙부처'}</div>
+            ${tagsHtml}
             <div class="benefit-title">${b.name}</div>
             <div class="benefit-desc">${b.desc || b.description}</div>
             <div class="benefit-meta">
@@ -615,112 +605,7 @@ function renderBenefits(category) {
     });
 }
 
-// ── 내 주변 지도 기능 (V13) ──
-let kakaoMap = null;
-let ps = null;
-let infowindow = null;
-let markers = []; // 지도의 모든 마커를 추적하기 위한 배열 (V15)
-
-function clearMarkers() {
-    markers.forEach(m => m.setMap(null));
-    markers = [];
-}
-
-function initMap() {
-    const mapStatus = document.getElementById('mapStatus');
-
-    if (typeof kakao === 'undefined' || !kakao.maps) {
-        mapStatus.innerHTML = '⚠️ 지도 라이브러리를 불러오는 중입니다... (잠시만 기다려주세요)';
-        // 1초 후 재시도
-        setTimeout(initMap, 1000);
-
-        // 도메인 등록 안내를 위한 콘솔 로그 추가
-        console.warn('Kakao Maps SDK not loaded. Please check if your domain (e.g., http://localhost:8080) is registered in Kakao Developers Console.');
-        return;
-    }
-
-    const regionName = REGION_NAMES[answers.region] || '';
-    const subRegionName = answers.subRegion || '';
-    const fullAddr = `${regionName} ${subRegionName}`.trim();
-
-    if (!fullAddr) {
-        mapStatus.innerHTML = '⚠️ 지역 정보가 선택되지 않았습니다.';
-        return;
-    }
-
-    const geocoder = new kakao.maps.services.Geocoder();
-
-    geocoder.addressSearch(fullAddr, function (result, status) {
-        if (status === kakao.maps.services.Status.OK) {
-            const locPosition = new kakao.maps.LatLng(result[0].y, result[0].x);
-
-            if (!kakaoMap) {
-                const container = document.getElementById('map');
-                const options = { center: locPosition, level: 5 };
-                kakaoMap = new kakao.maps.Map(container, options);
-                ps = new kakao.maps.services.Places(kakaoMap);
-                infowindow = new kakao.maps.InfoWindow({ zIndex: 1 });
-
-                // 지도가 이동하거나 확대/축소되면 새로 검색 (V15)
-                kakao.maps.event.addListener(kakaoMap, 'idle', function () {
-                    searchNearbyAgencies();
-                });
-            } else {
-                kakaoMap.setCenter(locPosition);
-            }
-
-            mapStatus.innerHTML = `📍 [${fullAddr}] 주변의 사회복지 시설 및 관공서를 찾았습니다.`;
-            searchNearbyAgencies();
-        } else {
-            mapStatus.innerHTML = '⚠️ 선택하신 지역의 위치를 찾을 수 없습니다.';
-        }
-    });
-}
-
-function searchNearbyAgencies() {
-    if (!ps) return;
-
-    // 기존 마커 제거 (새로운 지역 검색 시 겹침 방지 V15)
-    clearMarkers();
-
-    const callback = (data, status) => {
-        if (status === kakao.maps.services.Status.OK) {
-            for (let i = 0; i < data.length; i++) {
-                displayMarker(data[i]);
-            }
-        }
-    };
-
-    // 1. 카테고리 검색: KB6(사회복지시설), PO3(공공기관)
-    ps.categorySearch('KB6', callback, { useMapBounds: true });
-    ps.categorySearch('PO3', callback, { useMapBounds: true });
-
-    // 2. 키워드 검색 추가 (사회복지관 등 상세 기관 확보)
-    const regionBtn = document.querySelector(`.opt-btn.selected[onclick*="region"]`);
-    const regionName = regionBtn ? regionBtn.innerText.replace(/[^가-힣]/g, '').trim() : '';
-    const subRegionBtn = document.querySelector(`.opt-btn.selected[onclick*="subRegion"]`);
-    const subRegionName = subRegionBtn ? subRegionBtn.innerText : '';
-    const baseKeyword = `${regionName} ${subRegionName}`.trim();
-
-    ps.keywordSearch(`${baseKeyword} 복지관`, callback, { useMapBounds: true });
-    ps.keywordSearch(`${baseKeyword} 복지센터`, callback, { useMapBounds: true });
-    ps.keywordSearch(`${baseKeyword} 센터`, callback, { useMapBounds: true });
-}
-
-function displayMarker(place) {
-    const marker = new kakao.maps.Marker({
-        map: kakaoMap,
-        position: new kakao.maps.LatLng(place.y, place.x)
-    });
-
-    // 마커 배열에 추가하여 나중에 지울 수 있도록 함
-    markers.push(marker);
-
-    kakao.maps.event.addListener(marker, 'click', function () {
-        infowindow.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + '</div>');
-        infowindow.open(kakaoMap, marker);
-    });
-}
+// (기존 카카오맵 관련 코드는 복지로 지도 iframe으로 대체됨)
 
 // 숫자 애니메이션 함수
 function animateNumber(id, target, duration, isLocale = false) {
@@ -808,7 +693,7 @@ function showToast(msg) {
 // AI 챗봇
 // AI 챗봇 (V12 Scenario)
 const chatScenario = {
-    intro: "안녕 하세요! 당신의 든든한 지원군, **로거**예요! 🐶✨<br>복주머니 리포트는 잘 보셨나요? 궁금한 게 있다면 무엇이든 편하게 물어봐 주세요!",
+    intro: "안녕 하세요! 당신의 든든한 지원군, **로거**예요! 🐶✨<br>복지 점수 리포트는 잘 보셨나요? 궁금한 게 있다면 무엇이든 편하게 물어봐 주세요!",
     options: [
         { text: "💰 제가 놓친 돈이 더 있을까요?", answer: "지금 입력하신 정보로는 최적의 혜택을 다 찾아드렸어요! 혹시 가족 관계에 변화가 생기거나, 소득 기준이 바뀌면 새로운 혜택이 뜰 수 있으니 가끔씩 저를 다시 찾아주세요! 😉" },
         { text: "📝 신청 방법이 궁금해요!", answer: "각 혜택 카드에 있는 **'신청하기'** 버튼을 누르면 바로 연결해 드려요! 준비물이 복잡할 땐 제가 블로그에 꿀팁을 정리해둘게요. 걱정 마세요! 🙌" },
@@ -913,14 +798,9 @@ function chatSearch(query) {
     const householdMap = {
         '1인': '1인가구', '혼자': '1인가구', '독신': '1인가구',
         '신혼': '신혼부부', '결혼': '신혼부부',
-        '일반부부': '일반부부', '기혼': '일반부부', '부부': '일반부부',
         '자녀': '자녀있음', '아이': '자녀있음',
         '다자녀': '다자녀', '3명': '다자녀',
-        '한부모': '한부모', '미혼모': '한부모', '미혼부': '한부모',
-        '청년': '청년', '자립준비': '자립준비청년',
-        '장애인': '장애인', '장애': '장애인',
-        '다문화': '다문화가족', '탈북': '다문화가족', '결혼이민': '다문화가족',
-        '보훈': '보훈대상자', '국가유공자': '보훈대상자', '보훈대상': '보훈대상자'
+        '한부모': '한부모', '미혼모': '한부모', '미혼부': '한부모'
     };
 
     let targetAge = null, targetCategory = null, targetHousehold = null;
@@ -936,7 +816,7 @@ function chatSearch(query) {
     const familyCount = 1;
     const fakeData = {
         age: targetAge || answers.age || '30대',
-        household: targetHousehold ? [targetHousehold] : (Array.isArray(answers.household) ? answers.household : [answers.household || '1인가구']),
+        household: targetHousehold || answers.household || '1인가구',
         income: answers.income || '100-250만원',
         category: targetCategory || '전체',
         region: answers.region || 'seoul',
@@ -985,58 +865,55 @@ function restart() {
     document.querySelectorAll('.btn-next').forEach(b => b.disabled = true);
 
     document.querySelector('.step.active').classList.remove('active');
-    document.getElementById('step-1').classList.add('active');
+    document.getElementById('step-intro').classList.add('active');
     updateProgress(0);
 
+    const progressWrap = document.getElementById('progressWrap');
+    if (progressWrap) progressWrap.style.display = 'none';
+    const topAd = document.getElementById('topAdZone');
+    if (topAd) topAd.style.display = 'block';
+
     // 히스토리 초기화
-    history.replaceState({ step: 1 }, '', '#step-1');
+    history.replaceState({ step: 'intro' }, '', '#intro');
 }
 
-// ── V24: 사용자 선택 키워드(태그) 렌더링 ──
-function renderUserTags() {
-    const container = document.getElementById('userTagContainer');
-    if (!container) return;
-    container.innerHTML = '';
+// --- V22: SEO Newsletters & Intro Modal Control ---
 
-    const tags = [];
+function startTest() {
+    document.getElementById('step-intro').classList.remove('active');
+    document.getElementById('step-1').classList.add('active');
 
-    // 1. 연령대
-    const ageBtn = document.querySelector('.opt-btn.selected[onclick*="age"]');
-    if (ageBtn) tags.push(ageBtn.innerText.trim());
+    // 진행바 표시 및 상단 광고 숨김(로딩/질문 중 구글 정책 준수)
+    const progressWrap = document.getElementById('progressWrap');
+    if (progressWrap) progressWrap.style.display = 'block';
 
-    // 2. 가구 상황 (다중 선택 처리)
-    const householdBtns = document.querySelectorAll('.opt-btn.selected[onclick*="household"]');
-    householdBtns.forEach(btn => tags.push(btn.innerText.trim()));
+    const topAd = document.getElementById('topAdZone');
+    if (topAd) topAd.style.display = 'none';
 
-    // 3. 소득 수준 (짧게 가공)
-    const incomeBtn = document.querySelector('.opt-btn.selected[onclick*="income"]');
-    if (incomeBtn) {
-        let text = incomeBtn.innerText.trim();
-        if (text.includes('(')) text = text.split('(')[0].trim();
-        tags.push(text);
-    }
-
-    // 4. 관심 분야
-    const categoryBtn = document.querySelector('.opt-btn.selected[onclick*="category"]');
-    if (categoryBtn) tags.push(categoryBtn.innerText.trim());
-
-    // 5. 지역 (광역 + 시군구)
-    const regionBtn = document.querySelector('.opt-btn.selected[onclick*="region"]');
-    if (regionBtn) {
-        // 지역명 아이콘 제거 로직
-        let text = regionBtn.innerText.replace(/[^\uAC00-\uD7A3]/g, '').trim();
-        tags.push(text);
-    }
-
-    const subRegionBtn = document.querySelector('.opt-btn.selected[onclick*="subRegion"]');
-    if (subRegionBtn) tags.push(subRegionBtn.innerText.trim());
-
-    // 태그 생성 및 추가
-    tags.forEach((tagText, index) => {
-        const tag = document.createElement('span');
-        tag.className = 'user-tag';
-        tag.innerText = `# ${tagText}`;
-        tag.style.animationDelay = `${index * 0.1}s`;
-        container.appendChild(tag);
-    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    history.pushState({ step: 1 }, '', '#step-1');
 }
+
+function openModal(id) {
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.classList.add('show');
+        document.body.style.overflow = 'hidden'; // 스크롤 방지
+    }
+}
+
+function closeModal(id) {
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+}
+
+// 모달 외부 클릭 시 닫기
+window.addEventListener('click', function (e) {
+    if (e.target.classList.contains('modal-overlay')) {
+        e.target.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+});
