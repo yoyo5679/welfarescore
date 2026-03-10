@@ -39,7 +39,7 @@
 
 ## 👥 팀 협업 가이드
 
-이 프로젝트는 오픈 소스 및 팀 협업을 위해 관리되고 있습니다. 상세한 개발 환경 설정과 소스 코드 구조는 [HANDOVER.md](file:///Users/hong-eunseong/Documents/안티그래비티/블로그/welfare-score-app/HANDOVER.md) 문서를 참고해 주세요.
+이 프로젝트는 오픈소스 및 팀 협업을 위해 관리되고 있습니다. 상세한 개발 환경 설정과 소스 코드 구조는 [HANDOVER.md](file:///Users/hong-eunseong/Documents/안티그래비티/블로그/welfare-score-app/HANDOVER.md) 문서를 참고해 주세요.
 
 ## 🚀 기여 방법
 
